@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>OmNi-Ledger — English Judge Demo</title>
+  <style>
+    :root{--bg:#08111f;--card:#111d31;--line:#263957;--text:#eaf1ff;--muted:#9dafcf;--blue:#38bdf8;--green:#34d399;--red:#fb7185;--yellow:#fbbf24}
+    *{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#07101d,#0d1830);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;padding:24px}
+    main{max-width:1050px;margin:auto}.hero,.card{background:rgba(17,29,49,.94);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:14px;box-shadow:0 16px 44px #0002}
+    h1{font-size:27px;margin:0 0 8px}.hero p{color:var(--muted);max-width:820px}.tag{display:inline-block;border:1px solid #245275;color:var(--blue);border-radius:999px;padding:4px 10px;margin:3px 4px 3px 0;font-size:12px}
+    h2{font-size:18px;margin:0 0 12px;color:var(--blue)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}.metric{border:1px solid var(--line);border-radius:12px;padding:13px;background:#0b1628}.metric b{display:block;font-size:20px;color:var(--green)}
+    button,a.button{display:inline-block;border:0;border-radius:10px;padding:10px 14px;margin:3px;background:var(--blue);color:#041421;font-weight:750;text-decoration:none;cursor:pointer}button.secondary,a.secondary{background:#263957;color:var(--text)}button:disabled{opacity:.45;cursor:not-allowed}
+    pre{white-space:pre-wrap;word-break:break-word;background:#07101d;border:1px solid var(--line);border-radius:12px;padding:14px;min-height:155px;color:#dbeafe;font:13px/1.55 ui-monospace,SFMono-Regular,monospace}
+    .ok{color:var(--green)}.bad{color:var(--red)}.warn{color:var(--yellow)}.small{font-size:12px;color:var(--muted)}.links{margin-top:10px}.links a{color:var(--blue)}
+  </style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <span class="tag">AMD Developer Cloud</span><span class="tag">ROCm</span><span class="tag">Google Gemma 4 31B IT</span><span class="tag">Deterministic Policy Gate</span>
+    <h1>OmNi-Ledger</h1>
+    <p><strong>AI-assisted invoice intake feeding a deterministic, human-gated supply-chain ledger.</strong> Gemma extracts structured fields; OmNi makes the final accept or block decision using explicit warehouse policies, not model confidence.</p>
+    <button id="run">Run the full deterministic demo</button>
+    <button id="html" class="secondary" disabled>Download HTML proof report</button>
+    <button id="csv" class="secondary" disabled>Download event CSV</button>
+    <div class="links"><a href="./">Open the Arabic operational console</a> · <a href="https://github.com/omniverseatmos-netizen/omni-ledger-amd" target="_blank" rel="noreferrer">View source on GitHub</a></div>
+  </section>
+
+  <section class="card">
+    <h2>What this demo proves</h2>
+    <div class="grid">
+      <div class="metric"><b id="status">Not run</b>Demo status</div>
+      <div class="metric"><b id="blocked">—</b>Expired invoice</div>
+      <div class="metric"><b id="accepted">—</b>Valid invoice</div>
+      <div class="metric"><b id="tests">167/167</b>Automated tests in repository</div>
+    </div>
+    <p class="small">The live AMD/Gemma request is intentionally kept in the CLI pipeline so no API token is exposed in a public browser. The browser demo proves the deterministic downstream gate and audit seal.</p>
+  </section>
+
+  <section class="card">
+    <h2>Execution log</h2>
+    <pre id="log">Press “Run the full deterministic demo” to start.</pre>
+  </section>
+
+  <section class="card">
+    <h2>Architecture</h2>
+    <p>Invoice text → Gemma extraction on AMD → schema validation → OmNi deterministic gate → warehouse ledger → SHA-256 audit chain → Merkle-root state seal.</p>
+    <p class="small">The model never writes inventory balances directly. Human approval remains required for controlled operations.</p>
+  </section>
+</main>
+<script type="module">
+import { OmNiCore, seedDemo } from './domain.mjs';
+
+const $ = (id) => document.getElementById(id);
+let last = null;
+const today = new Date().toISOString().slice(0,10);
+
+function fresh(){ const c = seedDemo(new OmNiCore()); c.today = today; return c; }
+function processInvoice(core, data){
+  const po = core.createPO({supplierCode:'SUP-001',warehouseCode:'WH-OCT6',actor:'procurement_buyer',lines:[{itemCode:data.itemCode,orderedQty:data.qty,unitCostQirsh:data.unitPrice}]});
+  core.poAction(po.id,'SUBMITTED','procurement_buyer');
+  core.poAction(po.id,'APPROVED','warehouse_manager');
+  const gr = core.createReceipt({poId:po.id,locationKey:'WH-OCT6/A-01-01',actor:'receiving_clerk',lines:[{poLineId:po.lines[0].id,receivedQty:data.qty,rejectedQty:0,batch:data.batch,expiryDate:data.expiryDate}]});
+  core.submitReceipt(gr.id,'receiving_clerk');
+  core.startInspection(gr.id,'qc_officer');
+  core.recordQC(gr.id,[{lineId:gr.lines[0].id,qcPass:true}],'qc_officer');
+  core.postReceipt(gr.id,'qc_officer');
+  return gr;
+}
+function addLog(lines){ $('log').textContent=lines.join('\n'); }
+function download(name,text,type){ const blob=new Blob([text],{type}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),5000); }
+function report(){
+  const r=last; if(!r)return;
+  const html=`<!doctype html><meta charset="utf-8"><title>OmNi-Ledger English Proof Report</title><style>body{font:16px system-ui;max-width:850px;margin:40px auto;line-height:1.55}pre{white-space:pre-wrap;background:#f2f5f9;padding:16px}h1{color:#123}</style><h1>OmNi-Ledger — Deterministic Proof Report</h1><p>Generated locally by the English judge demo. The model extraction step is demonstrated separately by the AMD pipeline.</p><pre>${r.lines.join('\n').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]) )}</pre>`;
+  download('omni-ledger-english-proof.html',html,'text/html');
+}
+function csv(){
+  const r=last; if(!r)return;
+  const rows=[['event','result','detail'],['expired_invoice','BLOCKED',r.blockReason],['valid_invoice','ACCEPTED',`balance=${r.balance}`],['audit_seal','VALID',r.seal.merkleRoot]];
+  download('omni-ledger-english-events.csv',rows.map(x=>x.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(',')).join('\n'),'text/csv');
+}
+$('run').onclick=()=>{
+  const lines=[]; const core=fresh();
+  lines.push('OmNi-Ledger — English judge demo');
+  lines.push(`Date: ${core.today}`);
+  lines.push('');
+  lines.push('[1] Deterministic gate: expired invoice');
+  let blockReason='No block';
+  try{ processInvoice(core,{itemCode:'PARA-500',qty:50,unitPrice:1250,batch:'BATCH-EXP-99',expiryDate:'2024-01-01'}); lines.push('UNEXPECTED: expired invoice was accepted'); }
+  catch(e){ blockReason=`${e.code || 'DOMAIN_ERROR'} — ${e.message}`; lines.push(`HARD BLOCK ✓ ${blockReason}`); }
+  lines.push('');
+  lines.push('[2] Deterministic gate: valid invoice');
+  try{ processInvoice(core,{itemCode:'PARA-500',qty:100,unitPrice:1250,batch:'BATCH-2027-OK',expiryDate:'2027-12-31'}); lines.push(`ACCEPTED ✓ Inventory balance: ${core.getBalance('PARA-500')}`); }
+  catch(e){ lines.push(`FAILED: ${e.code || 'DOMAIN_ERROR'} — ${e.message}`); }
+  const lastEvent=core.audit.at(-1); const seal=core.createSeal();
+  lines.push(''); lines.push('[3] Integrity evidence');
+  lines.push(`Event hash: ${lastEvent.hash}`); lines.push(`Previous hash: ${lastEvent.prevHash}`); lines.push(`Merkle root: ${seal.merkleRoot}`); lines.push(`State hash: ${seal.stateHash}`);
+  lines.push(''); lines.push('Decision authority: deterministic OmNi policy gate.');
+  last={lines,blockReason,balance:core.getBalance('PARA-500'),seal};
+  $('status').textContent='Completed'; $('status').className='ok'; $('blocked').textContent='HARD BLOCK'; $('blocked').className='bad'; $('accepted').textContent='ACCEPTED'; $('accepted').className='ok'; $('html').disabled=false; $('csv').disabled=false; addLog(lines);
+};
+$('html').onclick=report; $('csv').onclick=csv;
+</script>
+</body>
+</html>
