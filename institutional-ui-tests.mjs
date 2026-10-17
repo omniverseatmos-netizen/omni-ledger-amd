@@ -1,0 +1,17 @@
+import { OmNiCore, seedDemo } from './domain.mjs';
+import { newBook, bridgeLastReceipt, bridgeLastDispatch, bookReport } from './institutional-ui.mjs';
+let p = 0, f = 0; const t = (n, fn) => { try { fn(); p++; console.log('✓', n); } catch (e) { f++; console.log('✗', n, '→', e.message); } };
+const ok = (c, m) => { if (!c) throw new Error(m); };
+const c = seedDemo(new OmNiCore()); c.today = '2026-10-01';
+const po = c.createPO({ supplierCode: 'SUP-001', warehouseCode: 'WH-OCT6', actor: 'buyer', lines: [{ itemCode: 'AMOX-500', orderedQty: 50, unitCostQirsh: 1250 }] });
+c.poAction(po.id, 'SUBMITTED', 'buyer'); c.poAction(po.id, 'APPROVED', 'manager');
+const gr = c.createReceipt({ poId: po.id, locationKey: 'WH-OCT6/A-01-01', actor: 'recv', lines: [{ poLineId: po.lines[0].id, receivedQty: 50, rejectedQty: 0, batch: 'B1', expiryDate: '2028-01-01' }] });
+c.submitReceipt(gr.id, 'recv'); c.startInspection(gr.id, 'qc'); c.recordQC(gr.id, [{ lineId: gr.lines[0].id, qcPass: true }], 'qc'); c.postReceipt(gr.id, 'qc');
+const b = newBook(c);
+t('استلام مرحّل → قيد محاسبي بالقيمة الفعلية', () => { const r = bridgeLastReceipt(c, b); ok(r.ok, r.msg); const tb = bookReport(b).trialBalance; ok(tb.find(x => x.accountCode === '1100').debit === 62500, 'قيمة المخزون لازم 62500 قرش'); });
+t('نفس الاستلام تاني → مفيش قيد مكرر', () => { const n = b.journals.length; bridgeLastReceipt(c, b); ok(b.journals.length === n, 'اتكرر القيد'); });
+t('صرف غير مرحّل → رسالة مش استثناء', () => { const r = bridgeLastDispatch(c, b); ok(!r.ok && r.msg.length > 0, 'لازم يرفض'); });
+const so = c.createSO({ customerCode: 'CUST-001', warehouseCode: 'WH-OCT6', actor: 'sales', lines: [{ itemCode: 'AMOX-500', orderedQty: 5 }] });
+c.soAction(so.id, 'SUBMITTED', 'sales'); c.allocateSO(so.id, 'sales');
+t('تقرير الدفتر: السلسلة سليمة والموازين متوازنة', () => { const r = bookReport(b); ok(r.invariants.ok !== false, JSON.stringify(r.invariants)); ok(r.auditPackage.valid, 'حزمة التدقيق'); const d = r.trialBalance.reduce((s, x) => s + x.debit, 0), k = r.trialBalance.reduce((s, x) => s + x.credit, 0); ok(d === k, 'غير متوازن'); });
+console.log(`\n${p} نجح / ${f} فشل`);
