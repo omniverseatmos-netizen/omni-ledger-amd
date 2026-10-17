@@ -1,13 +1,20 @@
 import { OmNiCore, seedDemo } from './domain.mjs';
 
-// 1. الرابط الرسمي المعتمد من توثيق AMD Radeon Cloud
 const AMD_API_KEY = process.env.AMD_TOKENFACTORY_API_KEY;
-const AMD_BASE_URL = process.env.AMD_BASE_URL || "https://developer.amd.com.cn/radeon/api/v1";
-const MODEL_NAME = "Gemma-4-31B-IT"; // نموذج جوجل المعتمد على AMD
+const AMD_BASE_URL = (process.env.AMD_BASE_URL || 'https://developer.amd.com.cn/radeon/api/v1').replace(/\/+$/, '');
+const MODEL_NAME = process.env.AMD_MODEL || 'Gemma-4-31B-IT';
+const REQUEST_TIMEOUT_MS = Number(process.env.AMD_REQUEST_TIMEOUT_MS || 90000);
+
+function requireConfig() {
+  if (!AMD_API_KEY) throw new Error('Missing AMD_TOKENFACTORY_API_KEY; refusing to send an unauthenticated request');
+  if (!Number.isInteger(REQUEST_TIMEOUT_MS) || REQUEST_TIMEOUT_MS < 1000 || REQUEST_TIMEOUT_MS > 300000) {
+    throw new Error('AMD_REQUEST_TIMEOUT_MS must be an integer between 1000 and 300000');
+  }
+}
 
 function fresh() {
   const c = seedDemo(new OmNiCore());
-  c.today = '2026-10-17';
+  c.today = process.env.OMNI_TODAY || new Date().toISOString().slice(0, 10);
   return c;
 }
 
@@ -41,8 +48,9 @@ function processInvoiceIntoCore(core, data) {
 }
 
 async function extractInvoiceWithAMD(invoiceText) {
+  requireConfig();
   console.log(`\n======================================================`);
-  console.log(`[1/4] إرسال المستند إلى AMD Developer Cloud (ROCm GPU Acceleration)...`);
+  console.log(`[1/4] إرسال المستند إلى نقطة AMD المتاحة في بيئة الحدث...`);
   console.log(`[Base URL]:    ${AMD_BASE_URL}`);
   console.log(`[Target Model]: ${MODEL_NAME}`);
 
@@ -50,21 +58,33 @@ async function extractInvoiceWithAMD(invoiceText) {
 Extract the inventory invoice into pure JSON only (no markdown, no backticks, no reasoning):
 {"itemCode":"PARA-500","batch":"string","qty":100,"unitPrice":1250,"expiryDate":"YYYY-MM-DD"}`;
 
-  const response = await fetch(`${AMD_BASE_URL}/chat/completions`, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${AMD_API_KEY}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      model: MODEL_NAME,
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: invoiceText }
-      ],
-      temperature: 0.0
-    })
-  });
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  const started = Date.now();
+  let response;
+  try {
+    response = await fetch(`${AMD_BASE_URL}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${AMD_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: MODEL_NAME,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: invoiceText }
+        ],
+        temperature: 0.0
+      }),
+      signal: controller.signal
+    });
+  } catch (error) {
+    if (error?.name === 'AbortError') throw new Error(`AMD request timed out after ${REQUEST_TIMEOUT_MS} ms`);
+    throw new Error(`AMD request failed: ${error.message}`);
+  } finally {
+    clearTimeout(timer);
+  }
 
   if (!response.ok) {
     const errBody = await response.text();
@@ -72,8 +92,13 @@ Extract the inventory invoice into pure JSON only (no markdown, no backticks, no
   }
 
   const resJson = await response.json();
-  const raw = resJson.choices[0].message.content.trim().replace(/```json|```/g, "");
-  return JSON.parse(raw);
+  const raw = resJson?.choices?.[0]?.message?.content;
+  if (typeof raw !== 'string' || !raw.trim()) throw new Error('AMD response did not contain choices[0].message.content');
+  const clean = raw.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+  let data;
+  try { data = JSON.parse(clean); } catch (error) { throw new Error(`AMD model returned invalid JSON: ${error.message}`); }
+  console.log(`[AMD metadata] status=${response.status} latencyMs=${Date.now() - started} requestId=${response.headers.get('x-request-id') || resJson.id || 'not-provided'} model=${resJson.model || MODEL_NAME}`);
+  return data;
 }
 
 async function runDemo() {
@@ -99,7 +124,7 @@ async function runDemo() {
   console.log(`\n------------------------------------------------------`);
   const data2 = await extractInvoiceWithAMD(invoice2);
   console.log(`[2/4] تم الاستخراج بنجاح من نموذج Gemma:`, data2);
-  console.log(`[4/4] اعتماد الشحنة وتسجيلها في الـ SHA-256 Ledger المشفر...`);
+  console.log(`[4/4] اعتماد الشحنة وتسجيلها في سلسلة SHA-256...`);
 
   processInvoiceIntoCore(core, data2);
 
@@ -118,4 +143,7 @@ async function runDemo() {
   console.log(`- State Hash:   ${seal.stateHash}`);
 }
 
-runDemo().catch(console.error);
+runDemo().catch((error) => {
+  console.error(`\n⛔ فشل التشغيل: ${error.message}`);
+  process.exitCode = 1;
+});

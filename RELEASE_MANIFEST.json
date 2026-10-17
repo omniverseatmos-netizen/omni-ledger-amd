@@ -1,0 +1,25 @@
+{
+  "name": "OmNi-Ledger",
+  "version": "2.5.1",
+  "releaseType": "tested-prototype",
+  "primaryEntry": "amd_omni_pipeline.mjs",
+  "deterministicCore": "domain.mjs",
+  "node": ">=18",
+  "automatedTests": {
+    "count": 167,
+    "command": "npm test",
+    "lastLocalValidation": "2026-10-17"
+  },
+  "liveModel": {
+    "defaultModel": "Gemma-4-31B-IT",
+    "endpointConfiguredByEnvironment": true,
+    "credentialsCommitted": false,
+    "liveRequestEvidence": "Must be supplied from the event environment; not fabricated by this repository"
+  },
+  "claims": {
+    "offline": false,
+    "productionReady": false,
+    "legalSignature": false,
+    "deterministicDecisionAfterModelExtraction": true
+  }
+}

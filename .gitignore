@@ -1,1 +1,15 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Local runtime output
+*.log
+coverage/
+node_modules/
+
+# Archives and generated artifacts
 *.zip
+npm-debug.log*

@@ -1,0 +1,14 @@
+{
+  "name": "omni-ledger-amd",
+  "version": "2.5.1",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "check": "for f in *.mjs; do node --check \"$f\"; done",
+    "test": "node tests.mjs && node qc-station-tests.mjs && node institutional-tests.mjs && node institutional-assurance-tests.mjs && node institutional-ui-tests.mjs && node closure-tests.mjs && node bundle-tests.mjs && node shadow-report-tests.mjs",
+    "demo": "node amd_omni_pipeline.mjs"
+  }
+}
