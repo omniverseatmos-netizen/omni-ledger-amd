@@ -1,0 +1,9 @@
+{
+  "invoiceNo": "SUP-INV-23902",
+  "supplierCode": "SUP-001",
+  "itemCode": "PARA-500",
+  "batch": "BATCH-EXP-99",
+  "expiryDate": "2024-01-01",
+  "qty": 50,
+  "unitCostQirsh": 1250
+}

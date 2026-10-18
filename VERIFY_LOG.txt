@@ -1,0 +1,13 @@
+
+> omni-ledger-judge-edition@3.0.6 verify:release
+> node scripts/verify-release.mjs
+
+Release verification PASS
+Syntax-checked ES modules: 32/32
+Static GitHub Pages build: PASS
+Required assets and English UI wiring: PASS
+Full automated test command: PASS
+Offline valid/expired pipeline fixtures: PASS (not live inference)
+HTTP safety smoke: HTTP smoke PASS: 8 public assets, English entry page, security headers, method guard, dotfile guard, path traversal guard.
+Release manifest: Manifest verification PASS: 86 files, SHA-256 + size matched.
+Live AMD inference: NOT RUN (requires a private API key and account model availability)

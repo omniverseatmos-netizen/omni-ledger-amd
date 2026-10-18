@@ -1,25 +1,619 @@
 {
-  "name": "OmNi-Ledger",
-  "version": "2.5.1",
-  "releaseType": "tested-prototype",
-  "primaryEntry": "amd_omni_pipeline.mjs",
-  "deterministicCore": "domain.mjs",
-  "node": ">=18",
-  "automatedTests": {
-    "count": 167,
-    "command": "npm test",
-    "lastLocalValidation": "2026-10-17"
+  "name": "OmNi-Ledger Judge Edition",
+  "version": "3.0.6",
+  "created_at": "2026-10-18T03:09:10.566Z",
+  "manifest_policy": "SHA-256 for all project files except RELEASE_MANIFEST.json, INVENTORY.tsv, TEST_LOG.txt, and VERIFY_LOG.txt (the last two are generated verification transcripts).",
+  "source_of_truth": "The root source files; public/ is the generated static deployment copy and is included for byte-level review.",
+  "file_count": 86,
+  "automated_check_summary": {
+    "source_suites": 8,
+    "source_test_count": 168,
+    "judge_acceptance_tests": 13,
+    "total_test_count": 181,
+    "result": "See TEST_LOG.txt and VERIFY_LOG.txt; live AMD inference is not included in offline checks."
   },
-  "liveModel": {
-    "defaultModel": "Gemma-4-31B-IT",
-    "endpointConfiguredByEnvironment": true,
-    "credentialsCommitted": false,
-    "liveRequestEvidence": "Must be supplied from the event environment; not fabricated by this repository"
-  },
-  "claims": {
-    "offline": false,
-    "productionReady": false,
-    "legalSignature": false,
-    "deterministicDecisionAfterModelExtraction": true
-  }
+  "files": [
+    {
+      "path": ".env.example",
+      "type": "Project file",
+      "size_bytes": 247,
+      "sha256": "8ba8941beb567079d3aed275c6878af8a4394d024a9e2df7fb4367ab876588f9",
+      "role": "Supporting project file"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "type": "CI workflow",
+      "size_bytes": 429,
+      "sha256": "c084a8f4380a070607c516131f537cacb8cc369418075894daa7a70b9a2fdf5b",
+      "role": "CI and Pages automation"
+    },
+    {
+      "path": ".github/workflows/pages.yml",
+      "type": "CI workflow",
+      "size_bytes": 953,
+      "sha256": "e2b9e17d14118f4564ca5018cf429fed0cd065fa3654feddf906913c5eda958c",
+      "role": "CI and Pages automation"
+    },
+    {
+      "path": ".gitignore",
+      "type": "Project file",
+      "size_bytes": 76,
+      "sha256": "7f616bef46e8d6e8b0c14475b7d75368a10b6720b7f21554f46a6f0c0c15b682",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "amd_omni_pipeline.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 10734,
+      "sha256": "8c5d31b6a23182f1bb657431da69f07aaaf118a81188fd819baada9ee21c14d0",
+      "role": "AMD-hosted model extraction CLI"
+    },
+    {
+      "path": "app.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 53458,
+      "sha256": "6abd39cf95c5d869a009639cb24b947cc60b3d5208740f480d549d517384e34d",
+      "role": "English judge interface"
+    },
+    {
+      "path": "ARCHITECTURE.md",
+      "type": "Documentation",
+      "size_bytes": 2277,
+      "sha256": "b2df808fd2f362d7d373c6ebf8ddbf40c4a56a3061e29b043b46f6e886b0e495",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "assets/omni-ledger-cover-16x9.jpg",
+      "type": "Image asset",
+      "size_bytes": 452512,
+      "sha256": "30f7970365613f02b327c1036d4e21a16110d623edfbf2687690d549868c35c6",
+      "role": "Brand/visual asset"
+    },
+    {
+      "path": "assets/omni-ledger-cover.png",
+      "type": "Image asset",
+      "size_bytes": 2358376,
+      "sha256": "fe9ffc26ea2cc36b32a4450aeff612f12fdad39b2f164c115e53ddef4fffa948",
+      "role": "Brand/visual asset"
+    },
+    {
+      "path": "assets/omniledger-mark.svg",
+      "type": "Vector asset",
+      "size_bytes": 393,
+      "sha256": "df6e899e8b0b3121a2e9dbd047c85c92ae42b8d88ca542bb027ff67a91464fd0",
+      "role": "Brand/visual asset"
+    },
+    {
+      "path": "bundle-tests.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 5628,
+      "sha256": "66bc12e80529c900dcff587c5075b42a92b34be44de9e149198417a9fc46a30b",
+      "role": "Regression test suite"
+    },
+    {
+      "path": "CHANGELOG_v3.0.0.md",
+      "type": "Documentation",
+      "size_bytes": 1466,
+      "sha256": "318ea7c265b28f0552805977e9e12397df656754cf2117adcff74a8706f3661c",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "CHANGELOG_v3.0.1.md",
+      "type": "Documentation",
+      "size_bytes": 952,
+      "sha256": "4c55cc3b06758d3e65f5f7b926a7c2748cc6388ed6f65d6d5d3e8cf0e6aef3e8",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "CHANGELOG_v3.0.2.md",
+      "type": "Documentation",
+      "size_bytes": 1489,
+      "sha256": "148be90b3c5a9b3184ca37e3ac3981b57e98b09571cf9ce432b127024ce25f91",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "CHANGELOG_v3.0.3.md",
+      "type": "Documentation",
+      "size_bytes": 1018,
+      "sha256": "a83316ff67408322adda690b19870beb5860c7a02df8901fc2a26411d2c819a7",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "CHANGELOG_v3.0.4.md",
+      "type": "Documentation",
+      "size_bytes": 524,
+      "sha256": "9f938c47c983c8fc7b3cd37be1a375455d84ea0dd8d7c636168648703fd96417",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "CHANGELOG_v3.0.5.md",
+      "type": "Documentation",
+      "size_bytes": 760,
+      "sha256": "5e99b605709c0a93d34f25ba1ffd33bce36ada9afd1ce5bea08a3352fde774e9",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "CHANGELOG_v3.0.6.md",
+      "type": "Documentation",
+      "size_bytes": 871,
+      "sha256": "33c8a0b7a4bb2bf3c89e14b5b2e048abc3c3d3b5d298927ba014b167e6d04c68",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "closure-tests.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 9422,
+      "sha256": "68325d69a5ba9a2caec4b4f845d609da134cee3b9c40313cdcd1d7eabd5ef5b7",
+      "role": "Regression test suite"
+    },
+    {
+      "path": "DEMO_SCRIPT.md",
+      "type": "Documentation",
+      "size_bytes": 3184,
+      "sha256": "87f2a0cdc0c3ef2d60182b3b7019d7c40a2cfb1cc800b0d886113fb48ecb9800",
+      "role": "Demo narration"
+    },
+    {
+      "path": "demo-route.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 1923,
+      "sha256": "829a53e790b64506e66ed299a58ac8783a74ef393a7f943fc2be668fc7351e33",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "demo-scenarios.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 9756,
+      "sha256": "8a7e764e425b39c01887270c3824573674fb9e63a601745e62f0687b8ad53ea6",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "domain.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 93663,
+      "sha256": "3c6ad5d0d283b96ab49f75e6f6736620e169f521657ab529d9827b0d05d20293",
+      "role": "Deterministic WMS domain core"
+    },
+    {
+      "path": "evidence/live-amd-run/run1-expired.json",
+      "type": "JSON data/config",
+      "size_bytes": 1546,
+      "sha256": "84b26c788dc9a0ce9685bd321c75b189af098f2230c4e35c53631364f28ffc95",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "evidence/live-amd-run/run1-valid.json",
+      "type": "JSON data/config",
+      "size_bytes": 1429,
+      "sha256": "577c5b701e1cc9f16a38947bd2740dcf71e91e3106265274c2121a2877233959",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "evidence/live-amd-run/run2-expired.json",
+      "type": "JSON data/config",
+      "size_bytes": 1704,
+      "sha256": "9a95305e3bd9b9ed8c6fea36afd05312982d17a5372e03e85ce165d5feeeda42",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "evidence/live-amd-run/run2-valid.json",
+      "type": "JSON data/config",
+      "size_bytes": 1575,
+      "sha256": "d1ac759fcb9fe0d4f0a4d26c221d7b275702ca4d26978892386bc7ab34613d80",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "FINAL_SUBMISSION_GATE.md",
+      "type": "Documentation",
+      "size_bytes": 3089,
+      "sha256": "894c0ad360d6fba7c04bb7a317311f791a268aa47a4bac2d939e868535f711cf",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "fixtures/gemma-response-expired.json",
+      "type": "JSON data/config",
+      "size_bytes": 185,
+      "sha256": "9658f0e3f77b15f23421ab4f5d07c38e835983513824635288337739fac8ec85",
+      "role": "Fictional demo fixture"
+    },
+    {
+      "path": "fixtures/gemma-response-valid.json",
+      "type": "JSON data/config",
+      "size_bytes": 187,
+      "sha256": "60b547f36659560e4a5af45e63a74c49cf30f0f53aec47bff6eab710a66f787f",
+      "role": "Fictional demo fixture"
+    },
+    {
+      "path": "fixtures/invoice-expired.txt",
+      "type": "Text fixture/log",
+      "size_bytes": 451,
+      "sha256": "0ed9c70813d8705bde8ecadd4e232cf91a9aadc7bcfe67cf9b871f152a339580",
+      "role": "Fictional demo fixture"
+    },
+    {
+      "path": "fixtures/invoice-valid.txt",
+      "type": "Text fixture/log",
+      "size_bytes": 368,
+      "sha256": "43fe2d75fe5bdc045896dfc68ba1a01ff9dc885eed9f797bebf154ce612a7bec",
+      "role": "Fictional demo fixture"
+    },
+    {
+      "path": "index-en.html",
+      "type": "HTML UI",
+      "size_bytes": 6827,
+      "sha256": "b8456acbb82c575075fe3060c9ba27e9f37ba13bfb26ffaae9fc1f4cf191874c",
+      "role": "English judge interface"
+    },
+    {
+      "path": "index.html",
+      "type": "HTML UI",
+      "size_bytes": 6827,
+      "sha256": "b8456acbb82c575075fe3060c9ba27e9f37ba13bfb26ffaae9fc1f4cf191874c",
+      "role": "English judge interface"
+    },
+    {
+      "path": "institutional_assurance.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 11821,
+      "sha256": "7ca14f2f7feb5493fdaea8c6a299acb0af474c89c0a4db56ab668478c17f3187",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "institutional-assurance-tests.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 3617,
+      "sha256": "d94c829ae8baa80aa5098ef12dbb9797bf4f432b809ea86b0b12d23647404a6f",
+      "role": "Regression test suite"
+    },
+    {
+      "path": "institutional-demo-v1.8.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 1292,
+      "sha256": "4bb77bc0e4dd10fc0fa992d7da8475444cfa26b3171bd8ffdc8fa543b7b86c8a",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "institutional-demo.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 687,
+      "sha256": "70c05b5cad7909efbe936bd811e758b3f6a4153fd76503c67c1ca7beed52a6d5",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "institutional-tests.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 5798,
+      "sha256": "788497aa14e75e17d8c638fcf9fe519ec2c168d4af58a22e302e2d7a85dacec5",
+      "role": "Regression test suite"
+    },
+    {
+      "path": "institutional-ui-tests.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 2344,
+      "sha256": "7484901c51fa5a0b3401bacec282539ef6522138457b37a0bde851ccb46485d4",
+      "role": "Regression test suite"
+    },
+    {
+      "path": "institutional-ui.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 2025,
+      "sha256": "ae9e1e978c6eacb60ee4779b6ba4c58945f6f74b264737488cf8c289766ede4c",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "institutional.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 19480,
+      "sha256": "97539d84feb6cda1c4750334c7133f5915ea578881a77f7433e7fdceda0d7907",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "LIVE_RUN_EVIDENCE.md",
+      "type": "Documentation",
+      "size_bytes": 2721,
+      "sha256": "f06e24d8d7322370c0c0e78c6b833bebcdcd92cac71a84c9d35b8d9325a94498",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "package.json",
+      "type": "JSON data/config",
+      "size_bytes": 1164,
+      "sha256": "ed1ef5813496005d4702bac4855eeea0eefa9907a459ec0611bbe1199520b796",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "PITCH_DECK.pdf",
+      "type": "PDF presentation",
+      "size_bytes": 697615,
+      "sha256": "07b1176504f2c6a96e2c5511733c897b00f2d32a5dd01677bbed79ac032387d0",
+      "role": "Judge pitch deck"
+    },
+    {
+      "path": "PITCH_DECK.pptx",
+      "type": "Presentation",
+      "size_bytes": 500054,
+      "sha256": "60b13bce8b8f6fef25057ab83adb3e7c0a57477445df345373864b70d1dd5967",
+      "role": "Judge pitch deck"
+    },
+    {
+      "path": "public/app.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 53458,
+      "sha256": "6abd39cf95c5d869a009639cb24b947cc60b3d5208740f480d549d517384e34d",
+      "role": "Built static deployment copy"
+    },
+    {
+      "path": "public/assets/omni-ledger-cover-16x9.jpg",
+      "type": "Image asset",
+      "size_bytes": 452512,
+      "sha256": "30f7970365613f02b327c1036d4e21a16110d623edfbf2687690d549868c35c6",
+      "role": "Built static deployment copy"
+    },
+    {
+      "path": "public/assets/omni-ledger-cover.png",
+      "type": "Image asset",
+      "size_bytes": 2358376,
+      "sha256": "fe9ffc26ea2cc36b32a4450aeff612f12fdad39b2f164c115e53ddef4fffa948",
+      "role": "Built static deployment copy"
+    },
+    {
+      "path": "public/assets/omniledger-mark.svg",
+      "type": "Vector asset",
+      "size_bytes": 393,
+      "sha256": "df6e899e8b0b3121a2e9dbd047c85c92ae42b8d88ca542bb027ff67a91464fd0",
+      "role": "Built static deployment copy"
+    },
+    {
+      "path": "public/demo-scenarios.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 9756,
+      "sha256": "8a7e764e425b39c01887270c3824573674fb9e63a601745e62f0687b8ad53ea6",
+      "role": "Built static deployment copy"
+    },
+    {
+      "path": "public/domain.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 93663,
+      "sha256": "3c6ad5d0d283b96ab49f75e6f6736620e169f521657ab529d9827b0d05d20293",
+      "role": "Built static deployment copy"
+    },
+    {
+      "path": "public/index-en.html",
+      "type": "HTML UI",
+      "size_bytes": 6827,
+      "sha256": "b8456acbb82c575075fe3060c9ba27e9f37ba13bfb26ffaae9fc1f4cf191874c",
+      "role": "Built static deployment copy"
+    },
+    {
+      "path": "public/index.html",
+      "type": "HTML UI",
+      "size_bytes": 6827,
+      "sha256": "b8456acbb82c575075fe3060c9ba27e9f37ba13bfb26ffaae9fc1f4cf191874c",
+      "role": "Built static deployment copy"
+    },
+    {
+      "path": "public/styles.css",
+      "type": "Stylesheet",
+      "size_bytes": 36560,
+      "sha256": "77410b7ca177d57e3665dafef4c832399b8afc55d2a262c9e6106ac78cd55f29",
+      "role": "Built static deployment copy"
+    },
+    {
+      "path": "PUBLISHING_CHECKLIST.md",
+      "type": "Documentation",
+      "size_bytes": 3739,
+      "sha256": "06432e45aafb7dcd58272fe8e2f73873ac6a2010060fe18fbd110e822654ad4c",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "qc-station-tests.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 10535,
+      "sha256": "37a43d37a3b1d355437c01c905515f735f6dba78f83341a1b39cdbf7ca574c40",
+      "role": "Regression test suite"
+    },
+    {
+      "path": "qc-station.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 14303,
+      "sha256": "0cebea5c7e92b8d9db05ae376cab33c3762755726c2efc467daa66222f98fc7e",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "README.md",
+      "type": "Documentation",
+      "size_bytes": 8962,
+      "sha256": "b0ac6a4e1fcb0ce7a6fe5387fc53735d03207c76e51d26282f9fcc1f4c8ce87b",
+      "role": "Project guide"
+    },
+    {
+      "path": "RELEASE_REPORT_v3.0.0.md",
+      "type": "Documentation",
+      "size_bytes": 3293,
+      "sha256": "82515569271712fa53b391315b1ce6bef0ad8b345cf4c212f67b5f6ef61be7de",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "RELEASE_REPORT_v3.0.1.md",
+      "type": "Documentation",
+      "size_bytes": 3084,
+      "sha256": "76021bf9cc75e8d25ef5eb5350de76fc2ca5d8254be775edf8c3503179e3de0b",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "RELEASE_REPORT_v3.0.2.md",
+      "type": "Documentation",
+      "size_bytes": 1146,
+      "sha256": "0c2274006f9e5aab48f8f4dccc05e13032afee88e55d68bf046478df3eb7d97e",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "RELEASE_REPORT_v3.0.3.md",
+      "type": "Documentation",
+      "size_bytes": 866,
+      "sha256": "4de4c2fde13c9bf9b61fb8cf5e33fa7143de82e454000efca04d84b7c71b1d54",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "RELEASE_REPORT_v3.0.4.md",
+      "type": "Documentation",
+      "size_bytes": 389,
+      "sha256": "47ea89d474d1996a54d24df56a21d6b61100d301390fc60f71239bc472a0b5bc",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "RELEASE_REPORT_v3.0.5.md",
+      "type": "Documentation",
+      "size_bytes": 2878,
+      "sha256": "b46150ef1a576354d1fed4b7c632e567a12f54cef199003e84330e81a96d8c4a",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "RELEASE_REPORT_v3.0.6.md",
+      "type": "Documentation",
+      "size_bytes": 1833,
+      "sha256": "ba3d0c70596deb75880468bb84c25a18a7e1bde801f13fea8c043ff1da7f3a56",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "SCOPE_AND_LIMITATIONS.md",
+      "type": "Documentation",
+      "size_bytes": 2019,
+      "sha256": "41cc3827b1e43347322b0a3269443342ec38b3ceb4f6e2d20c6d8e133b21b9d1",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "scripts/build-manifest.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 4117,
+      "sha256": "79e35bdf481d1042ff98bd6ee3f8c30b13402cc9e848f84a76bc8bf346559093",
+      "role": "Build/release tooling"
+    },
+    {
+      "path": "scripts/build-pitch-deck.py",
+      "type": "Project file",
+      "size_bytes": 15591,
+      "sha256": "41c5749913c84932299e2041c6c3fc788fa4b7eb12dc6060a9460d69f018755b",
+      "role": "Build/release tooling"
+    },
+    {
+      "path": "scripts/build-site.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 1075,
+      "sha256": "1e3163997f9b9c772ba178f6c6285002c35389c5e33398c6ac8f6aa570754003",
+      "role": "Build/release tooling"
+    },
+    {
+      "path": "scripts/http-smoke.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 2428,
+      "sha256": "e42c4020e9672162241dbfb83d837283fe9fe423d02d53ad2fe8ff99e2f261e0",
+      "role": "Build/release tooling"
+    },
+    {
+      "path": "scripts/verify-manifest.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 1315,
+      "sha256": "caca857ec4dbcf421279e7d6e6a2f7c3e4ff283cef91c56d79eee7bda7cc6314",
+      "role": "Build/release tooling"
+    },
+    {
+      "path": "scripts/verify-release.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 4842,
+      "sha256": "1b73a347fd4edde59c2d28e3058570b3d878d34b5a1e76616f561b69a489c95b",
+      "role": "Build/release tooling"
+    },
+    {
+      "path": "SECURITY.md",
+      "type": "Documentation",
+      "size_bytes": 1124,
+      "sha256": "c3362677dfd7f248bc7e31a35bb863ebecb71ee44735f4d6c1ebd0670efa5c25",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "server.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 3352,
+      "sha256": "115b4c687534ee1a0f4321412bd1850363003a07f58b1313303f25469446823d",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "shadow-report-tests.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 6242,
+      "sha256": "d2379d526207611eda7387041eb5f700732f703a0c8a469528ce1e8fcfeed605",
+      "role": "Regression test suite"
+    },
+    {
+      "path": "shadow-report.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 7468,
+      "sha256": "a6b4a5d2c7cbf2daa19df47dac77dbf9d5a929632e914c4adc3c1164d21c4222",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "state-bundle.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 3347,
+      "sha256": "93a371acc82d8b46746b8ec0c44de065e4e0d0a869c97a96f38f2807c319de1e",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "styles.css",
+      "type": "Stylesheet",
+      "size_bytes": 36560,
+      "sha256": "77410b7ca177d57e3665dafef4c832399b8afc55d2a262c9e6106ac78cd55f29",
+      "role": "English judge interface"
+    },
+    {
+      "path": "SUBMISSION_COPY.md",
+      "type": "Documentation",
+      "size_bytes": 4905,
+      "sha256": "d99e7349d205c6804d9340ea081a57a95cdb086d8c4cfa59a426d0d2ba2fe7cf",
+      "role": "Submission text"
+    },
+    {
+      "path": "SUBMISSION_COVER.png",
+      "type": "Image asset",
+      "size_bytes": 2079764,
+      "sha256": "70a9c367b7da448a5cb9c77fa257d5bc4dae769349ac5cd1a93b1fdec674a3d5",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "TEST_LOG.txt",
+      "type": "Text fixture/log",
+      "size_bytes": 18164,
+      "sha256": "b79d72f281a03c904a60041ba3390bbfa708d2bb8c0fe0999859fad266359fcb",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "tests.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 41991,
+      "sha256": "924eed2471553da29ae3d14d230460c9af0a034b972aff658a55b21177cbf99f",
+      "role": "Regression test suite"
+    },
+    {
+      "path": "tests/judge-edition.test.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 3846,
+      "sha256": "0fd30449b4c7dbdc1b2da67acc45f5d704b854596567177b76f3ce901a60b139",
+      "role": "Judge-edition acceptance test"
+    },
+    {
+      "path": "tests/ui-smoke.test.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 6211,
+      "sha256": "cef187aa5b70d05d6aaf0d7fc7d8348b12590ccd1971e984edf43e68893bc5fa",
+      "role": "Judge-edition acceptance test"
+    },
+    {
+      "path": "VIDEO_SCRIPT.md",
+      "type": "Documentation",
+      "size_bytes": 4217,
+      "sha256": "2f7a21f520e1d3cee4eb784dc9308bc137e959573890ae216d29a261ee7b1915",
+      "role": "Supporting project file"
+    }
+  ]
 }

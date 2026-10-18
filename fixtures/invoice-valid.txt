@@ -1,0 +1,11 @@
+SUPPLIER INVOICE — DEMONSTRATION DATA ONLY
+Invoice number: SUP-INV-24018
+Supplier: United Pharmaceutical Supply Co.
+Warehouse destination: WH-OCT6
+SKU: PARA-500 — Paracetamol 500 mg tablets
+Batch / Lot: BATCH-2027-OK
+Expiry date: 2027-12-31
+Quantity: 100 boxes
+Unit cost (Qirsh): 1250
+
+Extract only the fields requested by the system. Do not infer missing values.

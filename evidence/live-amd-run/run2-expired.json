@@ -1,0 +1,58 @@
+{
+  "product": "OmNi-Ledger Judge Edition",
+  "inference": {
+    "mode": "LIVE_AMD_ENDPOINT",
+    "endpointHost": "developer.amd.com.cn",
+    "model": "self-dploy/Gemma-4-31B-IT",
+    "requestId": "5497cd477e8b453ba492f5a6d7590012",
+    "usage": {
+      "prompt_tokens": 403,
+      "total_tokens": 504,
+      "completion_tokens": 101,
+      "prompt_tokens_details": {
+        "cached_tokens": 278,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0,
+        "video_tokens": 0,
+        "image_tokens": 0
+      },
+      "reasoning_tokens": 0,
+      "cost": 1.16396e-05,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "image_tokens": 0,
+        "audio_tokens": 0
+      }
+    }
+  },
+  "expectedScenario": "expired",
+  "extraction": {
+    "invoiceNo": "SUP-INV-23902",
+    "supplierCode": "SUP-001",
+    "itemCode": "PARA-500",
+    "batch": "BATCH-EXP-99",
+    "expiryDate": "2024-01-01",
+    "qty": 50,
+    "unitCostQirsh": 1250
+  },
+  "decision": "BLOCKED",
+  "block": {
+    "code": "EXPIRED_GOODS",
+    "explanation": "The batch is expired. Receiving is rejected before stock can become available."
+  },
+  "balances": {
+    "available": 0,
+    "quarantine": 0
+  },
+  "evidence": {
+    "ledgerIntegrity": true,
+    "auditIntegrity": true,
+    "sealVerified": true,
+    "ledgerEntries": 0,
+    "auditEvents": 29,
+    "merkleRoot": "cc1d2f838445db7aec431df9ee8a871f40e7aa5e064fc056633ef8c60fab7b06",
+    "stateHash": "d56785603695e678d9ee4845764dfc6936d6f535889dd53790a6a19da4341721"
+  },
+  "assertion": "PASS",
+  "notice": "This run called the configured AMD endpoint; model output was treated as untrusted extraction and then passed through deterministic validation."
+}

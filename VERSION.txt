@@ -1,2 +1,0 @@
-OmNi Inventory Core v2.5
-Mandatory-Tote + Report-Gating Fix (Release Candidate)

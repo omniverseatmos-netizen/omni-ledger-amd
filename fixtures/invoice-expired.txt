@@ -1,0 +1,11 @@
+SUPPLIER INVOICE — DEMONSTRATION DATA ONLY
+Invoice number: SUP-INV-23902
+Supplier: United Pharmaceutical Supply Co.
+Warehouse destination: WH-OCT6
+SKU: PARA-500 — Paracetamol 500 mg tablets
+Batch / Lot: BATCH-EXP-99
+Expiry date: 2024-01-01
+Quantity: 50 boxes
+Unit cost (Qirsh): 1250
+
+This deliberately expired batch is a negative test fixture. Extract its actual fields; do not modify the expiry date or make a recommendation to accept the goods.

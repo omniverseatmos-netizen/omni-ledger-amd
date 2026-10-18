@@ -1,0 +1,29 @@
+{
+  "product": "OmNi-Ledger Judge Edition",
+  "inference": {
+    "mode": "LIVE_AMD_ENDPOINT",
+    "endpointHost": "developer.amd.com.cn",
+    "model": "self-dploy/Gemma-4-31B-IT",
+    "requestId": "da53ba69bed94db29c71e2a64fde9e54",
+    "usage": {
+      "prompt_tokens": 391,
+      "total_tokens": 495,
+      "completion_tokens": 104,
+      "prompt_tokens_details": {"cached_tokens": 5, "cache_write_tokens": 0, "audio_tokens": 0, "video_tokens": 0, "image_tokens": 0},
+      "reasoning_tokens": 0,
+      "cost": 0.0000207935,
+      "completion_tokens_details": {"reasoning_tokens": 0, "image_tokens": 0, "audio_tokens": 0}
+    }
+  },
+  "expectedScenario": "valid",
+  "extraction": {"invoiceNo": "SUP-INV-24018", "supplierCode": "SUP-001", "itemCode": "PARA-500", "batch": "BATCH-2027-OK", "expiryDate": "2027-12-31", "qty": 100, "unitCostQirsh": 1250},
+  "decision": "ACCEPTED",
+  "block": null,
+  "balances": {"available": 100, "quarantine": 0},
+  "evidence": {"ledgerIntegrity": true, "auditIntegrity": true, "sealVerified": true, "ledgerEntries": 1, "auditEvents": 35,
+    "merkleRoot": "29ee2bc4019b3fcff38d1d64a757d5c8f3da219f029ab91d1d411a1f23659c47",
+    "stateHash": "229511b03d2421ad5278477ee246e5eba43396c55afac30a6be45d3b5ea26469"},
+  "assertion": "PASS",
+  "notice": "This run called the configured AMD endpoint; model output was treated as untrusted extraction and then passed through deterministic validation."
+}
+

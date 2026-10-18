@@ -100,7 +100,12 @@ const isInt = Number.isSafeInteger;
 function assertQty(n, label) { if (!isInt(n) || n < 0) throw new DomainError('INVALID_QTY', `${label}: لازم عدد صحيح ≥ 0 (وصل: ${n})`); }
 const int = (n) => { if (!isInt(n)) throw new DomainError('NON_INTEGER', `ناتج حساب مش عدد صحيح: ${n}`); return n; };
 const clone = (x) => (x === undefined || x === null ? null : JSON.parse(JSON.stringify(x)));
-const cairoDate = (d) => new Intl.DateTimeFormat('en-CA', { timeZone: 'Africa/Cairo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
+const cairoDate = (d) => {
+  // Do not depend on locale-specific ordering: en-CA may format as MM/DD/YYYY on some ICU builds.
+  const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Africa/Cairo', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(d);
+  const fields = Object.fromEntries(parts.filter(p => ['year', 'month', 'day'].includes(p.type)).map(p => [p.type, p.value]));
+  return `${fields.year}-${fields.month}-${fields.day}`;
+};
 
 export class OmNiCore {
   constructor(opts = {}) {
@@ -523,6 +528,7 @@ export class OmNiCore {
     if (!this.locations.has(fromLoc) || !this.locations.has(toLoc)) throw new DomainError('UNKNOWN_LOC', 'موقع غير معروف في التحويل');
     if (fromLoc === toLoc) throw new DomainError('SAME_LOC', 'التحويل لنفس الموقع مرفوض');
     assertQty(qty, 'كمية التحويل'); if (qty <= 0) throw new DomainError('INVALID_QTY', 'كمية التحويل لازم > 0');
+    if (this._isRecalled(itemCode, batch)) throw new DomainError('RECALLED_BATCH', `التشغيلة ${batch} للصنف ${itemCode} عليها Recall — ممنوع تحويلها بين المواقع`);
     const avail = this._bucket(itemCode, warehouseCode, fromLoc, batch, 'AVAILABLE') - (this._reserved(itemCode, warehouseCode)[`${batch}|${fromLoc}`] || 0);
     if (qty > avail) throw new DomainError('INSUFFICIENT_STOCK', `المتاح في ${fromLoc} للتشغيلة ${batch} هو ${avail} بس — المطلوب ${qty}`);
     const exp = this._registeredExpiry(itemCode, batch); const id = this._id('TRF');

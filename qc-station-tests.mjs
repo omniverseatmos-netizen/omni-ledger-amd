@@ -74,9 +74,10 @@ t('القياس: فروق الفحص بتتحسب لكل 1000 بند', () => {
   const { core, st, log } = world(); const so = order(core); pickAll(core, so); st.startQC(so.id, 'q1'); st.scanLine(so.id, 'q1', { ...good(so.allocations[0]), countedQty: 1 }); st.scanLine(so.id, 'q1', good(so.allocations[0])); st.scanLine(so.id, 'q1', good(so.allocations[1]));
   const q = measure(core, log).checkers.q1; eq(q.linesChecked, 3); eq(q.diffs, 1); eq(q.diffsPer1000Lines, 333);
 });
-t('نسخة النواة داخل index.html مطابقة لـ domain.mjs (منع الانجراف)', () => {
-  const d = fs.readFileSync('./domain.mjs', 'utf8'), h = fs.readFileSync('./index.html', 'utf8'), inl = h.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
-  const cls = (s) => { const i = s.indexOf('class OmNiCore {'), j = s.indexOf('\n}\n', i); return s.slice(i, j + 3).replace(/\s+/g, ''); };
-  eq(cls(d) === cls(inl), true, 'النواة اتفرقت بين الملفين');
+t('واجهة الحكم تستخدم النواة المشتركة دون نسخ الكلاس داخل HTML', () => {
+  const d = fs.readFileSync('./domain.mjs', 'utf8'), h = fs.readFileSync('./index.html', 'utf8'), a = fs.readFileSync('./app.mjs', 'utf8');
+  eq(h.includes('src=\"./app.mjs\"'), true, 'واجهة HTML لازم تحمل تطبيق الحكم');
+  eq(a.includes("from './demo-scenarios.mjs'"), true, 'التطبيق لازم يستخدم سيناريوهات النواة');
+  eq(d.includes('class OmNiCore {'), true, 'نواة المجال لازم تبقى موجودة كمصدر الحقيقة');
 });
 console.log(`\n${pass} نجح / ${fail} فشل`); if (fail) process.exit(1);

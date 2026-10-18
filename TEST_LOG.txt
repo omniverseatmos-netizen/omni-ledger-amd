@@ -1,0 +1,278 @@
+
+> omni-ledger-judge-edition@3.0.6 test
+> node tests.mjs && node qc-station-tests.mjs && node institutional-tests.mjs && node institutional-assurance-tests.mjs && node institutional-ui-tests.mjs && node closure-tests.mjs && node bundle-tests.mjs && node shadow-report-tests.mjs && node --test tests/*.test.mjs
+
+✓ SHA-256 يطابق نواة Node (متجهات + عربي + حدود الـpadding)
+✓ canonical يرفض الكسور
+✓ canonical ثابت بصرف النظر عن ترتيب المفاتيح
+✓ دورة كاملة: شراء → استلام → QC → ترحيل → صرف
+✓ FEFO: الأقرب صلاحية بيتخصص الأول
+✓ FEFO: التشغيلة المنتهية مش بتتخصص
+✓ BLOCK: مسح تشغيلة غلط
+✓ BLOCK: LASA — صنف غلط (أموكسيسيلين 500 بدل 1000)
+✓ BLOCK: مسح تشغيلة من غير صنف
+✓ BLOCK: صرف مزدوج لنفس التخصيص
+✓ BLOCK: استلام دواء منتهي الصلاحية
+✓ BLOCK: دواء من غير تشغيلة/صلاحية
+✓ BLOCK: استلام فوق الكمية المطلوبة
+✓ فصل الصلاحيات: نفس الشخص ينشئ ويعتمد = BLOCK
+✓ انتقال حالة غير مسموح = BLOCK
+✓ كميات كسرية مرفوضة
+✓ تحويل وحدات: كرتونة = 24 علبة (أعداد صحيحة)
+✓ QC فاشل → حجر، مش رصيد متاح
+✓ QC: بند من غير قرار = BLOCK
+✓ رصيد سالب مستحيل: تسوية أكبر من الرصيد
+✓ تسوية بنفس الشخص (مُدخل = معتمد) = BLOCK
+✓ تلاعب: تعديل كمية قيد → الاستيراد يرفض
+✓ تلاعب: قص آخر قيد → الاستيراد يرفض
+✓ تلاعب متقدم: إعادة حساب السلسلة كلها → الاستيراد ينجح لكن الختم يكشفه
+✓ الختم يمرّ على الدفتر الأصلي + بعد قيود جديدة
+✓ الساعة لا تُستورد من الملف
+✓ ملف v:10 القديم مرفوض
+✓ تحويل داخلي لا يغيّر الإجمالي
+✓ Recall عالمي على مستوى التشغيلة يمنع تحويل الرصيد المتبقي في مخزن آخر
+   (ledger=306 blocked=26)
+✓ خصائص: 300 عملية عشوائية → الدفتر = مجموع الحركات، لا سالب، السلسلة سليمة، الاستيراد يعيد نفس البصمة
+✓ v1.2 مسار: ترتيب تصاعدي بـpickSeq بغض النظر عن ترتيب الأوردر + لا رجوع للخلف
+✓ v1.2 توجيه صوتي مكاني بالعربي (ممر/عمود/مستوى الصدر)
+✓ v1.2 مسار: موقع من غير إحداثيات بيتحط في الآخر ومعلَّم (مش بيتخمّن)
+✓ v1.2 مسار: بعد سحب بند، المسار بيعرض المتبقي بس
+✓ v1.2 إحداثيات غير صحيحة = BLOCK
+✓ v1.2 جدولة بلا تزاحم: محضّرين على نفس الممر في نفس اللحظة → التاني بيتأخر
+✓ v1.2 جدولة: مسارات في ممرات مختلفة تبدأ معًا (مفيش تأخير بلا داعي)
+✓ v1.2 الصندوق: ممنوع صندوق واحد لأوردرين شغّالين، ويتحرر بعد الصرف
+✓ v1.2 requireTote: السحب من غير صندوق = BLOCK
+✓ v1.2 بحث: "أوجمنتين" لوحدها → مرشّحين اتنين + لازم تأكيد (مش تخمين)
+✓ v1.2 بحث: "أوجمنتين 625" → صنف واحد بس بس بيحذّر من التشابه (LASA)
+✓ v1.2 بحث: تطبيع همزات/تشكيل/أرقام هندية + إنجليزي
+✓ v1.2 بحث أوردرات: برقم الأوردر أو اسم العميل
+✓ v1.2 Recall: لازم رقم إشعار + سبب + فصل صلاحيات
+✓ v1.2 Recall: الرصيد يتحجر (AVAILABLE→QUARANTINE) والإجمالي ثابت والتخصيص الجديد يتجاهله
+✓ v1.2 Recall: أوردر مخصَّص قبل الـRecall → السحب والتغليف والصرف كلهم BLOCK
+✓ v1.2 Recall: بعد السحب الفعلي وقبل الصرف: التغليف والصرف BLOCK
+✓ v1.2 Recall: استلام/تسوية موجبة على تشغيلة عليها Recall = BLOCK
+✓ v1.2 Recall: تصرف (RTV) بفصل صلاحيات، ورفع الـRecall بيرجّع بس اللي اتحجر بسببه
+✓ v1.2 تتبع أمامي: التشغيلة راحت لأنهي عملاء وبكام، والرصيد الحالي، ونزاهة الدفتر
+✓ v1.2 Recall بعد الصرف: تقرير التتبع يوضّح الصيدليات المستلمة + الباقي في الحجر
+✓ v1.2 الـRecall بيعدّي الحفظ/الاستيراد (مشتق من سجل التدقيق) ومحاولة حذفه من الملف تكسر الاستيراد أو تتكشف
+✓ v1.2 ملف v:11 القديم لسه بيتقرأ (توافق رجعي)
+   (ops ok=116 ledger=177)
+✓ v1.2 خصائص: 200 عملية عشوائية مع Recall/Release — الدفتر = مجموع الحركات، لا رصيد سالب، الاستيراد يعيد نفس البصمة
+✓ v1.3 المستويات: 1=الأعلى، 2–5 صدر (برقم الخانة)، 6–7 ركبة، 8=أرضي
+✓ v1.3 الصيغة القديمة (ممر/عمود) لسه شغالة للمواقع بدون رف
+✓ v1.4 تخطيط تجريبي: 22 رف × 5 أعمدة × 8 مستويات = 880 موقع، وترتيب المشي من الرف
+✓ v1.3 تحقق التخطيط: رف مكرر / walkOrder ناقص / رف سير مجهول / مستويات > 8
+✓ v1.4 مسار تصاعدي من المدخل (حسب العمق): 18 ← 30 ← 23 وبعبارة رف/عمود/مستوى
+✓ v1.4 مسار تنازلي (من آخر الممر للمدخل): 23 ← 30 ← 18
+✓ v1.3 البدء من موقع العامل: عند رف 23 يكمّل 23 وبعدين يرجع 18 ← 30 بعلامة "ارجع"
+✓ v1.4 مسافة البداية بتتحسب من موقع العامل مش من السير
+✓ v1.3 خيارات غلط بتترفض
+✓ v1.3 مخرج السير: أقرب نقطة بعد آخر صنف (آخر صنف رف 23 ← أقرب نقطة سير آخر الممر رف 25)
+✓ v1.3 مخرج السير بدون تخطيط سير: رسالة عامة بلا ادعاء مكان
+✓ v1.3 "عيد تاني" بيرجّع نفس التوجيه حرفيًا، وبعد التقدّم يعيد الأخير مش الأول
+✓ v1.3 "أنا عند رف 30" بيعيد التخطيط من هناك، ورف مش موجود بيرد بخطأ مفهوم
+✓ v1.3 رحلة كاملة: 3 سحبات ثم FINISH مع مخرج السير، والتغليف بعدها مسموح
+✓ v1.3 النية بس من كلام قصير: جملة طويلة أو عادية ما بتشغّلش حاجة
+✓ v1.3 البحث الصوتي: "اموكسي سيلين 500" (مفصولة) ← صنف واحد مؤكد، و"اوجمنتين" لسه بتطلب تأكيد
+✓ v1.3 رف/عمود/السير بيتحفظوا في التصدير والاستيراد بنفس البصمة
+✓ v1.3 مواقع بدون رف ما اتغيّرتش (مفيش حقول زيادة في المواقع القديمة)
+✓ v1.6 خريطة السير تحفظ نقاط الوصول الأربع: 15/25/26/36
+✓ v1.6 الصوت يتصل بالنواة: اموكسي سيلين 500 → AMOX-500 ومكانه
+✓ v1.6 اللبس الصوتي لا يتخمّن: اوجمنتين → تأكيد
+✓ v1.6 استدعاء الأوردر صوتيًا يحتاج كلمة واضحة
+✓ v1.6 أوامر الموقع القصيرة Intent ولا تغيّر الرصيد
+✓ v1.6 الصوت لا يملك الإغلاق: المسح يظل شرط الانتقال
+✓ v1.6 الصوت يفهم أرقام الرفوف الشائعة بدون تحويل الكلام إلى تنفيذ
+✓ v1.6 البحث الصوتي يظل Read/Guide فقط حتى مع تطابق الأوردر
+✓ v1.6 كود GTIN معروف = Scan Match حتمي، والكود المجهول لا يتعمد التخمين
+✓ v1.6 حالة التشغيل تكشف TOTE_REQUIRED قبل السحب ولا تغيّر الدفتر
+✓ v1.6 بعد ربط الصندوق تختفي TOTE_REQUIRED ويظهر أول توقف
+
+83 نجح / 0 فشل
+✓ البوابة مقفولة افتراضيًا: التغليف القديم شغّال زي ما هو
+✓ الفحص قبل اكتمال السحب → PICK_INCOMPLETE
+✓ اللي سحب مينفعش يفحص (فصل الصلاحيات)
+✓ لازم اسم مراقب
+✓ مسار سليم: فحص → اعتماد → التغليف يعدّي بالبوابة
+✓ البوابة شغّالة + مفيش فحص → QC_REQUIRED (DomainError من النواة)
+✓ فحص شغّال لسه ما اتعتمدش → التغليف ممنوع
+✓ صنف مختلف (LASA) عند الفحص → فرق مسجّل والاعتماد ممنوع
+✓ تشغيلة غلط + كمية ناقصة → الاتنين بيتسجلوا
+✓ تصحيح الفرق بمسح تاني صح يفتح الاعتماد، والفرق يفضل دليل
+✓ اعتماد قبل فحص كل البنود → QC_INCOMPLETE
+✓ الرفض لازم سبب، وبعده التغليف ممنوع وإعادة الفحص جولة 2
+✓ مراقب تاني مينفعش يمسك فحص شغّال ولا يمسح فيه
+✓ المسح قبل بدء الفحص ممنوع
+✓ سجل الفحص: سلسلة سليمة، والتعديل يتكشف، والاستيراد المكسور يترفض
+✓ القياس: عينة صغيرة = INSUFFICIENT_SAMPLE ومفيش معدل مكتوب
+✓ القياس: خطوط/ساعة + أخطاء/1000 + انتظار الجودة بأرقام حسابية مضبوطة
+✓ القياس: فروق الفحص بتتحسب لكل 1000 بند
+✓ واجهة الحكم تستخدم النواة المشتركة دون نسخ الكلاس داخل HTML
+
+19 نجح / 0 فشل
+✓ القيد المزدوج لا يقبل عدم التوازن
+✓ قيد متوازن يدخل PENDING ولا يصبح POSTED بدون Checker
+✓ Maker لا يستطيع اعتماد قيده بنفسه
+✓ Idempotency تمنع تكرار القيد الخارجي
+✓ الإقفال الأساسي لا يتجاوز ضوابط الاعتماد والمطابقة
+✓ عكس القيد ينشئ قيدًا معاكسًا ويحتاج Checker
+✓ Trial Balance يظل متوازنًا بعد الترحيل والعكس
+✓ Reconciliation يميز MATCHED وVARIANCE
+✓ اعتماد تلقائي مرفوض
+✓ التاريخ غير الموجود تقويميًا مرفوض
+✓ الشهر غير الصالح مرفوض
+✓ externalRef مع محتوى مختلف ينتج تعارضًا
+✓ overflow في تجميع القيد مرفوض
+✓ Integrity audit chain قابلة للتحقق
+
+14 نجح / 0 فشل
+✓ Batch cost resolution is deterministic
+✓ Dispatch valuation uses documented batch cost
+✓ Conflicting batch costs are blocked
+✓ Close gate blocks pending journals
+✓ Controlled close requires reconciliation
+✓ Approved reconciliation enables controlled close
+✓ Invariant suite detects clean ledger
+✓ Audit package is self-verifying
+✓ Tampered audit package is rejected
+
+9 نجح / 0 فشل
+✓ استلام مرحّل → قيد محاسبي بالقيمة الفعلية
+✓ نفس الاستلام تاني → مفيش قيد مكرر
+✓ صرف غير مرحّل → رسالة مش استثناء
+✓ تقرير الدفتر: السلسلة سليمة والموازين متوازنة
+
+4 نجح / 0 فشل
+✓ أوردر 100 والمتاح 80: التخصيص 80 والنقص 20 متسجّل
+✓ التغليف بيترفض بـSHORTAGE_UNACKNOWLEDGED من غير إقرار (كان بيعدّي بصمت)
+✓ الإقرار محتاج اسم وسبب
+✓ بعد الإقرار التغليف والصرف يعدّوا، والإقرار في سجل التدقيق بالتفاصيل
+✓ أوردر مفيهوش نقص: الإقرار مرفوض (NO_SHORTAGE) والتغليف عادي
+✓ الإقرار بيفضل بعد حفظ واستيراد الحالة
+✓ لقطة العامل بتعرض حاجز النقص لحد الإقرار
+✓ الإقرار بعد الصرف مرفوض
+✓ القياس بيعدّ الشحنات من غير فحص معتمد والجزئية المُقرّة وغير المُقرّة
+✓ الختم الكامل بيحمل رأس سجل الفحص ويتحقق سليم
+✓ أحداث فحص جديدة بعد الختم مش بتكسره
+✓ قص سجل الفحص بعد الختم بيتكشف
+✓ سجل فحص جديد فاضي بدل الأصلي بيتكشف (مسح السجل)
+✓ تعديل حدث في السجل بيتكشف (سلسلة مكسورة)
+✓ سجل مُعاد بناؤه بنفس الطول لكن بأحداث مختلفة بيتكشف (HEAD)
+✓ ختم النواة القديم (v1 بدون qc) لسه بيتحقق، ومعلَّم إنه مش شامل الجودة
+✓ تعديل في دفتر المخزن بيتكشف برضه من الختم الكامل
+✓ مينفعش نختم سجل فحص مكسور
+
+18 نجح / 0 فشل
+✓ التصدير بيطلع حزمة فيها الدفتر وسجل الفحص وعدّاد صح
+✓ اسم الملف فيه التاريخ والوقت
+✓ دورة كاملة: تصدير ← JSON.stringify ← استيراد = نفس الحالة والسجل
+✓ الختم الشامل جوّه الحزمة بيتحقق عند الاستيراد
+✓ ملف اتعدّل بإيد (كمية في الدفتر): CHECKSUM_MISMATCH
+✓ تعديل + إعادة حساب المجموع: الدفتر نفسه بيرفض (LEDGER_REJECTED)
+✓ سجل فحص مقصوص + مجموع معاد حسابه: QC_LOG_REJECTED أو فشل الختم
+✓ ملف مش حزمة / JSON بايظ / نسخة غريبة
+✓ الاستيراد الفاشل مابيلمسش حاجة (مفيش أثر جانبي)
+
+9 نجح · 0 فشل
+✓ بيانات تجريبية: بانر أحمر صريح "مش أداء حقيقي"
+✓ عينة صغيرة: مفيش خطوط/ساعة ولا معدلات للفحص، بتظهر "عينة غير كافية"
+✓ سلامة السجلات ظاهرة وفحص الشحنات من غير فحص معتمد = 0
+✓ Shadow: بيظهر مرجع الإذن كـ"مُدخل يدويًا، غير مُتحقَّق منه"، ومن غيره تحذير
+✓ الختم المرفق بيظهر برؤوسه، ومن غيره تحذير
+✓ XSS: اسم محضّر وسبب وردية فيها HTML بيتهرّب
+✓ عينة ≥ الحد: المعدلات بتظهر (minSample=1)
+✓ سجل مكسور: التقرير يقول مش يُعتمد عليه
+✓ CSV: فيه أحداث الفحص والسحب، ومحمي من حقن المعادلات
+✓ source غلط بيترفض
+✓ المعدل ما يظهرش تحت حد العينة (أخطاء/ألف مسح = —)
+✓ CSV: سبب الـBLOCK ظاهر في عمود التفاصيل
+
+12 نجح · 0 فشل
+TAP version 13
+# Subtest: valid receiving scenario posts stock through the deterministic core
+ok 1 - valid receiving scenario posts stock through the deterministic core
+  ---
+  duration_ms: 54.259659
+  type: 'test'
+  ...
+# Subtest: expired batch is hard-blocked without creating available stock
+ok 2 - expired batch is hard-blocked without creating available stock
+  ---
+  duration_ms: 23.637671
+  type: 'test'
+  ...
+# Subtest: recall quarantines the remaining batch, traces prior dispatch, and blocks an open order pick
+ok 3 - recall quarantines the remaining batch, traces prior dispatch, and blocks an open order pick
+  ---
+  duration_ms: 42.355912
+  type: 'test'
+  ...
+# Subtest: model JSON parser accepts a fenced object and rejects malformed output
+ok 4 - model JSON parser accepts a fenced object and rejects malformed output
+  ---
+  duration_ms: 2.310136
+  type: 'test'
+  ...
+# Subtest: extraction schema accepts supported invoice fields but rejects fuzzy or unknown SKUs
+ok 5 - extraction schema accepts supported invoice fields but rejects fuzzy or unknown SKUs
+  ---
+  duration_ms: 0.896161
+  type: 'test'
+  ...
+# Subtest: downstream deterministic gate blocks expiry even after valid-shaped extraction
+ok 6 - downstream deterministic gate blocks expiry even after valid-shaped extraction
+  ---
+  duration_ms: 19.778843
+  type: 'test'
+  ...
+# Subtest: offline pipeline labels fixture mode clearly and does not claim a live request
+ok 7 - offline pipeline labels fixture mode clearly and does not claim a live request
+  ---
+  duration_ms: 20.872149
+  type: 'test'
+  ...
+# Subtest: offline expired pipeline is a successful negative control case
+ok 8 - offline expired pipeline is a successful negative control case
+  ---
+  duration_ms: 9.775014
+  type: 'test'
+  ...
+# Subtest: live pipeline fails closed without credentials before making a network request
+ok 9 - live pipeline fails closed without credentials before making a network request
+  ---
+  duration_ms: 8.487261
+  type: 'test'
+  ...
+# Subtest: all six judge views render meaningful, English, core-derived content
+ok 10 - all six judge views render meaningful, English, core-derived content
+  ---
+  duration_ms: 7.71585
+  type: 'test'
+  ...
+# Subtest: audit evidence exposes all promised report export formats
+ok 11 - audit evidence exposes all promised report export formats
+  ---
+  duration_ms: 2.014399
+  type: 'test'
+  ...
+# Subtest: audit evidence export actions trigger valid JSON, CSV, and HTML downloads
+ok 12 - audit evidence export actions trigger valid JSON, CSV, and HTML downloads
+  ---
+  duration_ms: 6.837857
+  type: 'test'
+  ...
+# Subtest: judge evidence pack export bundles provenance, invoice controls, recall evidence, and integrity checks
+ok 13 - judge evidence pack export bundles provenance, invoice controls, recall evidence, and integrity checks
+  ---
+  duration_ms: 48.002906
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4173.879655

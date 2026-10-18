@@ -74,6 +74,20 @@ t('الختم يمرّ على الدفتر الأصلي + بعد قيود جدي
 t('الساعة لا تُستورد من الملف', () => { const c = fresh(); const j = JSON.parse(JSON.stringify(c.toJSON())); j.today = '2020-01-01'; const d = OmNiCore.fromJSON(j, { now: () => new Date('2026-10-01T10:00:00Z') }); eq(d.today, '2026-10-01'); });
 t('ملف v:10 القديم مرفوض', () => throwsCode(() => OmNiCore.fromJSON({ v: 10 }), 'BAD_VERSION'));
 t('تحويل داخلي لا يغيّر الإجمالي', () => { const c = fresh(); receive(c, 'PARA-500', 'B1', '2027-01-01', 10); c.transfer({ itemCode: 'PARA-500', warehouseCode: 'WH-OCT6', fromLoc: 'WH-OCT6/A-01-01', toLoc: 'WH-OCT6/B-02-01', batch: 'B1', qty: 4, actor: 'a' }); eq(c.getBalance('PARA-500'), 10); });
+t('Recall عالمي على مستوى التشغيلة يمنع تحويل الرصيد المتبقي في مخزن آخر', () => {
+  const c = fresh();
+  c.addWarehouse({ code: 'WH-REMOTE', name: 'Remote warehouse' });
+  c.addLocation({ warehouseCode: 'WH-REMOTE', code: 'R-01' });
+  c.addLocation({ warehouseCode: 'WH-REMOTE', code: 'R-02' });
+  const po = c.createPO({ supplierCode: 'SUP-001', warehouseCode: 'WH-REMOTE', actor: 'buyer', lines: [{ itemCode: 'PARA-500', orderedQty: 20, unitCostQirsh: 1250 }] });
+  c.poAction(po.id, 'SUBMITTED', 'buyer'); c.poAction(po.id, 'APPROVED', 'manager');
+  const gr = c.createReceipt({ poId: po.id, locationKey: 'WH-REMOTE/R-01', actor: 'recv', lines: [{ poLineId: po.lines[0].id, receivedQty: 20, rejectedQty: 0, batch: 'SHARED-R', expiryDate: '2027-06-01' }] });
+  c.submitReceipt(gr.id, 'recv'); c.startInspection(gr.id, 'qc'); c.recordQC(gr.id, [{ lineId: gr.lines[0].id, qcPass: true }], 'qc'); c.postReceipt(gr.id, 'qc');
+  c.recallBatch({ itemCode: 'PARA-500', batch: 'SHARED-R', warehouseCode: 'WH-OCT6', refNo: 'RECALL-REMOTE-1', reason: 'Confirmed batch quality alert', actor: 'quality_officer', approver: 'qa_manager' });
+  const before = c.ledger.length;
+  throwsCode(() => c.transfer({ itemCode: 'PARA-500', warehouseCode: 'WH-REMOTE', fromLoc: 'WH-REMOTE/R-01', toLoc: 'WH-REMOTE/R-02', batch: 'SHARED-R', qty: 5, actor: 'operator' }), 'RECALLED_BATCH');
+  eq(c.ledger.length, before, 'عملية التحويل المرفوضة لا تضيف قيودًا');
+});
 t('خصائص: 300 عملية عشوائية → الدفتر = مجموع الحركات، لا سالب، السلسلة سليمة، الاستيراد يعيد نفس البصمة', () => {
   let s = 12345; const rnd = n => { s = (s * 1103515245 + 12345) & 0x7fffffff; return s % n; };
   const c = fresh(); const items = ['PARA-500', 'AMOX-500', 'AMOX-1000']; let b = 0, blocked = 0;
