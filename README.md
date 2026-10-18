@@ -17,6 +17,7 @@ OmNi-Ledger demonstrates a split of responsibilities: Gemma may extract invoice 
 - Existing regression suites for the WMS, QC station, institutional ledger/assurance, closure controls, bundles, and shadow reports, plus nine judge-edition acceptance tests.
 - `scripts/verify-release.mjs` — release syntax, asset, tests, and fixture-pipeline gate.
 - `PITCH_DECK.pptx` / `PITCH_DECK.pdf`, `SUBMISSION_COVER.png`, `DEMO_SCRIPT.md`, `SUBMISSION_COPY.md` — judge/presentation materials.
+- `JUDGE_QUICKSTART.md` — one-minute verification path for the live judge page, deterministic controls, evidence export, and the separate AMD/Gemma CLI.
 - `assets/omni-ledger-cover.png` — original visual cover artwork for the project.
 - One-click **Judge Evidence Pack** export combining current invoice evidence, full recall/audit payload, CSV and readable HTML exports, plus explicit local-demo provenance and integrity-check results.
 
@@ -122,11 +123,11 @@ For the form, use the copy in `SUBMISSION_COPY.md`: project title, short/long de
 - English judge page: `https://omniverseatmos-netizen.github.io/omni-ledger-amd/index-en.html`
 - Official event page: `https://lablab.ai/ai-hackathons/amd-developer-hackathon-act-iii`
 
-The repository was published from v3.0.10 at commit `cd3b5f1ed61738286fc98c36f49e8c13705aa806`; CI and GitHub Pages succeeded, and the live page was checked for the v3.0.10 marker, CSP, and Judge Evidence Pack wiring. Re-open the exact URLs in a private browser window before submitting and do not use an older URL or a URL serving a different release.
+The v3.0.10 release was initially published at commit `cd3b5f1ed61738286fc98c36f49e8c13705aa806`; the current `main` may contain documentation-only judge-access improvements after that release. CI and GitHub Pages must remain green, and judges should use the current English judge page rather than an older URL.
 
 **v3.0.10** rebalances the padding of the "AMD DEVELOPER HACKATHON · ACT III" pill on `SUBMISSION_COVER.png` (only that region changed), adds the optional `npm run amd:benchmark` live measurement script (see `BENCHMARK.md`), and documents that expiry gating applies to pharmaceutical-category items. **v3.0.9** corrects the pitch deck's engineering-honesty slide so it reports the owner-captured live AMD Token Factory runs instead of saying they were not replayed. The v3.0.7/v3.0.8 maintenance fixes for clean installation, browser CSP, release wording, and cover-badge layout are carried forward.
 
-See `PUBLISHING_CHECKLIST.md`, `SUBMISSION_COPY.md`, `DEMO_SCRIPT.md`, and `RELEASE_REPORT_v3.0.10.md` before submitting. The recorded release includes a SHA-256 manifest and file inventory; run `npm run manifest:build` after intentional source changes, then rerun `npm run verify:release`.
+See `JUDGE_QUICKSTART.md`, `PUBLISHING_CHECKLIST.md`, `SUBMISSION_COPY.md`, `DEMO_SCRIPT.md`, and `RELEASE_REPORT_v3.0.10.md` for verification details. The repository includes a SHA-256 manifest and file inventory; run `npm run manifest:build` after intentional source changes, then rerun `npm run verify:release`.
 
 
 ## Submission media guidance

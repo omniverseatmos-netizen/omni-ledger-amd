@@ -1,10 +1,10 @@
 {
   "name": "OmNi-Ledger Judge Edition",
   "version": "3.0.10",
-  "created_at": "2026-10-18T08:48:22.480Z",
+  "created_at": "2026-10-18T11:02:05.047Z",
   "manifest_policy": "SHA-256 for all project files except RELEASE_MANIFEST.json, INVENTORY.tsv, TEST_LOG.txt, and VERIFY_LOG.txt (the last two are generated verification transcripts).",
   "source_of_truth": "The root source files; public/ is the generated static deployment copy and is included for byte-level review.",
-  "file_count": 96,
+  "file_count": 97,
   "automated_check_summary": {
     "source_suites": 8,
     "source_test_count": 168,
@@ -343,6 +343,13 @@
       "role": "Supporting project file"
     },
     {
+      "path": "JUDGE_QUICKSTART.md",
+      "type": "Documentation",
+      "size_bytes": 2111,
+      "sha256": "2d569057c835a33715b07baf52213da5df61e1da880f72e5e1574c0f6b299261",
+      "role": "Supporting project file"
+    },
+    {
       "path": "LIVE_RUN_EVIDENCE.md",
       "type": "Documentation",
       "size_bytes": 2721,
@@ -464,8 +471,8 @@
     {
       "path": "README.md",
       "type": "Documentation",
-      "size_bytes": 11094,
-      "sha256": "a1b18327d153d2c5c099dbab28247eea418c257bcbff5807b28b5e8af40bffff",
+      "size_bytes": 11232,
+      "sha256": "bd2f8178a0b00c0575cdd35478d39d65191bbfc331816c2c30dd7f38803502c8",
       "role": "Project guide"
     },
     {
