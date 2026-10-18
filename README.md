@@ -110,21 +110,26 @@ The AI does not receive direct authority to write the inventory ledger. Hashing 
 - Customer returns, production multi-user concurrency, identity-provider integration, external timestamping, legal digital signing, regulated validation, and real device/browser acceptance across a pharmacy site are outside this package's validated scope.
 - This repo uses the core's original domain strings internally; the judge UI presents its own English labels and control-code explanations.
 
-## Publishing status
+## AMD Hackathon submission alignment
 
-This v3.0.10 package is the official release candidate for the public repository. The intended public locations are:
+The recommended challenge mapping is **Reinvent Commerce**: inventory and procurement control for a pharmaceutical merchant. The demo shows a supplier invoice becoming an accepted or blocked stock decision, then shows a recall response and recorded customer-dispatch trace. Confirm the final challenge selection and eligibility in the official submission form; do not claim an Evolus or Health and Wellbeing partner track unless the corresponding partner requirements are actually satisfied.
+
+AMD is a required part of the working product. Gemma invoice extraction runs through the AMD Token Factory path in the secured CLI; the public browser page is deliberately a deterministic local judge demo and does not call AMD. The submission video must show a genuine live valid-invoice request and expired-invoice negative control, followed separately by the local recall and evidence workflow. This repository does not claim ROCm, Instinct, MI300X, or a specific accelerator unless the live response/account confirms it.
+
+For the form, use the copy in `SUBMISSION_COPY.md`: project title, short/long descriptions, challenge mapping, and supported tags. The required presentation assets are `SUBMISSION_COVER.png`, `PITCH_DECK.pdf` or `.pptx`, and a real product walkthrough video. The required hosting evidence is this public repository plus the live judge page:
 
 - Repository: `https://github.com/omniverseatmos-netizen/omni-ledger-amd`
 - English judge page: `https://omniverseatmos-netizen.github.io/omni-ledger-amd/index-en.html`
+- Official event page: `https://lablab.ai/ai-hackathons/amd-developer-hackathon-act-iii`
 
-After publishing, verify that the current `main` commit and the English judge page both show v3.0.10, that GitHub Actions and Pages are green, and that the page is opened successfully in a private browser window. Do not submit an older URL or a URL serving a different release.
+The repository was published from v3.0.10 at commit `cd3b5f1ed61738286fc98c36f49e8c13705aa806`; CI and GitHub Pages succeeded, and the live page was checked for the v3.0.10 marker, CSP, and Judge Evidence Pack wiring. Re-open the exact URLs in a private browser window before submitting and do not use an older URL or a URL serving a different release.
 
 **v3.0.10** rebalances the padding of the "AMD DEVELOPER HACKATHON · ACT III" pill on `SUBMISSION_COVER.png` (only that region changed), adds the optional `npm run amd:benchmark` live measurement script (see `BENCHMARK.md`), and documents that expiry gating applies to pharmaceutical-category items. **v3.0.9** corrects the pitch deck's engineering-honesty slide so it reports the owner-captured live AMD Token Factory runs instead of saying they were not replayed. The v3.0.7/v3.0.8 maintenance fixes for clean installation, browser CSP, release wording, and cover-badge layout are carried forward.
 
 See `PUBLISHING_CHECKLIST.md`, `SUBMISSION_COPY.md`, `DEMO_SCRIPT.md`, and `RELEASE_REPORT_v3.0.10.md` before submitting. The recorded release includes a SHA-256 manifest and file inventory; run `npm run manifest:build` after intentional source changes, then rerun `npm run verify:release`.
 
 
-## Submission media warning (v3.0.5 review retained for v3.0.8)
+## Submission media guidance
 
 The separate 15-page `OmNi-Ledger_Architecture.pdf` generated from Notebook is a concept/architecture visual, not the primary judge pitch deck. Some captions (including “Regulatory Instant Recall & 360° Traceability”) overstate the implemented scope and the final slide still contains a GitHub link placeholder. Use `PITCH_DECK.pdf` / `PITCH_DECK.pptx` as the primary deck unless the architecture PDF is revised and fact-checked.
 
