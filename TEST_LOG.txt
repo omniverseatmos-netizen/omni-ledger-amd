@@ -1,5 +1,5 @@
 
-> omni-ledger-judge-edition@3.0.6 test
+> omni-ledger-judge-edition@3.0.10 test
 > node tests.mjs && node qc-station-tests.mjs && node institutional-tests.mjs && node institutional-assurance-tests.mjs && node institutional-ui-tests.mjs && node closure-tests.mjs && node bundle-tests.mjs && node shadow-report-tests.mjs && node --test tests/*.test.mjs
 
 ✓ SHA-256 يطابق نواة Node (متجهات + عربي + حدود الـpadding)
@@ -192,79 +192,79 @@ TAP version 13
 # Subtest: valid receiving scenario posts stock through the deterministic core
 ok 1 - valid receiving scenario posts stock through the deterministic core
   ---
-  duration_ms: 54.259659
+  duration_ms: 57.776658
   type: 'test'
   ...
 # Subtest: expired batch is hard-blocked without creating available stock
 ok 2 - expired batch is hard-blocked without creating available stock
   ---
-  duration_ms: 23.637671
+  duration_ms: 35.508187
   type: 'test'
   ...
 # Subtest: recall quarantines the remaining batch, traces prior dispatch, and blocks an open order pick
 ok 3 - recall quarantines the remaining batch, traces prior dispatch, and blocks an open order pick
   ---
-  duration_ms: 42.355912
+  duration_ms: 13.468319
   type: 'test'
   ...
 # Subtest: model JSON parser accepts a fenced object and rejects malformed output
 ok 4 - model JSON parser accepts a fenced object and rejects malformed output
   ---
-  duration_ms: 2.310136
+  duration_ms: 5.243486
   type: 'test'
   ...
 # Subtest: extraction schema accepts supported invoice fields but rejects fuzzy or unknown SKUs
 ok 5 - extraction schema accepts supported invoice fields but rejects fuzzy or unknown SKUs
   ---
-  duration_ms: 0.896161
+  duration_ms: 0.784509
   type: 'test'
   ...
 # Subtest: downstream deterministic gate blocks expiry even after valid-shaped extraction
 ok 6 - downstream deterministic gate blocks expiry even after valid-shaped extraction
   ---
-  duration_ms: 19.778843
+  duration_ms: 3.925704
   type: 'test'
   ...
 # Subtest: offline pipeline labels fixture mode clearly and does not claim a live request
 ok 7 - offline pipeline labels fixture mode clearly and does not claim a live request
   ---
-  duration_ms: 20.872149
+  duration_ms: 25.070646
   type: 'test'
   ...
 # Subtest: offline expired pipeline is a successful negative control case
 ok 8 - offline expired pipeline is a successful negative control case
   ---
-  duration_ms: 9.775014
+  duration_ms: 14.089258
   type: 'test'
   ...
 # Subtest: live pipeline fails closed without credentials before making a network request
 ok 9 - live pipeline fails closed without credentials before making a network request
   ---
-  duration_ms: 8.487261
+  duration_ms: 9.240568
   type: 'test'
   ...
 # Subtest: all six judge views render meaningful, English, core-derived content
 ok 10 - all six judge views render meaningful, English, core-derived content
   ---
-  duration_ms: 7.71585
+  duration_ms: 7.684168
   type: 'test'
   ...
 # Subtest: audit evidence exposes all promised report export formats
 ok 11 - audit evidence exposes all promised report export formats
   ---
-  duration_ms: 2.014399
+  duration_ms: 3.027722
   type: 'test'
   ...
 # Subtest: audit evidence export actions trigger valid JSON, CSV, and HTML downloads
 ok 12 - audit evidence export actions trigger valid JSON, CSV, and HTML downloads
   ---
-  duration_ms: 6.837857
+  duration_ms: 7.949544
   type: 'test'
   ...
 # Subtest: judge evidence pack export bundles provenance, invoice controls, recall evidence, and integrity checks
 ok 13 - judge evidence pack export bundles provenance, invoice controls, recall evidence, and integrity checks
   ---
-  duration_ms: 48.002906
+  duration_ms: 59.345271
   type: 'test'
   ...
 1..13
@@ -275,4 +275,4 @@ ok 13 - judge evidence pack export bundles provenance, invoice controls, recall 
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 4173.879655
+# duration_ms 4212.78757

@@ -34,7 +34,7 @@
 
 ## Submission-day order (deadline 18 Oct 2026, 1:00 PM EEST — aim to finish by 11:30)
 - [x] Live valid + expired runs captured (see `LIVE_RUN_EVIDENCE.md`).
-- [ ] Unzip v3.0.6, run `npm test` and `npm run verify:release` once more.
+- [ ] Unzip v3.0.7, run `npm ci`, `npm test` and `npm run verify:release` once more.
 - [ ] Push the package contents to the public repository; confirm both GitHub Actions workflows are green.
 - [ ] Open the Pages URL in a private window; test all six pages, the one-click evidence pack, and the three individual exports; test the Menu button on the phone.
 - [ ] Record, play back and upload the video (unlisted); test the link logged out.

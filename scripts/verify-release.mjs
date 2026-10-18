@@ -36,11 +36,14 @@ for (const relative of ['index.html', 'index-en.html', 'app.mjs', 'styles.css', 
 }
 
 const html = await fs.readFile(path.join(ROOT, 'index.html'), 'utf8');
+const htmlEn = await fs.readFile(path.join(ROOT, 'index-en.html'), 'utf8');
+const publicHtml = await fs.readFile(path.join(ROOT, 'public', 'index-en.html'), 'utf8');
 const app = await fs.readFile(path.join(ROOT, 'app.mjs'), 'utf8');
 const css = await fs.readFile(path.join(ROOT, 'styles.css'), 'utf8');
 for (const [label, condition] of [
   ['English language declaration', /<html lang="en"/i.test(html)],
   ['External app module is wired', /src="\.\/app\.mjs"/.test(html)],
+  ['Content Security Policy is present on source and built judge pages', [html, htmlEn, publicHtml].every(page => /<meta http-equiv="Content-Security-Policy"/i.test(page))],
   ['No inline API secret variable in HTML', !/AMD_TOKENFACTORY_API_KEY\s*=\s*["'][^"']{10,}["']/.test(html)],
   ['All six judge views exist', ['overview','intake','recall','trace','evidence','architecture'].every(v => app.includes(`${v}:`) || app.includes(`'${v}'`))],
   ['Reduced-motion styling exists', css.includes('prefers-reduced-motion')],
@@ -72,6 +75,7 @@ if (failures.length) {
   console.log(`Release verification PASS`);
   console.log(`Syntax-checked ES modules: ${syntaxCount}/${modules.length}`);
   console.log('Static GitHub Pages build: PASS');
+  console.log('Static page Content Security Policy: PASS');
   console.log('Required assets and English UI wiring: PASS');
   console.log('Full automated test command: PASS');
   console.log('Offline valid/expired pipeline fixtures: PASS (not live inference)');

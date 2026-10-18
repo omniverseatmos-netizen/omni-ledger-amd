@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const INVENTORY_EXCLUDED = new Set(['RELEASE_MANIFEST.json','INVENTORY.tsv']);
-const HASH_EXCLUDED = new Set(['RELEASE_MANIFEST.json','INVENTORY.tsv','VERIFY_LOG.txt']);
+const HASH_EXCLUDED = new Set(['RELEASE_MANIFEST.json','INVENTORY.tsv','TEST_LOG.txt','VERIFY_LOG.txt']);
 async function walk(dir) {
   const found = [];
   for (const e of await fs.readdir(dir, { withFileTypes: true })) {
@@ -52,7 +52,7 @@ const inventory = ['path\ttype\tsize_bytes\tsha256\trole', ...inventoryRecords.m
 await fs.writeFile(path.join(ROOT,'INVENTORY.tsv'), inventory);
 const manifest = {
   name: 'OmNi-Ledger Judge Edition',
-  version: '3.0.6',
+  version: '3.0.10',
   created_at: new Date().toISOString(),
   manifest_policy: 'SHA-256 for all project files except RELEASE_MANIFEST.json, INVENTORY.tsv, TEST_LOG.txt, and VERIFY_LOG.txt (the last two are generated verification transcripts).',
   source_of_truth: 'The root source files; public/ is the generated static deployment copy and is included for byte-level review.',

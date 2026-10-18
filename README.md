@@ -25,6 +25,7 @@ OmNi-Ledger demonstrates a split of responsibilities: Gemma may extract invoice 
 Requirements: **Node.js 20 or newer**. No npm dependencies are required.
 
 ```bash
+npm ci
 npm test
 npm run verify:release
 npm run serve
@@ -109,14 +110,21 @@ The AI does not receive direct authority to write the inventory ledger. Hashing 
 - Customer returns, production multi-user concurrency, identity-provider integration, external timestamping, legal digital signing, regulated validation, and real device/browser acceptance across a pharmacy site are outside this package's validated scope.
 - This repo uses the core's original domain strings internally; the judge UI presents its own English labels and control-code explanations.
 
-## Publishing
+## Publishing status
 
-This folder is a **submission candidate**, not an assertion that the new files are already published. Create or update the intended public GitHub repository with these files, then enable Pages and open the exact Pages URL in a private browser window. Replace the public URLs in the submission form only after the deployment contains this build. The old public repository URL is not proof that this new local candidate is already deployed.
+This v3.0.10 package is the official release candidate for the public repository. The intended public locations are:
 
-See `PUBLISHING_CHECKLIST.md`, `SUBMISSION_COPY.md`, `DEMO_SCRIPT.md`, and `RELEASE_REPORT_v3.0.6.md` before submitting. The recorded release includes a SHA-256 manifest and file inventory; run `npm run manifest:build` after intentional source changes, then rerun `npm run verify:release`.
+- Repository: `https://github.com/omniverseatmos-netizen/omni-ledger-amd`
+- English judge page: `https://omniverseatmos-netizen.github.io/omni-ledger-amd/index-en.html`
+
+After publishing, verify that the current `main` commit and the English judge page both show v3.0.10, that GitHub Actions and Pages are green, and that the page is opened successfully in a private browser window. Do not submit an older URL or a URL serving a different release.
+
+**v3.0.10** rebalances the padding of the "AMD DEVELOPER HACKATHON · ACT III" pill on `SUBMISSION_COVER.png` (only that region changed), adds the optional `npm run amd:benchmark` live measurement script (see `BENCHMARK.md`), and documents that expiry gating applies to pharmaceutical-category items. **v3.0.9** corrects the pitch deck's engineering-honesty slide so it reports the owner-captured live AMD Token Factory runs instead of saying they were not replayed. The v3.0.7/v3.0.8 maintenance fixes for clean installation, browser CSP, release wording, and cover-badge layout are carried forward.
+
+See `PUBLISHING_CHECKLIST.md`, `SUBMISSION_COPY.md`, `DEMO_SCRIPT.md`, and `RELEASE_REPORT_v3.0.10.md` before submitting. The recorded release includes a SHA-256 manifest and file inventory; run `npm run manifest:build` after intentional source changes, then rerun `npm run verify:release`.
 
 
-## Submission media warning (v3.0.5 review retained for v3.0.6)
+## Submission media warning (v3.0.5 review retained for v3.0.8)
 
 The separate 15-page `OmNi-Ledger_Architecture.pdf` generated from Notebook is a concept/architecture visual, not the primary judge pitch deck. Some captions (including “Regulatory Instant Recall & 360° Traceability”) overstate the implemented scope and the final slide still contains a GitHub link placeholder. Use `PITCH_DECK.pdf` / `PITCH_DECK.pptx` as the primary deck unless the architecture PDF is revised and fact-checked.
 

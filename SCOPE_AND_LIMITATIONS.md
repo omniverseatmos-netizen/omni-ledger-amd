@@ -20,3 +20,4 @@
 - A live inference request requires a valid credential and a model available to that account. The owner ran the CLI live against AMD Token Factory (the documented AMD Radeon Cloud endpoint) for both scenarios, more than once; the captured outputs are in `LIVE_RUN_EVIDENCE.md` and `evidence/live-amd-run/`. They were not independently re-run in the build environment, and the endpoint response does not identify the accelerator or software stack.
 
 The product must be presented as a prototype for technical evaluation—not as a production-certified, regulator-approved, patient-level traceability platform.
+- The mandatory batch/expiry hard block at receiving applies to pharmaceutical-category items. General-category items in the demo master data (for example `SURG-MASK`) are not expiry-gated.

@@ -201,7 +201,7 @@ footer(s,6)
 # Slide 7 — Boundaries and architecture
 s = prs.slides.add_slide(blank); bg(s); title(s,'06 / Engineering honesty','Strong claims have explicit boundaries.','The prototype’s value comes from testable behavior—not from claiming to solve every downstream traceability problem.')
 card(s,.65,2.08,5.82,1.55,'Proven in the packaged tests','Valid and expired receipt paths, recall/quarantine, post-recall pick block, recorded customer trace, transfer guard under recall, and ledger/audit verification.',C['green'],'LOCAL AUTOMATED TESTS')
-card(s,6.82,2.08,5.82,1.55,'Must be verified with account access','Live Gemma inference through the exact AMD model endpoint, and the current deployed judge URL after publishing this new build.',C['blue'],'LIVE CREDENTIALS / DEPLOYMENT')
+card(s,6.82,2.08,5.82,1.55,'Live AMD runs on Token Factory','Owner-run CLI requests with Gemma: valid invoice ACCEPTED, expired invoice BLOCKED (EXPIRED_GOODS). IDs in LIVE_RUN_EVIDENCE.md.',C['blue'],'OWNER-CAPTURED EVIDENCE')
 card(s,.65,3.98,5.82,1.55,'Outside current scope','Patient-level and downstream sub-pharmacy tracing; individual GS1 serialization; customer returns; multi-user production concurrency.',C['amber'],'NOT IMPLEMENTED')
 card(s,6.82,3.98,5.82,1.55,'Not claimed','Regulatory certification, zero hallucinations, unhackable storage, production readiness, or guaranteed competition results.',C['rose'],'NO OVERCLAIMS')
 txt(s,'The live request runs in Node/CLI; fixture mode never claims to be live inference.',.75,6.07,11.7,.28,size=10,color=C['teal'],bold=True)

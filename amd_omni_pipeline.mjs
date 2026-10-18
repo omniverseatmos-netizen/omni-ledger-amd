@@ -72,7 +72,7 @@ export function modelRequest(invoiceText, model = DEFAULT_MODEL) {
   };
 }
 
-async function liveExtraction(invoiceText, { baseUrl, apiKey, model }) {
+export async function liveExtraction(invoiceText, { baseUrl, apiKey, model }) {
   const base = baseUrl.replace(/\/+$/, '');
   const endpoint = /\/chat\/completions$/i.test(base) ? base : `${base}/chat/completions`;
   const request = async payload => {

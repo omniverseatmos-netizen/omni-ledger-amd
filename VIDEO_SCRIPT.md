@@ -3,7 +3,7 @@
 ## Before you press record (2 minutes)
 1. Fresh Termux session. Do not paste the key where it is visible:
    ```bash
-   cd ~/OmNi-Ledger_Judge_Edition   # use the freshly extracted v3.0.6 folder
+   cd ~/OmNi-Ledger_Judge_Edition   # use the freshly extracted v3.0.7 folder
    export HISTFILE=/dev/null
    read -rs -p "AMD key (hidden): " AMD_TOKENFACTORY_API_KEY; export AMD_TOKENFACTORY_API_KEY; echo
    export AMD_BASE_URL="https://developer.amd.com.cn/radeon/api/v1"

@@ -391,7 +391,7 @@ function exportEvidencePack() {
     reportType: 'OmNi-Ledger Judge Evidence Pack',
     schemaVersion: '1.0.0',
     generatedAt: new Date().toISOString(),
-    software: { name: 'OmNi-Ledger Judge Edition', version: '3.0.6' },
+    software: { name: 'OmNi-Ledger Judge Edition', version: '3.0.10' },
     provenance: {
       mode: 'LOCAL_DETERMINISTIC_DEMO_NOT_LIVE_AMD',
       browserInference: 'NOT RUN',

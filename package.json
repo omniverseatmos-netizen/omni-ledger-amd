@@ -1,6 +1,6 @@
 {
   "name": "omni-ledger-judge-edition",
-  "version": "3.0.6",
+  "version": "3.0.10",
   "private": false,
   "description": "English judge edition for AI-assisted pharmaceutical supply-chain intake, deterministic warehouse controls, batch recall, traceability, and verifiable audit evidence.",
   "type": "module",
@@ -17,6 +17,7 @@
     "amd:live": "node amd_omni_pipeline.mjs --live --scenario valid",
     "amd:expired": "node amd_omni_pipeline.mjs --live --scenario expired",
     "build:site": "node scripts/build-site.mjs",
-    "manifest:build": "node scripts/build-manifest.mjs"
+    "manifest:build": "node scripts/build-manifest.mjs",
+    "amd:benchmark": "node scripts/amd-benchmark.mjs"
   }
 }

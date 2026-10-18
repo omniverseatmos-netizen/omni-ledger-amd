@@ -1,4 +1,4 @@
-# Submission copy — OmNi-Ledger (copy-ready, v3.0.6)
+# Submission copy — OmNi-Ledger (copy-ready, v3.0.10)
 
 Every claim below is backed by something in this package. Do not add claims that are not.
 
@@ -9,7 +9,7 @@ Every claim below is backed by something in this package. Do not add claims that
 **Reinvent Commerce** — frame this as a controlled inventory and procurement workflow for pharmaceutical merchants: supplier invoice → accepted stock → customer dispatch → recall response. The demo proves operational controls and traceability for recorded customer orders; it does not claim customer churn prediction or revenue optimisation. Confirm the track and eligibility in the official submission form.
 
 ## Short description (copy)
-Gemma, reached through an AMD-hosted endpoint, reads supplier invoices; a deterministic warehouse core—not the model—decides what may enter, move, or leave stock. Expired and recalled batches are hard-blocked, and every decision leaves hash-chained audit evidence.
+Gemma on AMD Token Factory reads supplier invoices; a deterministic warehouse core—not the model—decides what may enter, move or leave stock. In the demo recall, 70 boxes are quarantined, 30 earlier-dispatched boxes trace to a recorded customer, and the next pick is hard-blocked, with hash-chained evidence for every decision.
 
 ## Long description (copy)
 **The problem.** In pharmaceutical distribution, a plausible-looking invoice extraction can still carry the wrong SKU, batch, expiry date or quantity. An alert is not a control: an expired or recalled batch must be stopped before it becomes available stock, and a recall must identify what remains and which recorded customer orders were affected.
@@ -20,7 +20,7 @@ Gemma, reached through an AMD-hosted endpoint, reads supplier invoices; a determ
 
 **Live proof.** The live CLI was run several times against AMD Token Factory (AMD Radeon Cloud) using the team key issued for the event, on two fictional invoices (request IDs in `LIVE_RUN_EVIDENCE.md`): the valid invoice was ACCEPTED and the expired one was BLOCKED with `EXPIRED_GOODS` by the deterministic core, with ledger, audit chain and state seal verified. The gateway reported the model as `self-dploy/Gemma-4-31B-IT`; AMD's catalog lists Gemma-4-31B-IT (experimental) among its free endpoints running on AMD GPUs.
 
-**Quality.** The v3.0.6 release adds a one-click judge evidence pack with explicit local-versus-live provenance and six computed acceptance/integrity checks, alongside the existing individual JSON/CSV/HTML exports. The package-level automated test count and release-manifest result are recorded in `RELEASE_REPORT_v3.0.6.md` and `VERIFY_LOG.txt` after verification.
+**Quality.** The v3.0.6 feature release adds a one-click judge evidence pack with explicit local-versus-live provenance and six computed acceptance/integrity checks, alongside the existing individual JSON/CSV/HTML exports. The v3.0.7 maintenance release adds a public-page CSP, a clean-install lockfile, and corrected verification wording. The v3.0.8 maintenance release repairs the standalone submission-cover badge without changing its wording or track. The current test count and release-manifest result are recorded in `RELEASE_REPORT_v3.0.8.md` and `VERIFY_LOG.txt`.
 
 **Honest scope.** A technical-evaluation prototype with fictional data. Tracing is batch-level and ends at recorded warehouse dispatch; patient-level, sub-pharmacy and serial-level tracking, customer returns, multi-user concurrency and regulatory validation are not implemented. The public judge page runs deterministic local scenarios and does not call AMD; live extraction runs in the CLI shown in the demo video.
 
