@@ -135,3 +135,7 @@ See `JUDGE_QUICKSTART.md`, `PUBLISHING_CHECKLIST.md`, `SUBMISSION_COPY.md`, `DEM
 The separate 15-page `OmNi-Ledger_Architecture.pdf` generated from Notebook is a concept/architecture visual, not the primary judge pitch deck. Some captions (including “Regulatory Instant Recall & 360° Traceability”) overstate the implemented scope and the final slide still contains a GitHub link placeholder. Use `PITCH_DECK.pdf` / `PITCH_DECK.pptx` as the primary deck unless the architecture PDF is revised and fact-checked.
 
 The supplied `Forged_on_a_Smartphone.mp4` is a cinematic teaser; it does not demonstrate the running judge UI or show the live CLI result. Do not use it as the sole required video presentation. Record a real screen demonstration using `VIDEO_SCRIPT.md`, keeping live AMD CLI shots distinct from local browser fixtures.
+
+## License
+
+Unless a file states otherwise, the OmNi-Ledger source code is released under the Apache License 2.0; see `LICENSE`. Project names, logos, presentation artwork, recordings, and third-party marks are not granted trademark rights by this license. Review third-party notices before redistribution.
