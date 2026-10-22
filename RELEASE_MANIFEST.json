@@ -1,10 +1,10 @@
 {
   "name": "OmNi-Ledger Judge Edition",
   "version": "3.0.10",
-  "created_at": "2026-10-20T06:14:13.048Z",
+  "created_at": "2026-10-22T15:55:43.426Z",
   "manifest_policy": "SHA-256 for all project files except RELEASE_MANIFEST.json, INVENTORY.tsv, TEST_LOG.txt, and VERIFY_LOG.txt (the last two are generated verification transcripts).",
   "source_of_truth": "The root source files; public/ is the generated static deployment copy and is included for byte-level review.",
-  "file_count": 98,
+  "file_count": 99,
   "automated_check_summary": {
     "source_suites": 8,
     "source_test_count": 168,
@@ -357,6 +357,13 @@
       "role": "Supporting project file"
     },
     {
+      "path": "LICENSE-MIT",
+      "type": "Project file",
+      "size_bytes": 1082,
+      "sha256": "a1e9cc034eb01813207e0e7270f9a43f8574fcba80820cc4b9a9c38520c340df",
+      "role": "Supporting project file"
+    },
+    {
       "path": "LIVE_RUN_EVIDENCE.md",
       "type": "Documentation",
       "size_bytes": 2721,
@@ -366,15 +373,15 @@
     {
       "path": "package-lock.json",
       "type": "JSON data/config",
-      "size_bytes": 266,
-      "sha256": "4a40949a3b02f3f0e95959e9c9b543e8161dbcc43c43f377f9f07063bb0896c0",
+      "size_bytes": 304,
+      "sha256": "1d9a685c687316661c2ba0009476849a97c5eadf17aa06702d3399dc99778267",
       "role": "Supporting project file"
     },
     {
       "path": "package.json",
       "type": "JSON data/config",
-      "size_bytes": 1220,
-      "sha256": "087fb3139745c2f0ad11e5969160b0cbca5cb8a92f376641c88dfb46fbc43609",
+      "size_bytes": 1254,
+      "sha256": "dd346e24b2f1bbdec71e8db6a56b377d241faaa1ade9f490ea8e337fbb4157ce",
       "role": "Supporting project file"
     },
     {
@@ -478,8 +485,8 @@
     {
       "path": "README.md",
       "type": "Documentation",
-      "size_bytes": 11540,
-      "sha256": "bd65774449284086b0c44ad3b029ecbb919cc6682a6f6752f58410538fbd6b1f",
+      "size_bytes": 11885,
+      "sha256": "92216e67abab98a570309935f655d681311f722403f7b58c556ac311e18fbd6c",
       "role": "Project guide"
     },
     {

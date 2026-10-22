@@ -3,6 +3,7 @@
   "version": "3.0.10",
   "private": false,
   "description": "English judge edition for AI-assisted pharmaceutical supply-chain intake, deterministic warehouse controls, batch recall, traceability, and verifiable audit evidence.",
+  "license": "MIT OR Apache-2.0",
   "type": "module",
   "engines": {
     "node": ">=20"

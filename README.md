@@ -129,7 +129,6 @@ The v3.0.10 release was initially published at commit `cd3b5f1ed61738286fc98c36f
 
 See `JUDGE_QUICKSTART.md`, `PUBLISHING_CHECKLIST.md`, `SUBMISSION_COPY.md`, `DEMO_SCRIPT.md`, and `RELEASE_REPORT_v3.0.10.md` for verification details. The repository includes a SHA-256 manifest and file inventory; run `npm run manifest:build` after intentional source changes, then rerun `npm run verify:release`.
 
-
 ## Submission media guidance
 
 The separate 15-page `OmNi-Ledger_Architecture.pdf` generated from Notebook is a concept/architecture visual, not the primary judge pitch deck. Some captions (including “Regulatory Instant Recall & 360° Traceability”) overstate the implemented scope and the final slide still contains a GitHub link placeholder. Use `PITCH_DECK.pdf` / `PITCH_DECK.pptx` as the primary deck unless the architecture PDF is revised and fact-checked.
@@ -138,4 +137,4 @@ The supplied `Forged_on_a_Smartphone.mp4` is a cinematic teaser; it does not dem
 
 ## License
 
-Unless a file states otherwise, the OmNi-Ledger source code is released under the Apache License 2.0; see `LICENSE`. Project names, logos, presentation artwork, recordings, and third-party marks are not granted trademark rights by this license. Review third-party notices before redistribution.
+Unless a file states otherwise, the original OmNi-Ledger source code in this repository is dual-licensed under the Apache License 2.0 **or** the MIT License, at your option. See `LICENSE` for Apache-2.0 and `LICENSE-MIT` for MIT. This addition of MIT does not withdraw Apache-2.0 rights already granted for this code. If portions of this source are reused in another project, this license continues to apply to those portions; it does not automatically license unrelated code or future additions. The licenses do not grant trademark rights to project names, logos, or third-party marks; review any third-party notices before redistribution.
