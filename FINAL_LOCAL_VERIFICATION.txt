@@ -1,0 +1,4 @@
+verify=PASS
+git_commit=fe1de5e0e80d6deaf699d39da72bce6f528a1a7b
+npm_test=42 passed, 0 failed, 6 skipped without PostgreSQL
+verify_release=PASS (203 files, 70 ES modules syntax-checked)

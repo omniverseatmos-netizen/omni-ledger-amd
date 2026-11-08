@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-src 'none'">
   <meta name="theme-color" content="#080d16">
-  <meta name="description" content="OmNi-Ledger is an AI-assisted pharmaceutical supply-chain prototype with deterministic warehouse controls, batch recall, forward traceability, and verifiable audit evidence.">
-  <title>OmNi-Ledger | Deterministic Supply-Chain Control</title>
+  <meta name="description" content="AtMoS is an automated traceability and movement operations system for AI-assisted pharmaceutical operations, powered by the OmNi-Ledger core.">
+  <title>AtMoS | Traceability & Movement Operations</title>
   <link rel="icon" href="./assets/omniledger-mark.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css">
 </head>
@@ -15,18 +15,18 @@
   <div class="app-shell">
     <div class="nav-backdrop" data-action="close-nav" aria-hidden="true"></div>
     <aside class="sidebar" aria-label="Primary navigation">
-      <a class="brand" href="#overview" data-view="overview" aria-label="OmNi-Ledger overview">
+      <a class="brand" href="#overview" data-view="overview" aria-label="AtMoS overview">
         <span class="brand-mark" aria-hidden="true">
           <svg viewBox="0 0 48 48" role="img"><path d="M8 14.5 24 5l16 9.5v19L24 43 8 33.5z" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="m17 24 4.7 4.7L32 17.8" fill="none" stroke="#6fe6c5" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="24" cy="24" r="3.3" fill="#6fe6c5"/></svg>
         </span>
-        <span class="brand-copy"><span class="brand-name">OmNi<span>Ledger</span></span><span class="brand-subtitle">SUPPLY-CHAIN ASSURANCE</span></span>
+        <span class="brand-copy"><span class="brand-name">AtMoS</span><span class="brand-subtitle">TRACEABILITY & MOVEMENT OPERATIONS</span></span>
       </a>
 
       <button type="button" class="nav-toggle" data-action="toggle-nav" aria-expanded="false" aria-label="Show page names"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span class="nav-toggle-label">Menu</span></button>
 
       <div class="workspace-switcher">
-        <span class="workspace-icon" aria-hidden="true">OL</span>
-        <span class="workspace-copy"><b>Judge workspace</b><small>Pharmaceutical supply</small></span>
+        <span class="workspace-icon" aria-hidden="true">OS</span>
+        <span class="workspace-copy"><b>AtMoS workspace</b><small>Pharmaceutical operations</small></span>
         <span class="status-dot" title="Local demo ready" aria-label="Local demo ready"></span>
       </div>
 
@@ -35,8 +35,11 @@
         <button class="nav-item is-active" data-view="overview" title="Overview — recall scenario summary" aria-label="Overview — recall scenario summary" aria-current="page"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="11" width="7" height="10" rx="1.5"/><rect x="3" y="13" width="7" height="8" rx="1.5"/></svg></span><span>Overview</span><span class="nav-arrow">›</span></button>
         <button class="nav-item" data-view="intake" title="Invoice intake — test the invoice gate" aria-label="Invoice intake — test the invoice gate"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 3.5h7l4 4V20a1 1 0 0 1-1 1H7a2 2 0 0 1-2-2V5.5a2 2 0 0 1 2-2Z"/><path d="M14 3.5V8h4M8 12h7M8 16h7"/></svg></span><span>Invoice intake</span></button>
         <button class="nav-item" data-view="recall" title="Recall control — recall walkthrough and hard block" aria-label="Recall control — recall walkthrough and hard block"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 21 19H3L12 3Z"/><path d="M12 9v4.5M12 17h.01"/></svg></span><span>Recall control</span><span class="nav-count">1</span></button>
+        <button class="nav-item" data-view="exceptions" title="Exception queue — human review and SLA" aria-label="Exception queue — human review and SLA"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h5M8 16h8"/></svg></span><span>Exception queue</span></button>
+        <button class="nav-item" data-view="dispositions" title="Disposition dashboard — approvals and quarantine" aria-label="Disposition dashboard — approvals and quarantine"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5M17 13h.01"/></svg></span><span>Disposition dashboard</span></button>
         <button class="nav-item" data-view="trace" title="Batch trace — supplier to customer" aria-label="Batch trace — supplier to customer"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="5" cy="6" r="2"/><circle cx="19" cy="18" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><path d="M7 6h6a4 4 0 0 1 4 4v2M17 18h-6a4 4 0 0 1-4-4v-2"/></svg></span><span>Batch trace</span></button>
         <button class="nav-item" data-view="evidence" title="Audit evidence — integrity checks and exports" aria-label="Audit evidence — integrity checks and exports"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 20 6v5c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-3Z"/><path d="m8.5 12.5 2.2 2.2 4.8-5"/></svg></span><span>Audit evidence</span></button>
+        <button class="nav-item" data-view="levenshtein" title="Levenshtein match lab — inspect edit distance" aria-label="Levenshtein match lab — inspect edit distance"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16M8 3v4M16 10v4M10 17v4"/></svg></span><span>Levenshtein match lab</span></button>
         <button class="nav-item" data-view="architecture" title="Architecture — how the control path works" aria-label="Architecture — how the control path works"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="5" rx="1"/><rect x="2.5" y="16" width="8" height="5" rx="1"/><rect x="13.5" y="16" width="8" height="5" rx="1"/><path d="M12 8v4M6.5 16v-4h11v4"/></svg></span><span>Architecture</span></button>
       </nav>
 
@@ -52,11 +55,11 @@
 
     <div class="app-main">
       <header class="topbar">
-        <div class="breadcrumb"><span>OmNi-Ledger</span><span class="crumb-sep">/</span><strong id="breadcrumb-current">Overview</strong></div>
+        <div class="breadcrumb"><span>AtMoS</span><span class="crumb-sep">/</span><strong id="breadcrumb-current">Overview</strong></div>
         <div class="topbar-actions">
           <span class="mode-chip"><span class="live-dot"></span> JUDGE EDITION</span>
           <button class="icon-button" type="button" data-view="architecture" aria-label="Open architecture and proof view" title="Architecture and proof"><svg viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="5" rx="1"/><rect x="2.5" y="16" width="8" height="5" rx="1"/><rect x="13.5" y="16" width="8" height="5" rx="1"/><path d="M12 8v4M6.5 16v-4h11v4"/></svg></button>
-          <span class="operator-avatar" aria-label="Demo operator">OL</span>
+          <span class="operator-avatar" aria-label="Demo operator">OS</span>
         </div>
       </header>
 
@@ -64,7 +67,7 @@
         <div class="loading-state"><span class="spinner"></span><span>Loading deterministic demo workspace…</span></div>
       </main>
 
-      <footer class="app-footer"><span>OmNi-Ledger · Technical evaluation build</span><span><span class="footer-dot"></span> Demo data only · No external inventory is modified</span></footer>
+      <footer class="app-footer"><span>AtMoS · Technical evaluation build · v3.5.6</span><span><span class="footer-dot"></span> Demo data only · No external inventory is modified</span></footer>
     </div>
   </div>
 

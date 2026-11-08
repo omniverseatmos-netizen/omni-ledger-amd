@@ -1,0 +1,8 @@
+Project: AtMoS Workshop Complete
+Package version: v3.5.5 (verified from package.json in the user-provided archive)
+Source archive: AtMoS_Workshop_Complete_v3.5(4).zip
+Source archive SHA-256: dd929e09ae3471abf25b17046bfce15fb566866fda451db03b2a57b836d15c9f
+Local finalization: Levenshtein suggestion-only match lab + tests + judge demo documentation
+Base source commit: Not independently verified for this archive; see handoff/RELEASE_METADATA_ORIGINAL_v3.2.0.txt for the older v3.2.0 metadata only
+Public deployment: Not performed pending explicit approval of exact public update
+Live AMD inference: Not included in offline verification

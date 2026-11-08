@@ -6,7 +6,7 @@ const clickedDownloads = [];
 const objectUrls = new Map();
 const nativeCreateObjectURL = URL.createObjectURL.bind(URL);
 URL.createObjectURL = blob => { const href = nativeCreateObjectURL(blob); objectUrls.set(href, blob); return href; };
-const navs = ['overview','intake','recall','trace','evidence','architecture'].map(view => ({
+const navs = ['overview','intake','recall','trace','evidence','levenshtein','architecture'].map(view => ({
   dataset: { view }, attrs: {}, classList: { toggle() {} },
   setAttribute(k,v) { this.attrs[k]=v; }, removeAttribute(k) { delete this.attrs[k]; },
 }));
@@ -36,8 +36,11 @@ function navigate(view) {
   });
 }
 
-test('all six judge views render meaningful, English, core-derived content', () => {
+test('all seven judge views render meaningful, English, core-derived content', () => {
   assert.match(root.innerHTML, /AI can propose/i);
+  assert.match(root.innerHTML, /AtMoS/i);
+  assert.match(root.innerHTML, /v3\.5\.6/i);
+  assert.match(root.innerHTML, /OmNiVeRsE policy platform/i);
   assert.match(root.innerHTML, /70 boxes/i);
   assert.doesNotMatch(root.innerHTML, /[\u0600-\u06FF]/);
   navigate('intake');
@@ -57,11 +60,30 @@ test('all six judge views render meaningful, English, core-derived content', () 
   assert.match(root.innerHTML, /Merkle root/i);
   assert.match(root.innerHTML, /not encryption/i);
   assert.doesNotMatch(root.innerHTML, /[\u0600-\u06FF]/);
+  navigate('levenshtein');
+  assert.match(root.innerHTML, /Levenshtein match lab/i);
+  assert.match(root.innerHTML, /Similarity is not identity/i);
+  assert.match(root.innerHTML, /NO STOCK WRITE/i);
+  assert.match(root.innerHTML, /dynamic-programming matrix/i);
+  assert.doesNotMatch(root.innerHTML, /[\u0600-\u06FF]/);
   navigate('architecture');
   assert.match(root.innerHTML, /Live AMD inference/i);
   assert.match(root.innerHTML, /fixture mode performs no network call|not evidence of live inference/i);
   assert.doesNotMatch(root.innerHTML, /[\u0600-\u06FF]/);
   assert.equal(breadcrumb.textContent, 'Architecture');
+  navigate('exceptions');
+  assert.match(root.innerHTML, /Exception queue/i);
+  assert.match(root.innerHTML, /RECALLED_BATCH/i);
+  assert.match(root.innerHTML, /quality_officer/i);
+  assert.match(root.innerHTML, /data-action="download-review-evidence"/i);
+  assert.match(root.innerHTML, /RECALL_IMPACT|Confirm recall impact/i);
+  assert.doesNotMatch(root.innerHTML, /[\u0600-\u06FF]/);
+  navigate('dispositions');
+  assert.match(root.innerHTML, /Disposition dashboard/i);
+  assert.match(root.innerHTML, /Quarantine ledger/i);
+  assert.match(root.innerHTML, /dual approval|Approve as Quality/i);
+  assert.match(root.innerHTML, /REALLOCATE/i);
+  assert.doesNotMatch(root.innerHTML, /[\u0600-\u06FF]/);
 });
 
 test('audit evidence exposes all promised report export formats', () => {
@@ -109,8 +131,11 @@ test('judge evidence pack export bundles provenance, invoice controls, recall ev
   const packFile = downloads.find(file => file.name === 'omni-ledger-judge-evidence-pack.json');
   assert.ok(packFile, 'single evidence pack download should be triggered');
   const pack = JSON.parse(await objectUrls.get(packFile.href).text());
-  assert.equal(pack.reportType, 'OmNi-Ledger Judge Evidence Pack');
+  assert.equal(pack.reportType, 'AtMoS Judge Evidence Pack');
   assert.match(pack.provenance.mode, /LOCAL_DETERMINISTIC_DEMO_NOT_LIVE/);
+  assert.equal(pack.provenance.product, 'AtMoS');
+  assert.equal(pack.provenance.core, 'OmNi-Ledger Deterministic Control Core');
+  assert.equal(pack.provenance.releaseVersion, '3.5.6');
   assert.equal(pack.provenance.liveAmdInferenceIncluded, false);
   assert.equal(pack.invoiceReferenceChecks.validFixtureAccepted, true);
   assert.equal(pack.invoiceReferenceChecks.expiredFixtureBlocked, true);
@@ -120,5 +145,9 @@ test('judge evidence pack export bundles provenance, invoice controls, recall ev
   assert.equal(pack.integrityChecks.stateSealValid, true);
   assert.ok(Array.isArray(pack.recallEvidence.auditEvents));
   assert.ok(Array.isArray(pack.recallEvidence.ledger));
+  assert.ok(Array.isArray(pack.reviewEvidence.cases));
+  assert.ok(Array.isArray(pack.reviewEvidence.lifecycleEvents));
+  assert.equal(pack.dispositionEvidence.dualApprovalRequired, true);
+  assert.deepEqual(pack.dispositionEvidence.supportedActions, ['HOLD', 'REALLOCATE', 'RETURN_TO_VENDOR', 'DESTROY']);
   assert.ok(pack.limitations.some(item => /fictional/i.test(item)));
 });

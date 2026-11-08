@@ -107,6 +107,7 @@ export function runRecallScenario({ batch = DEMO_BATCH, refNo = 'DEMO-RECALL-017
   core.allocateSO(openOrder.id, 'warehouse_operator');
 
   const recall = core.recallBatch({ itemCode, batch, warehouseCode: 'WH-OCT6', refNo, reason, actor: 'quality_officer', approver: 'qa_manager' });
+  const dispositionRequest = core.createDispositionRequest({ itemCode, batch, warehouseCode: 'WH-OCT6', disposition: 'REALLOCATE', refNo: `${refNo}-DSP`, reason: 'Replace recalled allocation before picking.', actor: 'recall_operator' });
   let pickBlock = null;
   try {
     core.confirmPick(openOrder.id, openOrder.allocations.map(a => ({ allocationId: a.id, scannedItemCode: a.itemCode, scannedBatch: a.batch })), 'picker');
@@ -127,7 +128,7 @@ export function runRecallScenario({ batch = DEMO_BATCH, refNo = 'DEMO-RECALL-017
     `Batch: ${batch}`,
     `Recall reference: ${refNo}`,
     `Recall status: ${recall.recall.status}`,
-    `Quarantined in selected warehouse: ${recall.recall.heldQty} boxes`,
+    `Quarantined available stock across recall scope: ${recall.recall.heldQty} boxes`,
     `Previously dispatched: ${trace.totals.shippedBaseUnits} boxes`,
     `Recorded customer destinations: ${traceModel.shipments.map(s => s.customerName).join(', ') || 'None'}`,
     `On hand: ${trace.totals.onHandBaseUnits} boxes`,
@@ -138,7 +139,7 @@ export function runRecallScenario({ batch = DEMO_BATCH, refNo = 'DEMO-RECALL-017
     `Merkle root: ${seal.merkleRoot}`,
   ];
   return {
-    core, itemCode, batch, refNo, reason, supplierReceipt, dispatchedOrder, openOrder, recall: recall.recall,
+    core, itemCode, batch, refNo, reason, supplierReceipt, dispatchedOrder, openOrder, recall: recall.recall, dispositionRequest,
     recallImpact, pickBlock, trace, traceModel, seal, integrity, eventRows, lines,
     generatedAt: new Date().toISOString(),
   };

@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.join(ROOT, 'public');
-const FILES = ['index.html','index-en.html','app.mjs','styles.css','domain.mjs','demo-scenarios.mjs'];
+const FILES = ['index.html','index-en.html','app.mjs','styles.css','domain.mjs','policy-experts.mjs','policy-shadow.mjs','review-queue.mjs','demo-scenarios.mjs','levenshtein.mjs'];
 const ASSETS = ['omniledger-mark.svg','omni-ledger-cover.png','omni-ledger-cover-16x9.jpg'];
 await fs.rm(OUT, { recursive: true, force: true });
 await fs.mkdir(path.join(OUT,'assets'), { recursive: true });

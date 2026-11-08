@@ -1,10 +1,14 @@
 import { runInvoiceScenario, runRecallScenario, explainDomainCode, DEMO_BATCH } from './demo-scenarios.mjs';
+import { levenshteinMatrix, rankProductCandidates } from './levenshtein.mjs';
+const PRODUCT_NAME = 'AtMoS';
+const CORE_NAME = 'OmNi-Ledger Deterministic Control Core';
+const RELEASE_VERSION = '3.5.6';
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const root = $('#main-content');
 const toastRegion = $('#toast-region');
-const viewNames = { overview: 'Overview', intake: 'Invoice intake', recall: 'Recall control', trace: 'Batch trace', evidence: 'Audit evidence', architecture: 'Architecture' };
+const viewNames = { overview: 'Overview', intake: 'Invoice intake', recall: 'Recall control', exceptions: 'Exception queue', dispositions: 'Disposition dashboard', trace: 'Batch trace', evidence: 'Audit evidence', levenshtein: 'Levenshtein match lab', architecture: 'Architecture' };
 let currentView = 'overview';
 let selectedInvoiceScenario = 'expired';
 let invoiceState = runInvoiceScenario('expired');
@@ -94,17 +98,17 @@ function renderOverview() {
   return `
     <section class="hero-panel" aria-labelledby="hero-title">
       <div class="hero-copy">
-        <div class="hero-kicker"><span class="live-dot"></span> JUDGE EDITION · DEMONSTRATION WORKSPACE</div>
+        <div class="hero-kicker"><span class="live-dot"></span> ATMOS · JUDGE EDITION · v${RELEASE_VERSION}</div>
         <h1 id="hero-title">AI can propose.<br><span class="accent">Rules control.</span></h1>
-        <p>OmNi-Ledger turns invoice understanding into governed supply-chain action. A deterministic warehouse core—not the language model—decides what can enter, move, or leave inventory, while each material event remains reviewable.</p>
+        <p>AtMoS is the control boundary for AI-assisted pharmaceutical operations. Gemma may extract invoice fields, but the OmNi-Ledger core—not the language model—decides what can enter, move, or leave inventory, while each material event remains reviewable.</p>
         <div class="hero-actions"><button class="btn" data-view="recall">Run the recall walkthrough ${icon('arrow')}</button><button class="btn btn-secondary" data-view="intake">Test invoice controls</button></div>
         <div class="hero-trustline"><span>${icon('shield')} Deterministic controls</span><span>${icon('fingerprint')} Verifiable evidence</span><span>${icon('lock')} No API key in the browser</span></div>
       </div>
     </section>
 
-    ${sectionHeading('Recall scenario · current evidence', 'Fictional demonstration records, computed from the warehouse core', `<span class="state-pill ${integrityOk ? 'ok' : 'blocked'}">${integrityOk ? 'INTEGRITY VERIFIED' : 'INTEGRITY CHECK FAILED'}</span>`)}
+    ${sectionHeading('Recall scenario · current evidence', 'Fictional demonstration records, computed from the deterministic control core', `<span class="state-pill ${integrityOk ? 'ok' : 'blocked'}">${integrityOk ? 'INTEGRITY VERIFIED' : 'INTEGRITY CHECK FAILED'}</span>`)}
     <div class="kpi-grid">
-      ${metric('Quarantined on hand', `${trace.totals.onHandBaseUnits} boxes`, `Batch ${trace.batch} · selected warehouse`, 'package', 'var(--rose)')}
+      ${metric('Quarantined on hand', `${trace.totals.onHandBaseUnits} boxes`, `Batch ${trace.batch} · single-warehouse fixture; cross-warehouse regression tested`, 'package', 'var(--rose)')}
       ${metric('Previously dispatched', `${trace.totals.shippedBaseUnits} boxes`, `${trace.shipments.length} recorded customer dispatch`, 'truck', 'var(--blue)')}
       ${metric('Post-recall pick attempt', recallState.pickBlock.blocked ? 'HARD BLOCK' : 'NOT BLOCKED', recallState.pickBlock.code ?? 'No control code', 'shield', 'var(--rose)')}
       ${metric('Integrity checks', integrityOk ? '3 / 3' : 'CHECK', 'Ledger · audit chain · state seal', 'fingerprint', 'var(--teal)')}
@@ -122,6 +126,12 @@ function renderOverview() {
       `)}
     </div>
 
+    ${sectionHeading('Product boundary', 'A focused wedge today; a reusable policy platform later')}
+    <div class="sentinel-positioning">
+      <article class="sentinel-card sentinel-card-primary"><span class="sentinel-index">NOW</span><strong>AtMoS</strong><p>Receiving and recall control for pharmaceutical operations.</p><span class="sentinel-meta">DEMO + DETERMINISTIC CORE</span></article>
+      <article class="sentinel-card"><span class="sentinel-index">CORE</span><strong>OmNi-Ledger</strong><p>The tested warehouse state machine and evidence layer underneath.</p><span class="sentinel-meta">42 CORE PASSES · 6 POSTGRES CHECKS</span></article>
+      <article class="sentinel-card"><span class="sentinel-index">NEXT</span><strong>OmNiVeRsE policy platform</strong><p>Future policy packs and integrations, not a claim of present production readiness.</p><span class="sentinel-meta">ROADMAP · NOT IN THIS DEMO</span></article>
+    </div>
     ${sectionHeading('The control path', 'The model is kept outside the final decision boundary')}
     ${panel('From document to verifiable action', 'Each stage has a distinct responsibility', flowNodes())}
     <div class="info-banner" style="margin-top:14px"><span class="banner-icon">${icon('lock')}</span><div><strong>Evidence boundary</strong><p>This browser workspace runs deterministic sample scenarios. The live AMD-hosted Gemma request is available through <code>amd_omni_pipeline.mjs</code>; the API key remains in the local shell and is never sent to this public UI.</p></div></div>
@@ -202,6 +212,8 @@ function renderRecall() {
         <div style="height:11px"></div><div class="warning-banner"><span>${icon('alert')}</span><div><strong>Human action required</strong><p>${esc(translateActionRequired(order))} The model does not automatically override or reassign this order.</p></div></div>
       ` : '<div class="empty-state">No open order matched this batch.</div>')}
     </div>
+    <div style="height:14px"></div>
+    ${panel('Disposition workflow', 'Multi-action disposition with dual approval', `<div class="stack-list"><div class="stack-row"><strong>${esc(r.dispositionRequest?.id ?? 'DSP')}</strong><p><span class="state-pill warn">${esc(r.dispositionRequest?.status ?? 'NOT CREATED')}</span> · Proposed action: <code>${esc(r.dispositionRequest?.disposition ?? 'REALLOCATE')}</code></p></div><div class="stack-row"><strong>Approval gate</strong><p>Two distinct approvers are required: <code>quality_officer</code> + <code>qa_manager</code>. Execution requires a separate <code>operations_manager</code>.</p></div><div class="stack-row"><strong>Safety boundary</strong><p>Reallocation is deterministic and requires an unpicked order plus eligible non-recalled stock. Destroy/RTV never execute from a single approval.</p></div></div>`)}
     ${sectionHeading('Event sequence', 'The audit trail records receipt, dispatch, recall, and the blocked pick')}
     ${panel('Latest control events', 'Most recent first', `<div class="timeline">${latestEvents(9).map(e => {
       const isBlock = /BLOCK|RECALL/.test(e.eventType ?? '');
@@ -211,6 +223,72 @@ function renderRecall() {
   `;
 }
 
+function reviewStateLabel(review) {
+  if (review.overdue) return '<span class="state-pill blocked">OVERDUE</span>';
+  if (review.state === 'RESOLVED') return '<span class="state-pill ok">RESOLVED</span>';
+  if (review.state === 'CLAIMED') return '<span class="state-pill warn">CLAIMED</span>';
+  if (review.state === 'ESCALATED') return '<span class="state-pill blocked">ESCALATED</span>';
+  return '<span class="state-pill">OPEN</span>';
+}
+function reviewActionMarkup(review) {
+  const exportButton = `<button class="btn btn-secondary btn-small" data-action="download-review-evidence" data-review-id="${esc(review.id)}">Export evidence</button>`;
+  if (review.state === 'OPEN' || review.state === 'ESCALATED') return `${exportButton} <button class="btn btn-secondary btn-small" data-action="claim-demo-review" data-review-id="${esc(review.id)}" data-review-role="${esc(review.requiredRole)}">Claim as ${esc(review.requiredRole)}</button>`;
+  if (review.state === 'CLAIMED' && review.assignee === 'reviewer_demo') {
+    const action = review.type === 'QC_FAIL' ? 'RETURN_TO_VENDOR' : review.type === 'RECALL_IMPACT' ? 'CONFIRM_IMPACT' : 'CONFIRM_BLOCK';
+    const label = action === 'RETURN_TO_VENDOR' ? 'Execute RTV' : action === 'CONFIRM_IMPACT' ? 'Confirm recall impact' : 'Confirm block';
+    return `${exportButton} <button class="btn btn-secondary btn-small" data-action="execute-review-action" data-review-id="${esc(review.id)}" data-review-role="${esc(review.requiredRole)}" data-review-action="${action}">${label}</button>`;
+  }
+  return `${exportButton} <span class="tone-down">${esc(review.resolution ?? review.state)}</span>`;
+}
+function quarantineRows(core) {
+  const rows = new Map();
+  for (const entry of core.ledger) {
+    if (entry.stockStatus !== 'QUARANTINE') continue;
+    const key = `${entry.itemCode}|${entry.batch}|${entry.warehouseCode}|${entry.locationKey || ''}`;
+    const row = rows.get(key) ?? { itemCode: entry.itemCode, itemName: entry.itemCode, batch: entry.batch, warehouseCode: entry.warehouseCode, locationKey: entry.locationKey, qty: 0, expiryDate: entry.expiryDate };
+    row.qty += entry.qty;
+    rows.set(key, row);
+  }
+  return [...rows.values()].filter(x => x.qty > 0);
+}
+function dispositionActionMarkup(request) {
+  const approvals = request.approvals ?? [];
+  const buttons = [];
+  if (request.status === 'PENDING_APPROVAL' && !approvals.some(x => x.role === 'quality_officer')) buttons.push(`<button class="btn btn-secondary btn-small" data-action="approve-disposition" data-disposition-id="${esc(request.id)}" data-disposition-role="quality_officer">Approve as Quality</button>`);
+  if (request.status === 'PENDING_APPROVAL' && !approvals.some(x => x.role === 'qa_manager')) buttons.push(`<button class="btn btn-secondary btn-small" data-action="approve-disposition" data-disposition-id="${esc(request.id)}" data-disposition-role="qa_manager">Approve as QA</button>`);
+  if (request.status === 'APPROVED') buttons.push(`<button class="btn btn-secondary btn-small" data-action="execute-disposition" data-disposition-id="${esc(request.id)}">Execute as Operations</button>`);
+  return buttons.join(' ') || `<span class="tone-down">${esc(request.status)}</span>`;
+}
+function renderDispositions() {
+  const core = recallState.core;
+  const requests = core.dispositionRequests;
+  const quarantine = quarantineRows(core);
+  const pending = requests.filter(x => ['PENDING_APPROVAL', 'APPROVED'].includes(x.status));
+  const held = quarantine.reduce((sum, x) => sum + x.qty, 0);
+  return `
+    <div class="view-header"><div><div class="eyebrow"><span class="line"></span> RECALL DISPOSITION CONTROL</div><h1 class="page-title">Disposition dashboard</h1><p class="page-description">Track quarantine balances, approval progress, and disposition execution from one control surface. Every button below calls the deterministic core; the dashboard never edits stock directly.</p></div><div class="header-actions"><span class="state-pill ${pending.length ? 'warn' : 'ok'}">${pending.length} ACTION${pending.length === 1 ? '' : 'S'} PENDING</span></div></div>
+    <div class="metric-strip"><div class="metric-tile accent-rose"><span>Quarantine units</span><strong>${esc(held)}</strong><small>Current local ledger balance</small></div><div class="metric-tile accent-amber"><span>Quarantine lots</span><strong>${quarantine.length}</strong><small>Item / batch / location</small></div><div class="metric-tile"><span>Disposition requests</span><strong>${requests.length}</strong><small>All lifecycle states</small></div><div class="metric-tile accent-teal"><span>Dual approvals</span><strong>${requests.filter(x => (x.approvals?.length ?? 0) >= 2).length}</strong><small>Two distinct approvers</small></div></div>
+    <div style="height:14px"></div>
+    ${panel('Disposition requests', 'Maker → two approvers → separate operations executor', requests.length ? `<div class="data-table-wrap"><table class="data-table"><thead><tr><th>Request</th><th>Recall</th><th>Action</th><th>Approvals</th><th>Status</th><th>Control</th></tr></thead><tbody>${requests.map(r => `<tr><td><strong>${esc(r.id)}</strong><div class="code-label">${esc(r.reason)}</div></td><td><code>${esc(r.recallId)}</code><div class="code-label">${esc(r.itemCode)} · ${esc(r.batch)}</div></td><td><strong>${esc(r.disposition)}</strong><div class="code-label">Ref ${esc(r.refNo)}</div></td><td>${(r.approvals ?? []).map(a => `<div class="code-label">${esc(a.role)} · ${esc(a.actor)}</div>`).join('') || '<span class="tone-down">0 / 2</span>'}</td><td>${pill(r.status, r.status === 'EXECUTED' ? 'ok' : r.status === 'REJECTED' ? 'blocked' : 'warn')}</td><td>${dispositionActionMarkup(r)}</td></tr>`).join('')}</tbody></table></div>` : '<div class="empty-state">No disposition requests in this local scenario.</div>')}
+    <div style="height:14px"></div>
+    ${panel('Quarantine ledger', 'Derived from immutable ledger entries; positive balances only', quarantine.length ? `<div class="data-table-wrap"><table class="data-table"><thead><tr><th>Item</th><th>Batch</th><th>Warehouse / location</th><th>Expiry</th><th>Held units</th><th>Recall state</th></tr></thead><tbody>${quarantine.map(q => { const recall = core.recalls.get(`${q.itemCode}|${q.batch}`); return `<tr><td><strong>${esc(q.itemName)}</strong><div class="code-label">${esc(q.itemCode)}</div></td><td><code>${esc(q.batch)}</code></td><td>${esc(q.warehouseCode)}<div class="code-label">${esc(q.locationKey)}</div></td><td>${esc(q.expiryDate)}</td><td><strong>${esc(q.qty)}</strong></td><td>${pill(recall?.status ?? 'UNLINKED', recall?.status === 'ACTIVE' ? 'blocked' : 'warn')}</td></tr>`; }).join('')}</tbody></table></div>` : '<div class="empty-state">No positive quarantine balances.</div>')}
+    <div style="height:14px"></div>
+    ${panel('Control contract', 'What this dashboard guarantees', `<div class="stack-list"><div class="stack-row"><strong>Evidence</strong><p>Every approval and execution is chained into the audit log and included in the evidence pack.</p></div><div class="stack-row"><strong>Separation</strong><p>The requester, two approvers, and operations executor are separate control points.</p></div><div class="stack-row"><strong>Safety</strong><p>Quarantine is read from the ledger. A UI click cannot invent stock, bypass a recall, or execute an unapproved disposition.</p></div></div>`)}
+  `;
+}
+function renderExceptions() {
+  const core = recallState.core;
+  const rows = core.listReviewCases({ now: core._iso() });
+  const open = rows.filter(x => !['RESOLVED', 'CANCELLED'].includes(x.state));
+  return `
+    <div class="view-header"><div><div class="eyebrow"><span class="line"></span> HUMAN REVIEW CONTROL</div><h1 class="page-title">Exception queue</h1><p class="page-description">Deterministic blocks become assigned human work. Reviewers can claim a case, inspect its evidence, and resolve it through a domain action; the queue never writes inventory directly.</p></div><div class="header-actions"><span class="state-pill ${open.length ? 'blocked' : 'ok'}">${open.length} OPEN CASE${open.length === 1 ? '' : 'S'}</span></div></div>
+    <div class="metric-strip"><div class="metric-tile"><span>Open cases</span><strong>${open.length}</strong><small>Current local scenario</small></div><div class="metric-tile accent-rose"><span>Critical</span><strong>${rows.filter(x => x.severity === 'CRITICAL' && x.state !== 'RESOLVED').length}</strong><small>Highest deterministic priority</small></div><div class="metric-tile accent-amber"><span>Claimed</span><strong>${rows.filter(x => x.state === 'CLAIMED').length}</strong><small>Human work in progress</small></div><div class="metric-tile accent-teal"><span>Audit events</span><strong>${core.audit.filter(x => x.eventType.startsWith('REVIEW_')).length}</strong><small>Queue lifecycle evidence</small></div></div>
+    <div style="height:14px"></div>
+    ${panel('Review worklist', 'Sorted by severity, overdue status, due time, and creation time', rows.length ? `<div class="data-table-wrap"><table class="data-table"><thead><tr><th>Case</th><th>Type</th><th>Priority</th><th>Required role</th><th>Due</th><th>Action</th></tr></thead><tbody>${rows.map(r => `<tr><td><strong>${esc(r.id)}</strong><div class="code-label">${esc(r.exceptionId)} · ${esc(r.sourceId)}</div></td><td><strong>${esc(r.type)}</strong><div class="code-label">${esc(r.blockedAction)}</div></td><td>${pill(r.severity, r.severity === 'CRITICAL' ? 'blocked' : r.severity === 'HIGH' ? 'warn' : 'ok')}<div style="height:5px"></div>${reviewStateLabel(r)}</td><td><code>${esc(r.requiredRole)}</code>${r.assignee ? `<div class="code-label">${esc(r.assignee)}</div>` : ''}</td><td><span class="mono">${esc(dateTimeLabel(r.dueAt))}</span></td><td>${reviewActionMarkup(r)}</td></tr>`).join('')}</tbody></table></div>` : '<div class="empty-state">No review cases were opened in this scenario.</div>')}
+    <div style="height:14px"></div>
+    ${panel('Control boundary', 'What the reviewer can and cannot do', `<div class="stack-list"><div class="stack-row"><strong>Can</strong><p>Claim a case when the required role matches, inspect source evidence, add a resolution note, and invoke a tested domain operation.</p></div><div class="stack-row"><strong>Cannot</strong><p>Change the ledger directly, bypass a state transition, approve outside the assigned role, or resolve a case without an audit event.</p></div></div>`)}
+  `;
+}
 function renderTrace() {
   const trace = recallState.traceModel;
   const supplier = trace.supplier[0];
@@ -268,6 +346,24 @@ function renderEvidence() {
   `;
 }
 
+function renderLevenshtein() {
+  const value = $('#lev-input')?.value ?? 'Amoxcillin 500mg';
+  const candidates = [
+    { name: 'Amoxicillin 500mg', sku: 'DEMO-AMX-500' },
+    { name: 'Amoxicillin 250mg', sku: 'DEMO-AMX-250' },
+    { name: 'Paracetamol 500mg', sku: 'DEMO-PAR-500' },
+  ];
+  const ranked = rankProductCandidates(value, candidates);
+  const best = ranked[0];
+  const result = best ? levenshteinMatrix(value, best.name) : { matrix: [[]], left: [], right: [] };
+  const columns = result.right.map(char => `<th class="lev-label">${esc(char)}</th>`).join('');
+  const rows = result.matrix.map((row, i) => `<tr><th class="lev-label">${i === 0 ? '∅' : esc(result.left[i - 1])}</th>${row.map((n, j) => `<td class="lev-cell${i === result.matrix.length - 1 && j === row.length - 1 ? ' lev-final' : ''}">${n}</td>`).join('')}</tr>`).join('');
+  return `<div class="view-header"><div><div class="eyebrow"><span class="line"></span> ALGORITHM WALKTHROUGH · LOCAL ONLY</div><h1 class="page-title">Levenshtein match lab</h1><p class="page-description">See how character-level edit distance ranks OCR-like text against fictional catalog labels. The calculation is transparent and deterministic; the result is a candidate suggestion, not a product identity decision.</p></div></div>
+  <div class="lev-hero"><div class="lev-hero-icon" aria-hidden="true">↔</div><div><strong>Similarity is not identity.</strong><span>A human must verify product, strength, form, batch, expiry, and SKU before the deterministic inventory gate can act.</span></div><span class="lev-local">NO NETWORK · NO STOCK WRITE</span></div>
+  <div class="layout-grid"><section class="panel"><div class="panel-header"><div><div class="panel-heading">1 · Read the OCR-like input</div><div class="subtle-label">Edit the sample to see ranking update live</div></div></div><div class="panel-body"><div class="field"><label for="lev-input">Product text</label><input id="lev-input" class="control" type="text" maxlength="40" value="${esc(value)}" autocomplete="off"><small>Sample text and candidate catalog are fictional. Runs locally in the browser.</small></div><div class="lev-step-arrow" aria-hidden="true">↓</div><div class="lev-result-label">2 · Ranked suggestions</div>${ranked.map((r,i)=>`<div class="lev-result"><span class="lev-rank">${i+1}</span><div><strong>${esc(r.name)}</strong><small>SKU ${esc(r.sku)}</small></div><span class="lev-distance">${r.distance}<small>edits</small></span></div>`).join('')}<div class="lev-no-autoselect">No score threshold or auto-selection is applied.</div></div></section>
+  <section class="panel"><div class="panel-header"><div><div class="panel-heading">3 · Inspect the dynamic-programming matrix</div><div class="subtle-label">Rows = normalized input · columns = normalized top candidate</div></div></div><div class="panel-body lev-matrix-scroll"><div class="lev-distance-summary">Top suggestion edit distance <strong>${best?.distance ?? '—'}</strong> edits</div><table class="lev-matrix" aria-label="Levenshtein dynamic programming matrix"><thead><tr><th class="lev-corner">∅</th>${columns}</tr></thead><tbody>${rows}</tbody></table><div class="lev-matrix-caption">Bottom-right cell = minimum insertions + deletions + substitutions required.</div></div></section></div>
+  <div class="lev-boundary"><span class="lev-boundary-check" aria-hidden="true">✓</span><span><strong>Control boundary preserved.</strong> This view cannot select a drug, modify inventory, create a ledger event, or execute a warehouse action. It demonstrates one proposed matching aid—not a clinical recommendation or production matching policy.</span></div>`;
+}
 function renderArchitecture() {
   return `
     <div class="view-header"><div><div class="eyebrow"><span class="line"></span> SYSTEM BOUNDARIES</div><h1 class="page-title">Architecture &amp; proof model</h1><p class="page-description">The design separates probabilistic document understanding from deterministic operational authority. Each layer has a bounded responsibility and a defined failure mode.</p></div></div>
@@ -297,7 +393,7 @@ function renderArchitecture() {
     ${sectionHeading('Evidence status', 'What this package can and cannot claim')}
     ${panel('Claim discipline', 'Use the proof that matches the executed build', `
       <div class="stack-list">
-        <div class="stack-row"><strong>Locally proven here</strong><p>Invoice accept/block behavior, batch recall, selected-warehouse quarantine, blocking a pre-allocated pick, customer-level dispatch tracing, hash-chain verification, and report export.</p></div>
+        <div class="stack-row"><strong>Locally proven here</strong><p>Invoice accept/block behavior, batch recall, inventory-wide quarantine of available stock, blocking a pre-allocated pick, customer-level dispatch tracing, hash-chain verification, and report export.</p></div>
         <div class="stack-row"><strong>Must be run with credentials</strong><p>Live Gemma extraction through the configured AMD endpoint, including the exact model name, HTTP response, request ID if returned, and the deterministic result downstream.</p></div>
         <div class="stack-row"><strong>Outside this prototype</strong><p>Patient-level tracing, sub-pharmacy trace, individual GS1 serialization, customer returns, live multi-user operations, regulated production deployment, and a legal digital signature.</p></div>
       </div>
@@ -316,7 +412,7 @@ function setView(view, { focus = true } = {}) {
   $('#breadcrumb-current').textContent = viewNames[view];
   root.setAttribute('aria-busy', 'true');
   try {
-    root.innerHTML = ({ overview: renderOverview, intake: renderInvoice, recall: renderRecall, trace: renderTrace, evidence: renderEvidence, architecture: renderArchitecture })[view]();
+    root.innerHTML = ({ overview: renderOverview, intake: renderInvoice, recall: renderRecall, exceptions: renderExceptions, dispositions: renderDispositions, trace: renderTrace, evidence: renderEvidence, levenshtein: renderLevenshtein, architecture: renderArchitecture })[view]();
   } catch (error) {
     root.innerHTML = `<div class="danger-banner"><span>${icon('alert')}</span><div><strong>View render failed</strong><p>${esc(error.message)}</p></div></div>`;
     console.error('View render failed', error);
@@ -356,7 +452,7 @@ function toCsv(rows) { return '\ufeff' + rows.map(row => row.map(csvCell).join('
 function exportTracePayload() {
   const r = recallState;
   return {
-    reportType: 'OmNi-Ledger Batch Trace — Demonstration Data', generatedAt: r.generatedAt,
+    reportType: 'AtMoS Batch Trace — Demonstration Data', generatedAt: r.generatedAt,
     scope: 'Batch-level trace through recorded warehouse dispatch; no patient or downstream sub-pharmacy tracking.',
     itemCode: r.traceModel.itemCode, itemName: r.traceModel.itemName, batch: r.traceModel.batch, expiryDate: r.traceModel.expiryDate,
     recall: { id: r.recall.id, status: r.recall.status, refNo: r.recall.refNo, reason: r.recall.reason, warehouseCode: r.recall.warehouseCode, heldQty: r.recall.heldQty },
@@ -368,7 +464,23 @@ function exportTracePayload() {
 }
 function exportAuditPayload() {
   const r = recallState;
-  return { reportType: 'OmNi-Ledger Audit Evidence — Demonstration Data', generatedAt: r.generatedAt, disclaimer: 'Fictional local scenario. Hashes are tamper-evident integrity data, not encryption or a legal signature.', recallTrace: exportTracePayload(), ledger: r.core.ledger, auditEvents: r.core.audit, stateSeal: r.seal };
+  return { reportType: 'AtMoS Audit Evidence — Demonstration Data', generatedAt: r.generatedAt, disclaimer: 'Fictional local scenario. Hashes are tamper-evident integrity data, not encryption or a legal signature.', recallTrace: exportTracePayload(), ledger: r.core.ledger, auditEvents: r.core.audit, reviewCases: r.core.reviewCases, reviewAuditEvents: r.core.audit.filter(e => e.eventType.startsWith('REVIEW_')), stateSeal: r.seal };
+}
+function exportReviewCasePayload(reviewId) {
+  const core = recallState.core;
+  const review = core.reviewCases.find(x => x.id === reviewId);
+  if (!review) throw new Error(`Review case not found: ${reviewId}`);
+  const exception = core.exceptions.find(x => x.id === review.exceptionId) ?? null;
+  const lifecycleEvents = core.audit.filter(e => e.sourceType === 'ReviewCase' && e.sourceId === review.id || e.correlationId === review.exceptionId);
+  const linkedLedger = core.ledger.filter(e => e.sourceId === review.sourceId || e.correlationId === review.sourceId || (exception?.itemCode && e.itemCode === exception.itemCode && exception.batch && e.batch === exception.batch));
+  const seal = core.createSeal();
+  return {
+    reportType: 'AtMoS Review Case Evidence', schemaVersion: '1.0.0', generatedAt: new Date().toISOString(),
+    provenance: { product: PRODUCT_NAME, core: CORE_NAME, releaseVersion: RELEASE_VERSION, mode: 'LOCAL_DETERMINISTIC_DEMO_NOT_LIVE_AMD' },
+    reviewCase: review, exception, lifecycleEvents, linkedLedger, dispositionRequests: core.dispositionRequests.filter(x => x.recallId === exception?.sourceId || x.itemCode === exception?.itemCode && x.batch === exception?.batch), stateSeal: seal,
+    integrity: { ledger: core.verifyLedgerIntegrity(), audit: core.verifyAuditIntegrity(), seal: core.verifySeal(seal) },
+    disclaimer: 'This export records a fictional local review lifecycle. A resolved review is not permission to bypass a deterministic control; operational authority remains in the core.',
+  };
 }
 function exportAuditCsv() {
   const rows = [['event_type','entity_type','entity_id','actor','timestamp','event_hash'], ...recallState.core.audit.map(e => [e.eventType,e.entityType,e.entityId,e.actor,e.timestamp,e.hash])];
@@ -388,11 +500,14 @@ function exportEvidencePack() {
     stateSealValid: recallState.integrity.seal.ok === true,
   };
   return {
-    reportType: 'OmNi-Ledger Judge Evidence Pack',
-    schemaVersion: '1.0.0',
+    reportType: 'AtMoS Judge Evidence Pack',
+    schemaVersion: '1.1.0',
     generatedAt: new Date().toISOString(),
-    software: { name: 'OmNi-Ledger Judge Edition', version: '3.0.10' },
+    software: { name: PRODUCT_NAME, core: CORE_NAME, version: RELEASE_VERSION },
     provenance: {
+      product: PRODUCT_NAME,
+      core: CORE_NAME,
+      releaseVersion: RELEASE_VERSION,
       mode: 'LOCAL_DETERMINISTIC_DEMO_NOT_LIVE_AMD',
       browserInference: 'NOT RUN',
       liveAmdInferenceIncluded: false,
@@ -414,6 +529,17 @@ function exportEvidencePack() {
       expiredFixtureBlocked: checks.expiredFixtureBlocked,
     },
     recallEvidence: auditPayload,
+    reviewEvidence: {
+      cases: recallState.core.reviewCases,
+      lifecycleEvents: recallState.core.audit.filter(e => e.eventType.startsWith('REVIEW_')),
+      statement: 'Review resolution is a human-review lifecycle record. Confirmed blocks do not bypass or mutate deterministic inventory controls.',
+    },
+    dispositionEvidence: {
+      requests: recallState.core.dispositionRequests,
+      lifecycleEvents: recallState.core.audit.filter(e => e.eventType.startsWith('DISPOSITION_') || e.eventType === 'SO_REALLOCATED'),
+      dualApprovalRequired: true,
+      supportedActions: ['HOLD', 'REALLOCATE', 'RETURN_TO_VENDOR', 'DESTROY'],
+    },
     integrityChecks: {
       ...checks,
       passCount: Object.values(checks).filter(Boolean).length,
@@ -435,7 +561,7 @@ function exportEvidencePack() {
 }
 function toReadableHtmlReport(report) {
   const trace = report.recallTrace ?? report;
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>OmNi-Ledger · Evidence Report</title><style>body{margin:40px auto;max-width:1050px;padding:0 24px;font:15px/1.7 system-ui;background:#f5f8fb;color:#1c2a3b}h1{font-size:30px}h2{margin-top:32px}p{color:#475b72}.stamp{display:inline-block;background:#dcfce7;color:#166534;border-radius:7px;padding:5px 9px;font-size:11px;font-weight:700}pre{white-space:pre-wrap;word-break:break-word;background:#e9eff5;border:1px solid #d4e0e9;border-radius:10px;padding:18px;font:12px/1.6 ui-monospace,monospace}table{width:100%;border-collapse:collapse;background:white}th,td{text-align:left;padding:10px;border-bottom:1px solid #e1e8ee;font-size:12px}</style></head><body><h1>OmNi-Ledger</h1><p>Batch Recall &amp; Traceability · Demonstration Evidence Report</p><span class="stamp">${esc(trace.recall?.status ?? 'LOCAL DEMO')}</span><h2>Trace summary</h2><pre>${esc(JSON.stringify(trace, null, 2))}</pre><h2>Evidence disclaimer</h2><p>This report reflects a fictional local test scenario using the packaged deterministic core. It does not prove a live AMD request, patient-level traceability, external attestation, or production deployment.</p><h2>Full report payload</h2><pre>${esc(JSON.stringify(report, null, 2))}</pre></body></html>`;
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>AtMoS · Evidence Report</title><style>body{margin:40px auto;max-width:1050px;padding:0 24px;font:15px/1.7 system-ui;background:#f5f8fb;color:#1c2a3b}h1{font-size:30px}h2{margin-top:32px}p{color:#475b72}.stamp{display:inline-block;background:#dcfce7;color:#166534;border-radius:7px;padding:5px 9px;font-size:11px;font-weight:700}pre{white-space:pre-wrap;word-break:break-word;background:#e9eff5;border:1px solid #d4e0e9;border-radius:10px;padding:18px;font:12px/1.6 ui-monospace,monospace}table{width:100%;border-collapse:collapse;background:white}th,td{text-align:left;padding:10px;border-bottom:1px solid #e1e8ee;font-size:12px}</style></head><body><h1>AtMoS</h1><p>Deterministic Receiving &amp; Recall · Demonstration Evidence Report</p><span class="stamp">${esc(trace.recall?.status ?? 'LOCAL DEMO')}</span><h2>Trace summary</h2><pre>${esc(JSON.stringify(trace, null, 2))}</pre><h2>Evidence disclaimer</h2><p>This report reflects a fictional local test scenario using the packaged deterministic core. It does not prove a live AMD request, patient-level traceability, external attestation, or production deployment.</p><h2>Full report payload</h2><pre>${esc(JSON.stringify(report, null, 2))}</pre></body></html>`;
 }
 function runInvoice() {
   const select = $('#invoice-scenario-select');
@@ -465,11 +591,52 @@ function setNavExpanded(open) {
   toggle?.setAttribute?.('aria-label', open ? 'Hide page names' : 'Show page names');
 }
 
-function handleAction(action) {
+function handleAction(action, actionEl = null) {
   switch (action) {
     case 'toggle-nav': setNavExpanded(!document.querySelector('.sidebar')?.classList?.contains('is-expanded')); break;
     case 'close-nav': setNavExpanded(false); break;
     case 'run-invoice': runInvoice(); break;
+    case 'claim-demo-review': {
+      try {
+        recallState.core.claimReview(actionEl?.dataset?.reviewId, { actor: 'reviewer_demo', role: actionEl?.dataset?.reviewRole, now: recallState.core._iso() });
+        setView('exceptions');
+        toast('Review case claimed by the required role.');
+      } catch (error) { toast(`${error.code ?? 'REVIEW_ERROR'}: ${error.message}`, 'error'); }
+      break;
+    }
+    case 'confirm-review': {
+      try {
+        recallState.core.resolveReview(actionEl?.dataset?.reviewId, { actor: 'reviewer_demo', role: actionEl?.dataset?.reviewRole, resolution: 'CONFIRMED_BLOCK', note: 'Reviewed the evidence; the deterministic block remains in force.', now: recallState.core._iso() });
+        setView('exceptions');
+        toast('Review closed as a confirmed block; no inventory was changed.');
+      } catch (error) { toast(`${error.code ?? 'REVIEW_ERROR'}: ${error.message}`, 'error'); }
+      break;
+    }
+    case 'execute-review-action': {
+      try {
+        const action = actionEl?.dataset?.reviewAction;
+        const reviewId = actionEl?.dataset?.reviewId;
+        recallState.core.resolveReviewWithAction(reviewId, { actor: 'reviewer_demo', role: actionEl?.dataset?.reviewRole, action, now: recallState.core._iso() });
+        setView('exceptions');
+        toast(action === 'RETURN_TO_VENDOR' ? 'QC failure resolved through RTV; quarantine balance was reduced by the core.' : 'Review action recorded; deterministic control remains enforced.');
+      } catch (error) { toast(`${error.code ?? 'REVIEW_ACTION_ERROR'}: ${error.message}`, 'error'); }
+      break;
+    }
+    case 'download-review-evidence': {
+      try { const payload = exportReviewCasePayload(actionEl?.dataset?.reviewId); downloadBlob(`atmos-review-${actionEl?.dataset?.reviewId}.json`, JSON.stringify(payload, null, 2), 'application/json;charset=utf-8'); toast('Review case evidence exported.'); }
+      catch (error) { toast(`${error.code ?? 'EVIDENCE_ERROR'}: ${error.message}`, 'error'); }
+      break;
+    }
+    case 'approve-disposition': {
+      try { const role = actionEl?.dataset?.dispositionRole; const actor = role === 'quality_officer' ? 'quality_approver_demo' : 'qa_approver_demo'; recallState.core.approveDisposition(actionEl?.dataset?.dispositionId, { actor, role, note: 'Approved in the local control demonstration.' }); setView('dispositions'); toast(`${role} approval recorded.`); }
+      catch (error) { toast(`${error.code ?? 'DISPOSITION_APPROVAL_ERROR'}: ${error.message}`, 'error'); }
+      break;
+    }
+    case 'execute-disposition': {
+      try { recallState.core.executeDisposition(actionEl?.dataset?.dispositionId, { actor: 'operations_executor_demo', role: 'operations_manager' }); setView('dispositions'); toast('Disposition executed through the deterministic core.'); }
+      catch (error) { toast(`${error.code ?? 'DISPOSITION_EXECUTION_ERROR'}: ${error.message}`, 'error'); }
+      break;
+    }
     case 'copy-live-command': copyText('export AMD_TOKENFACTORY_API_KEY="PASTE_YOUR_KEY_IN_THIS_LOCAL_TERMINAL"\nnpm run amd:live', 'Secure live-inference setup copied. Keep the key in your local terminal.'); break;
     case 'copy-expired-command': copyText('npm run amd:expired', 'Expired-batch test command copied.'); break;
     case 'copy-live-run': copyText('npm run amd:live', 'Live inference command copied.'); break;
@@ -487,11 +654,17 @@ function handleAction(action) {
 
 document.addEventListener('click', event => {
   const actionEl = event.target.closest('[data-action]');
-  if (actionEl) { event.preventDefault(); handleAction(actionEl.dataset.action); return; }
+  if (actionEl) { event.preventDefault(); handleAction(actionEl.dataset.action, actionEl); return; }
   const viewEl = event.target.closest('[data-view]');
   if (viewEl) { event.preventDefault(); setView(viewEl.dataset.view); setNavExpanded(false); }
 });
 
+document.addEventListener('input', event => {
+  if (event.target.id !== 'lev-input' || currentView !== 'levenshtein') return;
+  const cursor = event.target.selectionStart;
+  setView('levenshtein', { focus: false });
+  const input = $('#lev-input'); input?.focus(); input?.setSelectionRange(cursor, cursor);
+});
 document.addEventListener('change', event => {
   if (event.target.id !== 'invoice-scenario-select') return;
   selectedInvoiceScenario = event.target.value === 'valid' ? 'valid' : 'expired';

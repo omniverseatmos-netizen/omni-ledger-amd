@@ -1,16 +1,12 @@
 {
-  "name": "OmNi-Ledger Judge Edition",
-  "version": "3.0.10",
-  "created_at": "2026-10-22T15:55:43.426Z",
+  "name": "AtMoS / OmNi-Ledger Core",
+  "version": "3.5.6",
+  "created_at": "2026-11-08T03:02:24.740Z",
   "manifest_policy": "SHA-256 for all project files except RELEASE_MANIFEST.json, INVENTORY.tsv, TEST_LOG.txt, and VERIFY_LOG.txt (the last two are generated verification transcripts).",
   "source_of_truth": "The root source files; public/ is the generated static deployment copy and is included for byte-level review.",
-  "file_count": 99,
+  "file_count": 217,
   "automated_check_summary": {
-    "source_suites": 8,
-    "source_test_count": 168,
-    "judge_acceptance_tests": 13,
-    "total_test_count": 181,
-    "result": "See TEST_LOG.txt and VERIFY_LOG.txt; live AMD inference is not included in offline checks."
+    "result": "See TEST_LOG.txt and VERIFY_LOG.txt for final local checks; live AMD inference is not included in offline checks."
   },
   "files": [
     {
@@ -23,8 +19,8 @@
     {
       "path": ".github/workflows/ci.yml",
       "type": "CI workflow",
-      "size_bytes": 429,
-      "sha256": "c084a8f4380a070607c516131f537cacb8cc369418075894daa7a70b9a2fdf5b",
+      "size_bytes": 2407,
+      "sha256": "726c15fb3b9b8b415b0eebe7180678aab4fa5f7948810660cdb868b65cb89989",
       "role": "CI and Pages automation"
     },
     {
@@ -35,31 +31,52 @@
       "role": "CI and Pages automation"
     },
     {
+      "path": ".github/workflows/staging-loadtest.yml",
+      "type": "CI workflow",
+      "size_bytes": 3465,
+      "sha256": "d13bb1d927799d2018b964f48d884abff51b8f7050d0dc845f08b4f3ecc8bc75",
+      "role": "CI and Pages automation"
+    },
+    {
       "path": ".gitignore",
       "type": "Project file",
-      "size_bytes": 76,
-      "sha256": "7f616bef46e8d6e8b0c14475b7d75368a10b6720b7f21554f46a6f0c0c15b682",
+      "size_bytes": 84,
+      "sha256": "e6285d93bf6a7e8efa739ca9128bac91e00a359657421bdcb7c74e76d039b33f",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "00_START_HERE_FINAL_REVIEW_AND_READINESS.md",
+      "type": "Documentation",
+      "size_bytes": 7711,
+      "sha256": "55f64cba8c03039559322f422269a99928f3d9be28950989a5d3e5adb8418e72",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "01_UPDATE_AFTER_DELIVERY_v3.5.4.md",
+      "type": "Documentation",
+      "size_bytes": 1881,
+      "sha256": "1406aa4c552f1b56611a6d4ae5264f3afc9d703bc99597b0c6ef09a9bc1a1635",
       "role": "Supporting project file"
     },
     {
       "path": "amd_omni_pipeline.mjs",
       "type": "JavaScript module",
-      "size_bytes": 10741,
-      "sha256": "332e306dfc0fbbc40dbf95c227297e6a5b808270168d6186f5d4f11ce97d24e3",
+      "size_bytes": 10740,
+      "sha256": "f25f930a3a6e6da14613ac1f747a2618608a61bb3a721398570b5af16fdc3b34",
       "role": "AMD-hosted model extraction CLI"
     },
     {
       "path": "app.mjs",
       "type": "JavaScript module",
-      "size_bytes": 53459,
-      "sha256": "3ec39d6a80a87e816b3d2446c516ab56507eeae79adaa3b9c273250964bafeac",
+      "size_bytes": 75506,
+      "sha256": "1eba61b3d3d826044f632e159175ae597017009e9e17315662bb904dbc9a8e6e",
       "role": "English judge interface"
     },
     {
       "path": "ARCHITECTURE.md",
       "type": "Documentation",
-      "size_bytes": 2277,
-      "sha256": "b2df808fd2f362d7d373c6ebf8ddbf40c4a56a3061e29b043b46f6e886b0e495",
+      "size_bytes": 2424,
+      "sha256": "9e5623a896021c1a55cd03a4db42bcd11b1b0cb01e07f6e2c57cf015aa5e5f70",
       "role": "Supporting project file"
     },
     {
@@ -84,6 +101,20 @@
       "role": "Brand/visual asset"
     },
     {
+      "path": "ATMOS_ENTERPRISE_DEPLOYMENT_AND_DISTRIBUTED_LOAD_GUIDE_AR.md",
+      "type": "Documentation",
+      "size_bytes": 11996,
+      "sha256": "523424ad9b8646c08531a4d66f48002c27d1ae65435f82fda8a07af372a05111",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "ATMOS_IDENTITY.md",
+      "type": "Documentation",
+      "size_bytes": 478,
+      "sha256": "7f4d13394169fd79b65dd3f8bbeff293a2ba6c7a885331cd3119646e98da9fc9",
+      "role": "Supporting project file"
+    },
+    {
       "path": "BENCHMARK.md",
       "type": "Documentation",
       "size_bytes": 1603,
@@ -96,6 +127,13 @@
       "size_bytes": 5628,
       "sha256": "66bc12e80529c900dcff587c5075b42a92b34be44de9e149198417a9fc46a30b",
       "role": "Regression test suite"
+    },
+    {
+      "path": "CHANGELOG_pilot_postgres.md",
+      "type": "Documentation",
+      "size_bytes": 919,
+      "sha256": "c0d64a84bf9d7fa6f0c69d2abacebb165d79740857f649c6aa13f849f27455c3",
+      "role": "Supporting project file"
     },
     {
       "path": "CHANGELOG_v3.0.0.md",
@@ -175,6 +213,27 @@
       "role": "Supporting project file"
     },
     {
+      "path": "CHANGELOG_v3.1.0.md",
+      "type": "Documentation",
+      "size_bytes": 662,
+      "sha256": "738b546983c69b476a69f7df1a536e7781f2450640c9be6648bca7e41f1108fe",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "CHANGELOG_v3.5.4.md",
+      "type": "Documentation",
+      "size_bytes": 676,
+      "sha256": "f63981846e0275fc8327738f4914a057dafdad7c7091feb03b68fbc7de2ceec7",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "CHANGELOG_v3.5.6.md",
+      "type": "Documentation",
+      "size_bytes": 1055,
+      "sha256": "a7573d8ddde2455be04e8f089688ae98d2079174a3d4d5f457ee7a8aadbb62e4",
+      "role": "Supporting project file"
+    },
+    {
       "path": "closure-tests.mjs",
       "type": "JavaScript module",
       "size_bytes": 9422,
@@ -182,10 +241,17 @@
       "role": "Regression test suite"
     },
     {
+      "path": "DEMO_AIRPLANE_MODE_CHECKLIST_AR.md",
+      "type": "Documentation",
+      "size_bytes": 1728,
+      "sha256": "ee3a4d5075b8210ddc71eecbb2e0c04745bef3e3f187db785cd360605d1a5dab",
+      "role": "Supporting project file"
+    },
+    {
       "path": "DEMO_SCRIPT.md",
       "type": "Documentation",
-      "size_bytes": 3184,
-      "sha256": "87f2a0cdc0c3ef2d60182b3b7019d7c40a2cfb1cc800b0d886113fb48ecb9800",
+      "size_bytes": 2892,
+      "sha256": "599165ba68df088019a9f60e589281f7b701baa0102f230bc5766b9aee58f77a",
       "role": "Demo narration"
     },
     {
@@ -198,16 +264,226 @@
     {
       "path": "demo-scenarios.mjs",
       "type": "JavaScript module",
-      "size_bytes": 9756,
-      "sha256": "8a7e764e425b39c01887270c3824573674fb9e63a601745e62f0687b8ad53ea6",
+      "size_bytes": 10028,
+      "sha256": "ea7660a43f97cb36ee0bc21df3cdbaee1696d847b148a741571b41791319da8c",
       "role": "Supporting project file"
+    },
+    {
+      "path": "deploy/.env.example",
+      "type": "Project file",
+      "size_bytes": 1067,
+      "sha256": "3dc0ba3ffaae73d1d88b7b09829dee6beedadfd4e52cf4734564934c9935e3af",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "deploy/compose.postgres.yml",
+      "type": "CI workflow",
+      "size_bytes": 2314,
+      "sha256": "220756f33714d288d3585aba59c6237e90af4a036f7b2f7cfad6ef599548fe32",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "deploy/Dockerfile.pilot",
+      "type": "Project file",
+      "size_bytes": 508,
+      "sha256": "756de161e22fa65b2955960ac192bfa26c0befb1af288633bf2fec22c3b9ada2",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "docs/eip-v3.5.4/01_EIP_Master_Strategic_Dossier_FINAL.md",
+      "type": "Documentation",
+      "size_bytes": 12158,
+      "sha256": "cf43f1f6f5a5e7afa4db3a8b764b098d2410a07b5d137349a9c63b94bad42438",
+      "role": "Supporting technical documentation"
+    },
+    {
+      "path": "docs/eip-v3.5.4/02_EIP_Pitch_Script_and_QA_FINAL.md",
+      "type": "Documentation",
+      "size_bytes": 10561,
+      "sha256": "a69c076afb5b2b0bc5b4577ad7cd4cfc443bb6d06fd20209fc0684e86848767f",
+      "role": "Supporting technical documentation"
+    },
+    {
+      "path": "docs/eip-v3.5.4/03_EIP_Roadmap_and_Execution_Timeline_FINAL.md",
+      "type": "Documentation",
+      "size_bytes": 5729,
+      "sha256": "db4612744cdee577fe384b4a310b778cb75446c26b4c1a935f5413890bb29814",
+      "role": "Supporting technical documentation"
+    },
+    {
+      "path": "docs/eip-v3.5.4/04_Workshop_Oct21_Pocket_Field_Guide_FINAL.md",
+      "type": "Documentation",
+      "size_bytes": 5871,
+      "sha256": "5082670fe8e5e805f7998f9ba75d5e72ba9e19322b2d36ffc7a9e3f24e5c5b04",
+      "role": "Supporting technical documentation"
+    },
+    {
+      "path": "docs/eip-v3.5.4/05_Evidence_One_Pager_FINAL.md",
+      "type": "Documentation",
+      "size_bytes": 4905,
+      "sha256": "8607701216f6f0869b8549934afce04f93c5c116aea486aac58de69028346ee8",
+      "role": "Supporting technical documentation"
+    },
+    {
+      "path": "docs/eip-v3.5.4/06_Pitch_Script_3min_AR_EN_FINAL.md",
+      "type": "Documentation",
+      "size_bytes": 8328,
+      "sha256": "640a1082bcaea5f546cf3cc2e8a2d1fd576c842f882b307bc0081c867c4f8aaf",
+      "role": "Supporting technical documentation"
+    },
+    {
+      "path": "docs/eip-v3.5.4/07_Committee_QA_Model_Answers_FINAL.md",
+      "type": "Documentation",
+      "size_bytes": 19151,
+      "sha256": "13e4082da8b3f3bf930891e5ea60aa81b5e9f424ee7d61c5935e836d92c313c6",
+      "role": "Supporting technical documentation"
+    },
+    {
+      "path": "docs/eip-v3.5.4/workshop_pack/┘à╪▒╪º╪¼╪╣╪⌐_┘å╪│╪«╪⌐_╪º╪¿┘å_╪│┘è┘å╪º_v2__1_.md",
+      "type": "Documentation",
+      "size_bytes": 5180,
+      "sha256": "744ad382e09bc542623875bf4ecc17a577640b047c0cbf111feed03a84bf5e02",
+      "role": "Supporting technical documentation"
+    },
+    {
+      "path": "docs/eip-v3.5.4/workshop_pack/╪¿┘è╪º┘å╪º╪¬_╪º┘ä┘ê╪▒╪┤╪⌐_╪º┘ä╪º╪╡╪╖┘å╪º╪╣┘è╪⌐___AtMoS.md",
+      "type": "Documentation",
+      "size_bytes": 2499,
+      "sha256": "3d0172f91cc72bbafdecfdd9d0e3dd55792e90d49504e358ea6f388386c42e86",
+      "role": "Supporting technical documentation"
+    },
+    {
+      "path": "docs/eip-v3.5.4/workshop_pack/╪«╪╖╪⌐_╪¬┘å┘ü┘è╪░_AtMoS_┘à┘å_╪º┘ä┘ê╪▒╪┤╪⌐_╪Ñ┘ä┘ë_╪º┘ä┘à╪ñ╪¬┘à╪▒.md",
+      "type": "Documentation",
+      "size_bytes": 4796,
+      "sha256": "88566c8c3e48f38a7f42b1301010b61ec4b3c459a5f0d421e7d5a6ea9fcc7a1e",
+      "role": "Supporting technical documentation"
+    },
+    {
+      "path": "docs/eip-v3.5.4/workshop_pack/╪«╪º╪▒╪╖╪⌐_╪º┘ä┘à╪▒╪¡┘ä╪⌐_╪º┘ä╪¬╪º┘ä┘è╪⌐___AtMoS_╪¿╪╣╪»_v3_5.md",
+      "type": "Documentation",
+      "size_bytes": 8988,
+      "sha256": "f6eb7dd0dbf70a6ae08ce31abaf3a797761d21e464d370e24195509b32cc0330",
+      "role": "Supporting technical documentation"
+    },
+    {
+      "path": "docs/eip-v3.5.4/workshop_pack/╪»┘ä┘è┘ä_┘à┘é╪º╪¿┘ä╪º╪¬_Pilot___╪º┘ä┘à╪«╪º╪▓┘å_┘ê╪º┘ä╪¼┘ê╪»╪⌐_┘ê╪º┘ä╪╣┘à┘ä┘è╪º╪¬.md",
+      "type": "Documentation",
+      "size_bytes": 6312,
+      "sha256": "776acb0969115dd88a397abeb4c1138a9cbd9ae1783553af23a09ea0b15e3831",
+      "role": "Supporting technical documentation"
+    },
+    {
+      "path": "docs/eip-v3.5.4/workshop_pack/╪»┘ä┘è┘ä_╪¬╪┤╪║┘è┘ä_╪º╪«╪¬╪¿╪º╪▒_╪º┘ä╪╢╪║╪╖_╪╣┘ä┘ë_staging__1_.md",
+      "type": "Documentation",
+      "size_bytes": 2628,
+      "sha256": "fccc54d5a0987370257fec4f43115549b6fb27220049236e2b99b52e1f19630d",
+      "role": "Supporting technical documentation"
+    },
+    {
+      "path": "docs/eip-v3.5.4/workshop_pack/AtMoS___EIP_3-Minute_Pitch__Final_.pdf",
+      "type": "PDF presentation",
+      "size_bytes": 310127,
+      "sha256": "abb8cc45c9f194ad1bcfeb0b0953a02dc738945f742f5ea51078fab8b9215bbf",
+      "role": "Supporting technical documentation"
+    },
+    {
+      "path": "docs/eip-v3.5.4/workshop_pack/AtMoS_EIP_Workshop_Pack__2_.md",
+      "type": "Documentation",
+      "size_bytes": 2228,
+      "sha256": "d62cef382f431a8a44bcf6e59f21c68f1e2be4f07db5b32e76b00724fda1c33f",
+      "role": "Supporting technical documentation"
+    },
+    {
+      "path": "docs/eip-v3.5.4/workshop_pack/AtMoS_Pilot_Brief___╪╡┘ü╪¡╪⌐_┘ê╪º╪¡╪»╪⌐__1_.md",
+      "type": "Documentation",
+      "size_bytes": 5701,
+      "sha256": "8f6cbcafea68a36de050cd0edeedac9f50aaa253f293394c173fc9e89bb8e90d",
+      "role": "Supporting technical documentation"
+    },
+    {
+      "path": "docs/eip-v3.5.4/workshop_pack/AtMoS_Pilot_Governance_Protocol.md",
+      "type": "Documentation",
+      "size_bytes": 5035,
+      "sha256": "cb0e76f7993bb45e064616b59f5f4f3fc332f97ca1c1708065c87f9f4ddb3397",
+      "role": "Supporting technical documentation"
+    },
+    {
+      "path": "docs/eip-v3.5.4/workshop_pack/AtMoS_Pitch_Evidence_Pack___╪º┘ä┘å╪│╪«╪⌐_╪º┘ä╪ó┘à┘å╪⌐_┘ä┘ä┘ê╪▒╪┤╪⌐__1_.md",
+      "type": "Documentation",
+      "size_bytes": 4877,
+      "sha256": "722c7fd3994347a1210c942b53b736c225b21622e463206ba424be7cf93d4403",
+      "role": "Supporting technical documentation"
+    },
+    {
+      "path": "docs/eip-v3.5.4/workshop_pack/AtMoS_v3_4__3_.md",
+      "type": "Documentation",
+      "size_bytes": 2787,
+      "sha256": "d636f6d955a42b59bb9cfc2a61fa806acca2b8dc2c11de7f02d341fe79a8c49c",
+      "role": "Supporting technical documentation"
+    },
+    {
+      "path": "docs/eip-v3.5.4/workshop_pack/EIP_Mock_Q_A___╪¬╪»╪▒┘è╪¿_┘ä╪¼┘å╪⌐_╪º┘ä╪¬┘é┘è┘è┘à.md",
+      "type": "Documentation",
+      "size_bytes": 8930,
+      "sha256": "11d6d492b4d0d76004829b54cc2c332f58139ac9b905bc3c41fcb57eef3bd36a",
+      "role": "Supporting technical documentation"
+    },
+    {
+      "path": "docs/eip-v3.5.4/workshop_pack/EIP_ORIENTION_SESSION__1_.md",
+      "type": "Documentation",
+      "size_bytes": 22923,
+      "sha256": "4c1b5c5c7e5a82e2bcbdcaa295d49b686cc57c89ec8b60d7e20e31c29d81dc1e",
+      "role": "Supporting technical documentation"
+    },
+    {
+      "path": "docs/eip-v3.5.4/workshop_pack/Judge_demo_script__target__110_125_seconds____v3__1_.md",
+      "type": "Documentation",
+      "size_bytes": 3545,
+      "sha256": "adf82e17e6ad1453a3efe1fbb97a4210f4456513bd623a0547592c71f9661ae2",
+      "role": "Supporting technical documentation"
+    },
+    {
+      "path": "docs/eip-v3.5.4/workshop_pack/pilot-governance-status.json",
+      "type": "JSON data/config",
+      "size_bytes": 746,
+      "sha256": "1f41888185ab93a8ef297be841bb0e761710babc83e24c32ecb096179a87c33f",
+      "role": "Supporting technical documentation"
+    },
+    {
+      "path": "docs/eip-v3.5.4/workshop_pack/README.txt",
+      "type": "Text fixture/log",
+      "size_bytes": 185,
+      "sha256": "86536e6cf54f42d35fa87ccaf0fe54dcf1ac40493daf419b9b4f0e5838863333",
+      "role": "Supporting technical documentation"
+    },
+    {
+      "path": "docs/eip-v3.5.4/workshop_pack/synthetic-workload-report__2_.json",
+      "type": "JSON data/config",
+      "size_bytes": 1196,
+      "sha256": "38d1391903b6afc5bdc64f779ecaca2b4d5da77cdc89824e2a9d71b1cc0c0a6d",
+      "role": "Supporting technical documentation"
     },
     {
       "path": "domain.mjs",
       "type": "JavaScript module",
-      "size_bytes": 93663,
-      "sha256": "3c6ad5d0d283b96ab49f75e6f6736620e169f521657ab529d9827b0d05d20293",
+      "size_bytes": 105413,
+      "sha256": "81794a5e5c903b960693ea3797a1e8bb61ac4e69908b1f177288f5ecf1842d27",
       "role": "Deterministic WMS domain core"
+    },
+    {
+      "path": "EIP_EXECUTION_PLAN_AR.md",
+      "type": "Documentation",
+      "size_bytes": 4796,
+      "sha256": "88566c8c3e48f38a7f42b1301010b61ec4b3c459a5f0d421e7d5a6ea9fcc7a1e",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "EIP_WORKSHOP_PACK_INDEX_AR.md",
+      "type": "Documentation",
+      "size_bytes": 2228,
+      "sha256": "d62cef382f431a8a44bcf6e59f21c68f1e2be4f07db5b32e76b00724fda1c33f",
+      "role": "Supporting project file"
     },
     {
       "path": "evidence/live-amd-run/run1-expired.json",
@@ -238,10 +514,24 @@
       "role": "Supporting project file"
     },
     {
+      "path": "FINAL_LOCAL_VERIFICATION.txt",
+      "type": "Text fixture/log",
+      "size_bytes": 185,
+      "sha256": "5105e1ec93377ffd80c04c4b39bd2378e53ea218b0109e19fe26c95f034a90f9",
+      "role": "Supporting project file"
+    },
+    {
       "path": "FINAL_SUBMISSION_GATE.md",
       "type": "Documentation",
       "size_bytes": 3089,
       "sha256": "894c0ad360d6fba7c04bb7a317311f791a268aa47a4bac2d939e868535f711cf",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "FINALIZATION_QA_AR.md",
+      "type": "Documentation",
+      "size_bytes": 2087,
+      "sha256": "fd968c9a820bb1db6db11274993a4e1f2873e9a7a4108192ccdd5e568a2662bf",
       "role": "Supporting project file"
     },
     {
@@ -273,17 +563,94 @@
       "role": "Fictional demo fixture"
     },
     {
+      "path": "fixtures/synthetic-workload-report.json",
+      "type": "JSON data/config",
+      "size_bytes": 1196,
+      "sha256": "38d1391903b6afc5bdc64f779ecaca2b4d5da77cdc89824e2a9d71b1cc0c0a6d",
+      "role": "Fictional demo fixture"
+    },
+    {
+      "path": "HANDOFF_LEVENSHTEIN_AR.md",
+      "type": "Documentation",
+      "size_bytes": 897,
+      "sha256": "8fc9d68453c6d44bf53d444e2f4a8588a4c61fe5db21775d7d9424a7bec08c29",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "handoff/ATMOS_COMPREHENSIVE_AUDIT_AR.md",
+      "type": "Documentation",
+      "size_bytes": 13044,
+      "sha256": "ee9b77c2b1fcc2a906523348890c41d23a6565cef28b5403eb32ad5b0f1d04a1",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "handoff/FINAL_HANDOFF_STATUS_AR_v3.2.0.md",
+      "type": "Documentation",
+      "size_bytes": 3329,
+      "sha256": "999ac676d08ceb6397c73caf95c81327550d01c261e7493d8fbbe939a1618db2",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "handoff/FINAL_HANDOFF_STATUS_AR.md",
+      "type": "Documentation",
+      "size_bytes": 2005,
+      "sha256": "5fe2d0318733995741636293a63753a6dd535580508657e296c169dd88d7dffd",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "handoff/PACKAGE_CONTENTS.md",
+      "type": "Documentation",
+      "size_bytes": 1498,
+      "sha256": "7717a90a0fa9d427959691dbd6007fae2edceb592be6cc69531f158fd2184f6c",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "handoff/PHASE4_OPERATIONAL_READINESS_AR.md",
+      "type": "Documentation",
+      "size_bytes": 2294,
+      "sha256": "bad3da131fc6f858641aba13c2eaba24510ffeabdc147da493e66e1c5ffa2c89",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "handoff/RELEASE_METADATA_ORIGINAL_v3.2.0.txt",
+      "type": "Text fixture/log",
+      "size_bytes": 375,
+      "sha256": "3312f93fcbff5ca8762fc1b1886848c31048d46069c81dfa332e9497ebb1a15b",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "handoff/RELEASE_METADATA.txt",
+      "type": "Text fixture/log",
+      "size_bytes": 637,
+      "sha256": "d93ff592f450b241301d4f0104e1af03580df98324ba5420a1956d7cab8e4d42",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "handoff/SHA256SUMS.txt",
+      "type": "Text fixture/log",
+      "size_bytes": 11975,
+      "sha256": "bc790089f417d9daa9274ef507469f57a4cc4f496568db81e3460d51eaa1c2b6",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "IBNSINA_LESSONS_AND_GAPS_AR.md",
+      "type": "Documentation",
+      "size_bytes": 5180,
+      "sha256": "744ad382e09bc542623875bf4ecc17a577640b047c0cbf111feed03a84bf5e02",
+      "role": "Supporting project file"
+    },
+    {
       "path": "index-en.html",
       "type": "HTML UI",
-      "size_bytes": 7094,
-      "sha256": "993e49d85e219bf845cc3cc8482ccb21e9575a8cfaff487c27f19163ddc5d912",
+      "size_bytes": 8100,
+      "sha256": "94ff0dcb7f7a823066bc10de6d58c8ae9316534c3c1751c4608c11eaff186df8",
       "role": "English judge interface"
     },
     {
       "path": "index.html",
       "type": "HTML UI",
-      "size_bytes": 7094,
-      "sha256": "993e49d85e219bf845cc3cc8482ccb21e9575a8cfaff487c27f19163ddc5d912",
+      "size_bytes": 8100,
+      "sha256": "94ff0dcb7f7a823066bc10de6d58c8ae9316534c3c1751c4608c11eaff186df8",
       "role": "English judge interface"
     },
     {
@@ -343,10 +710,24 @@
       "role": "Supporting project file"
     },
     {
+      "path": "JUDGE_DEMO_SCRIPT_AR.md",
+      "type": "Documentation",
+      "size_bytes": 3015,
+      "sha256": "6537d99ef45d41681591089d9e86793737735e776dba38ab3c4bb17fb4621061",
+      "role": "Supporting project file"
+    },
+    {
       "path": "JUDGE_QUICKSTART.md",
       "type": "Documentation",
-      "size_bytes": 2111,
-      "sha256": "2d569057c835a33715b07baf52213da5df61e1da880f72e5e1574c0f6b299261",
+      "size_bytes": 1694,
+      "sha256": "239f7c1433a74193f0b551c940d7def1be7ce94845580e9f28e7b86f3d7221d1",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "levenshtein.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 1139,
+      "sha256": "937b1646d563e0fbd8a549feb35ef00f31cd8f7bef6f417db374f89f30f5ab2c",
       "role": "Supporting project file"
     },
     {
@@ -371,17 +752,171 @@
       "role": "Supporting project file"
     },
     {
+      "path": "loadtests/distributed-recall.js",
+      "type": "Project file",
+      "size_bytes": 3062,
+      "sha256": "25e2d8f0d723c3fee5c5c3801442e428b593650e588404617b6191f3dbf256d8",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "loadtests/README.md",
+      "type": "Documentation",
+      "size_bytes": 1524,
+      "sha256": "41016300c8ed8b2f613527d4677cbb46f797f124eeb2cac7adf38a72cd4a7038",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "loadtests/recall-disposition.js",
+      "type": "Project file",
+      "size_bytes": 3303,
+      "sha256": "7e88cf8ef6f51bdafa8458d70fdf4526e44f5ea711b297d52bcac16ecf540a99",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "loadtests/STAGING_RUNBOOK_AR.md",
+      "type": "Documentation",
+      "size_bytes": 2628,
+      "sha256": "fccc54d5a0987370257fec4f43115549b6fb27220049236e2b99b52e1f19630d",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "LOCAL_K6_RESULTS.md",
+      "type": "Documentation",
+      "size_bytes": 2493,
+      "sha256": "cf1b38248dae2cd9c97091eb2ef1b69abfc2acdc80d705a0d60077a57d246d52",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "NEXT_PHASE_ROADMAP_AR.md",
+      "type": "Documentation",
+      "size_bytes": 8988,
+      "sha256": "f6eb7dd0dbf70a6ae08ce31abaf3a797761d21e464d370e24195509b32cc0330",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "normalized-postgres.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 6883,
+      "sha256": "361e0cca79f806fc44460236c88560a5ddd9ddcdd7eb3a896b800c6bd5318a45",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "OIDC_ENTRA_PHASE3.md",
+      "type": "Documentation",
+      "size_bytes": 1541,
+      "sha256": "3d619f312a8e99d3a67d9166d9f66999cab5d6920488922cf4d1f9b5284fc061",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "oidc.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 7022,
+      "sha256": "9bbcef18c6081a3a530181c7a5689f37a7550001533185931a6dfabbe145c44c",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "ONE_ON_ONE_EIP_BRIEF_AR.md",
+      "type": "Documentation",
+      "size_bytes": 6137,
+      "sha256": "ba7814846faa70ec91118346e7fe8608b9d0991fb6787f5d2ebf34aabf2389b2",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "ONE_ON_ONE_QA_AR.md",
+      "type": "Documentation",
+      "size_bytes": 8558,
+      "sha256": "95f15afcca0de1fcf6a896452ad6ae7a7fa3997b9a1e425f51e0a5d750717280",
+      "role": "Supporting project file"
+    },
+    {
       "path": "package-lock.json",
       "type": "JSON data/config",
-      "size_bytes": 304,
-      "sha256": "1d9a685c687316661c2ba0009476849a97c5eadf17aa06702d3399dc99778267",
+      "size_bytes": 5714,
+      "sha256": "80a7d0adc71455a01a43321ab852c29901ef49b835f9eba06282be175017c474",
       "role": "Supporting project file"
     },
     {
       "path": "package.json",
       "type": "JSON data/config",
-      "size_bytes": 1254,
-      "sha256": "dd346e24b2f1bbdec71e8db6a56b377d241faaa1ade9f490ea8e337fbb4157ce",
+      "size_bytes": 2585,
+      "sha256": "e88be755bfefa69a67fc7bdea749595ec4353d30c605fe7dd22963acf1760ef4",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "PILOT_BRIEF_ONE_PAGE_AR.md",
+      "type": "Documentation",
+      "size_bytes": 5701,
+      "sha256": "8f6cbcafea68a36de050cd0edeedac9f50aaa253f293394c173fc9e89bb8e90d",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "PILOT_GOVERNANCE_PROTOCOL_AR.md",
+      "type": "Documentation",
+      "size_bytes": 5035,
+      "sha256": "cb0e76f7993bb45e064616b59f5f4f3fc332f97ca1c1708065c87f9f4ddb3397",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "PILOT_RBAC_PERSISTENCE_AR.md",
+      "type": "Documentation",
+      "size_bytes": 4293,
+      "sha256": "210d1bee1970d7038aba350e7b074251b56ac6469c1114287939e71353ce8997",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "PILOT_USER_INTERVIEW_GUIDE_AR.md",
+      "type": "Documentation",
+      "size_bytes": 6312,
+      "sha256": "776acb0969115dd88a397abeb4c1138a9cbd9ae1783553af23a09ea0b15e3831",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "pilot-governance-status.json",
+      "type": "JSON data/config",
+      "size_bytes": 746,
+      "sha256": "1f41888185ab93a8ef297be841bb0e761710babc83e24c32ecb096179a87c33f",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "pilot-persistence.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 2910,
+      "sha256": "ade7393961a021241b184b36fbe524b361748a4e8c4756cab24f7b0892d458c4",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "pilot-postgres.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 4518,
+      "sha256": "08ef3121f21d3962e68915379688f668c7cff5ddbcf0add5e9ed06e18064f39b",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "pilot-rbac.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 4720,
+      "sha256": "877d3cd45b837971ff02e47a2b09b77a1c785702b0af8334e26548c1950133b6",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "pilot-server.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 6080,
+      "sha256": "54e85746509a67edb750cf6e8b9cc9069d98deeb0492ba90a3ab340dde17a7b8",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "pilot-service.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 7319,
+      "sha256": "045938763b53b5852be54dc30d1038397a7927f08b6196b51cc6c41ef1ccf06d",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "PITCH_3_MINUTES_AND_UNIFIED_MESSAGE_EN.md",
+      "type": "Documentation",
+      "size_bytes": 4535,
+      "sha256": "9990c9d3bc02c4fd017123aabe7b70069b4b193ac78ffd069c2d0eaf8c93a798",
       "role": "Supporting project file"
     },
     {
@@ -399,10 +934,45 @@
       "role": "Judge pitch deck"
     },
     {
+      "path": "PITCH_EVIDENCE_PACK_AR.md",
+      "type": "Documentation",
+      "size_bytes": 5698,
+      "sha256": "0e19788bd93bb95a8f3e57937f8fe0e1ee40ea5e9ed081d5491f0a3f948463b7",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "POLICY_EXPERTS_PHASE5.md",
+      "type": "Documentation",
+      "size_bytes": 2787,
+      "sha256": "d636f6d955a42b59bb9cfc2a61fa806acca2b8dc2c11de7f02d341fe79a8c49c",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "policy-experts.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 6888,
+      "sha256": "b414ca070a98a63d8f93b647c0fc3f7b4ba9c9b155a72a2c70df0dcd5de8a528",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "policy-prefetch-cache.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 2930,
+      "sha256": "afdcd683ecea9c6c0b164e8af1e1b8cb95ada7c9f7474548d458f3412072fc83",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "policy-shadow.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 1858,
+      "sha256": "b88d1be1236ec537e48aaf0c50520aefb2df7f749186b25f596b746422ef71b2",
+      "role": "Supporting project file"
+    },
+    {
       "path": "public/app.mjs",
       "type": "JavaScript module",
-      "size_bytes": 53459,
-      "sha256": "3ec39d6a80a87e816b3d2446c516ab56507eeae79adaa3b9c273250964bafeac",
+      "size_bytes": 75506,
+      "sha256": "1eba61b3d3d826044f632e159175ae597017009e9e17315662bb904dbc9a8e6e",
       "role": "Built static deployment copy"
     },
     {
@@ -429,36 +999,64 @@
     {
       "path": "public/demo-scenarios.mjs",
       "type": "JavaScript module",
-      "size_bytes": 9756,
-      "sha256": "8a7e764e425b39c01887270c3824573674fb9e63a601745e62f0687b8ad53ea6",
+      "size_bytes": 10028,
+      "sha256": "ea7660a43f97cb36ee0bc21df3cdbaee1696d847b148a741571b41791319da8c",
       "role": "Built static deployment copy"
     },
     {
       "path": "public/domain.mjs",
       "type": "JavaScript module",
-      "size_bytes": 93663,
-      "sha256": "3c6ad5d0d283b96ab49f75e6f6736620e169f521657ab529d9827b0d05d20293",
+      "size_bytes": 105413,
+      "sha256": "81794a5e5c903b960693ea3797a1e8bb61ac4e69908b1f177288f5ecf1842d27",
       "role": "Built static deployment copy"
     },
     {
       "path": "public/index-en.html",
       "type": "HTML UI",
-      "size_bytes": 7094,
-      "sha256": "993e49d85e219bf845cc3cc8482ccb21e9575a8cfaff487c27f19163ddc5d912",
+      "size_bytes": 8100,
+      "sha256": "94ff0dcb7f7a823066bc10de6d58c8ae9316534c3c1751c4608c11eaff186df8",
       "role": "Built static deployment copy"
     },
     {
       "path": "public/index.html",
       "type": "HTML UI",
-      "size_bytes": 7094,
-      "sha256": "993e49d85e219bf845cc3cc8482ccb21e9575a8cfaff487c27f19163ddc5d912",
+      "size_bytes": 8100,
+      "sha256": "94ff0dcb7f7a823066bc10de6d58c8ae9316534c3c1751c4608c11eaff186df8",
+      "role": "Built static deployment copy"
+    },
+    {
+      "path": "public/levenshtein.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 1139,
+      "sha256": "937b1646d563e0fbd8a549feb35ef00f31cd8f7bef6f417db374f89f30f5ab2c",
+      "role": "Built static deployment copy"
+    },
+    {
+      "path": "public/policy-experts.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 6888,
+      "sha256": "b414ca070a98a63d8f93b647c0fc3f7b4ba9c9b155a72a2c70df0dcd5de8a528",
+      "role": "Built static deployment copy"
+    },
+    {
+      "path": "public/policy-shadow.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 1858,
+      "sha256": "b88d1be1236ec537e48aaf0c50520aefb2df7f749186b25f596b746422ef71b2",
+      "role": "Built static deployment copy"
+    },
+    {
+      "path": "public/review-queue.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 10002,
+      "sha256": "d2cd8ee5cd3512a5fa9809a01b38781b73bab36c7b724b9921181f90c08e69a6",
       "role": "Built static deployment copy"
     },
     {
       "path": "public/styles.css",
       "type": "Stylesheet",
-      "size_bytes": 36560,
-      "sha256": "77410b7ca177d57e3665dafef4c832399b8afc55d2a262c9e6106ac78cd55f29",
+      "size_bytes": 41325,
+      "sha256": "823af910d8745a51cf846e4324421f1c5c944917cadccdcc5bea47a6887787c6",
       "role": "Built static deployment copy"
     },
     {
@@ -485,8 +1083,8 @@
     {
       "path": "README.md",
       "type": "Documentation",
-      "size_bytes": 11885,
-      "sha256": "92216e67abab98a570309935f655d681311f722403f7b58c556ac311e18fbd6c",
+      "size_bytes": 13605,
+      "sha256": "c8cfe34624ce4749a8c3d0fdaea068e6f21409dbe4e7f40c7b86f95571f43e41",
       "role": "Project guide"
     },
     {
@@ -567,10 +1165,52 @@
       "role": "Supporting project file"
     },
     {
+      "path": "RELEASE_REPORT_v3.5.6_AR.md",
+      "type": "Documentation",
+      "size_bytes": 3126,
+      "sha256": "d8a1c89510c65b85094929f45982d238f119c89fa70e63c9e045c4814bdd2805",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "review-queue-tests.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 7706,
+      "sha256": "8c239260c5f67269daaf1bbf32384ba481b43454d2d780ee69180204861e3ddd",
+      "role": "Regression test suite"
+    },
+    {
+      "path": "review-queue.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 10002,
+      "sha256": "d2cd8ee5cd3512a5fa9809a01b38781b73bab36c7b724b9921181f90c08e69a6",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "ROADMAP_AFTER_V3.5.6_AR.md",
+      "type": "Documentation",
+      "size_bytes": 4597,
+      "sha256": "6bf33db100300d440e08e27a0446b7ffb4e5da3a04b55ba4cab9199e4d541de7",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "schema/normalized-pilot.sql",
+      "type": "Project file",
+      "size_bytes": 3982,
+      "sha256": "2c5fe29921d1d00866517dec8ac15025e3f49d8ac38ae98c58f291c36932a90e",
+      "role": "Supporting project file"
+    },
+    {
+      "path": "schema/pilot-postgres.sql",
+      "type": "Project file",
+      "size_bytes": 3793,
+      "sha256": "ccf85786639f10ae6610674b2e6922f764f7682a11fd91864db95a69e7dd8d5d",
+      "role": "Supporting project file"
+    },
+    {
       "path": "SCOPE_AND_LIMITATIONS.md",
       "type": "Documentation",
-      "size_bytes": 2209,
-      "sha256": "7bc6b5597170aaced89462b885b9a862a8e36e3e8798ca0efe5e3fc6d10add37",
+      "size_bytes": 2403,
+      "sha256": "b311491dd274384bb3dd1144a358e4b050a49832476fc61ff30599ad697ae802",
       "role": "Supporting project file"
     },
     {
@@ -581,10 +1221,17 @@
       "role": "Build/release tooling"
     },
     {
+      "path": "scripts/backup-restore-drill.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 2568,
+      "sha256": "0cdd064852bdb2e67a473d33e8482a9e8c8cca6aaf421f830e5069b9ca55dfa5",
+      "role": "Build/release tooling"
+    },
+    {
       "path": "scripts/build-manifest.mjs",
       "type": "JavaScript module",
-      "size_bytes": 4133,
-      "sha256": "ec6a14909195c51f0b448edddf9a40d14cdbe5be3bfe8f813704f6710fac08df",
+      "size_bytes": 4163,
+      "sha256": "005d627a00774f435627784958761a4edb31737414d25572d5530f7014941653",
       "role": "Build/release tooling"
     },
     {
@@ -597,8 +1244,15 @@
     {
       "path": "scripts/build-site.mjs",
       "type": "JavaScript module",
-      "size_bytes": 1075,
-      "sha256": "1e3163997f9b9c772ba178f6c6285002c35389c5e33398c6ac8f6aa570754003",
+      "size_bytes": 1153,
+      "sha256": "ad302134d2877def5456159251cae7b99a5dd8a255555c507b0abaaba8712900",
+      "role": "Build/release tooling"
+    },
+    {
+      "path": "scripts/e2e-http-postgres.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 13245,
+      "sha256": "57b4f0f1072d36a10e3af066364a00c7d2e8b3018eae3b4da5234484dc586f61",
       "role": "Build/release tooling"
     },
     {
@@ -609,6 +1263,27 @@
       "role": "Build/release tooling"
     },
     {
+      "path": "scripts/migrate-postgres.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 2472,
+      "sha256": "19e1140ae82be7fe6e75d98d8060f8b4df7940cbc83a4841e42c5899ca3080dd",
+      "role": "Build/release tooling"
+    },
+    {
+      "path": "scripts/seed-pilot-loadtest.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 3053,
+      "sha256": "d4daa7fd9e81cbde22ea195a081c6b56b78310e24c1e6ff0c891049a60367211",
+      "role": "Build/release tooling"
+    },
+    {
+      "path": "scripts/test-levenshtein.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 172,
+      "sha256": "22e2108fb442f160b1a451ccc56ee2dfb5a5d139aa97a0ea4501398649152f27",
+      "role": "Build/release tooling"
+    },
+    {
       "path": "scripts/verify-manifest.mjs",
       "type": "JavaScript module",
       "size_bytes": 1315,
@@ -616,10 +1291,31 @@
       "role": "Build/release tooling"
     },
     {
+      "path": "scripts/verify-normalized-parity.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 2676,
+      "sha256": "a01fc7937bf04e3212416a4f2c42b1b1c1a2e944a5d8df0a9b0afdf2b4307343",
+      "role": "Build/release tooling"
+    },
+    {
+      "path": "scripts/verify-pilot-governance.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 1330,
+      "sha256": "909a5c977174539a9dcd4806e308950304e055066e9cdff908353a58b7e08351",
+      "role": "Build/release tooling"
+    },
+    {
+      "path": "scripts/verify-pitch-evidence.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 1886,
+      "sha256": "8ba9e573d0cf99a5df649099e8bbe9610997ea11482c83b548041d62b0ce7165",
+      "role": "Build/release tooling"
+    },
+    {
       "path": "scripts/verify-release.mjs",
       "type": "JavaScript module",
-      "size_bytes": 5242,
-      "sha256": "fe200f945111a5f0cf91681317f40c734a8e3ff9da52f455a1d76fe3bee47510",
+      "size_bytes": 5605,
+      "sha256": "649cec7107fe6f57afcdbe552cc5b5810a1efa61fcd14824f89aa7c34eca13ef",
       "role": "Build/release tooling"
     },
     {
@@ -651,6 +1347,13 @@
       "role": "Supporting project file"
     },
     {
+      "path": "simulate-workload.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 7894,
+      "sha256": "e2b7839e00459c05026583b305d1cfe250d7898f9c860c36af49ecef0cbe909b",
+      "role": "Supporting project file"
+    },
+    {
       "path": "state-bundle.mjs",
       "type": "JavaScript module",
       "size_bytes": 3347,
@@ -660,15 +1363,15 @@
     {
       "path": "styles.css",
       "type": "Stylesheet",
-      "size_bytes": 36560,
-      "sha256": "77410b7ca177d57e3665dafef4c832399b8afc55d2a262c9e6106ac78cd55f29",
+      "size_bytes": 41325,
+      "sha256": "823af910d8745a51cf846e4324421f1c5c944917cadccdcc5bea47a6887787c6",
       "role": "English judge interface"
     },
     {
       "path": "SUBMISSION_COPY.md",
       "type": "Documentation",
-      "size_bytes": 5202,
-      "sha256": "f464de877fe6843fa9e7cb33cea089af9c49c3ba3b58d534d1de376d2d2b1dc7",
+      "size_bytes": 5305,
+      "sha256": "bcb22280d6248f950a4bb268d6f14afeec81aeb038330c18235455c8ca5bdaf0",
       "role": "Submission text"
     },
     {
@@ -679,11 +1382,25 @@
       "role": "Supporting project file"
     },
     {
+      "path": "SYNTHETIC_WORKSHOP_DATA_AR.md",
+      "type": "Documentation",
+      "size_bytes": 2499,
+      "sha256": "3d0172f91cc72bbafdecfdd9d0e3dd55792e90d49504e358ea6f388386c42e86",
+      "role": "Supporting project file"
+    },
+    {
       "path": "tests.mjs",
       "type": "JavaScript module",
-      "size_bytes": 41991,
-      "sha256": "924eed2471553da29ae3d14d230460c9af0a034b972aff658a55b21177cbf99f",
+      "size_bytes": 44752,
+      "sha256": "dc6cfc4c062d8164752626f99c79131ff75e084d86642e958af422c97fe4baaa",
       "role": "Regression test suite"
+    },
+    {
+      "path": "tests/disposition-stress.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 3763,
+      "sha256": "7ab36cbe8e9ab74555c76b861a994abbbe787f5d286cebae6aa8d71cbaeca5da",
+      "role": "Judge-edition acceptance test"
     },
     {
       "path": "tests/judge-edition.test.mjs",
@@ -693,11 +1410,116 @@
       "role": "Judge-edition acceptance test"
     },
     {
+      "path": "tests/levenshtein.test.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 1634,
+      "sha256": "8f1a88b34ddd866b70ed3c0b98c6c1424005c55094c9734ed45ba27021b75714",
+      "role": "Judge-edition acceptance test"
+    },
+    {
+      "path": "tests/normalized-postgres.integration.test.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 3117,
+      "sha256": "d60cd53dab18724d5df2de626c82e13aae811bd4fb2fac4fc13bb07ac8ffb1d5",
+      "role": "Judge-edition acceptance test"
+    },
+    {
+      "path": "tests/normalized-real-core.integration.test.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 3248,
+      "sha256": "751b6203022a4c2f2979e84ede73b6f16c5c20e504ad6df2f08c1eed101c73e3",
+      "role": "Judge-edition acceptance test"
+    },
+    {
+      "path": "tests/oidc.integration.test.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 2505,
+      "sha256": "309ff17a81da5a6202c3715d62da5f69f739a84d8f29a38211d0383ebfa8c2db",
+      "role": "Judge-edition acceptance test"
+    },
+    {
+      "path": "tests/oidc.test.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 1541,
+      "sha256": "26b17d7955e29bb1d8eaad1f96379ac0491de418a67c5097e5adc3bdd3aa8c4d",
+      "role": "Judge-edition acceptance test"
+    },
+    {
+      "path": "tests/pilot-default-tenant.integration.test.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 1771,
+      "sha256": "13815956386004d20b737f00d8aff69da90bc9c20ee2ec2a805a1b835cf4121f",
+      "role": "Judge-edition acceptance test"
+    },
+    {
+      "path": "tests/pilot-rbac-persistence.test.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 4794,
+      "sha256": "82261627907ff8990b54870c4f415291f1ee70e68dc71bffd465ab1d94639efb",
+      "role": "Judge-edition acceptance test"
+    },
+    {
+      "path": "tests/policy-experts.test.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 3440,
+      "sha256": "d79c4b77f2d427d31482e688da204893c08b7014afe1fb19da2c33c4d7252eed",
+      "role": "Judge-edition acceptance test"
+    },
+    {
+      "path": "tests/policy-prefetch-cache.test.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 1763,
+      "sha256": "e7aa5d109582600e04a15647db67210c40ea69d09c7f295607b00cf1e82d7885",
+      "role": "Judge-edition acceptance test"
+    },
+    {
+      "path": "tests/policy-shadow.test.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 5508,
+      "sha256": "19ce0c7b26f6b0c8da5d0d48de1ef26760101efb97db180527a44f247844377a",
+      "role": "Judge-edition acceptance test"
+    },
+    {
+      "path": "tests/postgres-adapter.integration.test.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 1668,
+      "sha256": "f93890d13fe6e3bbb381908f1fbe47a2bb5f5d24b2a39ea3d2b935373e8c6831",
+      "role": "Judge-edition acceptance test"
+    },
+    {
+      "path": "tests/postgres-adapter.unit.test.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 1943,
+      "sha256": "9491672e03c46dfd18416bbf9dbdfe9fa9ec938417348862375d45a13905d5b6",
+      "role": "Judge-edition acceptance test"
+    },
+    {
+      "path": "tests/postgres-tenant-isolation.integration.test.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 1714,
+      "sha256": "1ca812c4ee164167bd7ba7c359719f2f123fab0a984639ce45220376dc5e89db",
+      "role": "Judge-edition acceptance test"
+    },
+    {
+      "path": "tests/simulate-workload.test.mjs",
+      "type": "JavaScript module",
+      "size_bytes": 1876,
+      "sha256": "204e7de8d090e234e9ecc7bf87e105b7b1e45ab898e8f73040073d2d963121ac",
+      "role": "Judge-edition acceptance test"
+    },
+    {
       "path": "tests/ui-smoke.test.mjs",
       "type": "JavaScript module",
-      "size_bytes": 6211,
-      "sha256": "cef187aa5b70d05d6aaf0d7fc7d8348b12590ccd1971e984edf43e68893bc5fa",
+      "size_bytes": 7884,
+      "sha256": "c9f532895ee95c48d7f36e6ac5bc8ef3934df1bfb42d360280483ea16fbf4b15",
       "role": "Judge-edition acceptance test"
+    },
+    {
+      "path": "TRY_IT_YOURSELF.md",
+      "type": "Documentation",
+      "size_bytes": 974,
+      "sha256": "618b9c2cc1c60532dc59b97ba93b0bbfd2c97521b7a047bd77daddfb91942b03",
+      "role": "Supporting project file"
     },
     {
       "path": "VIDEO_SCRIPT.md",

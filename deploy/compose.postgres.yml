@@ -1,0 +1,75 @@
+name: atmos-pilot
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?set POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER:?set POSTGRES_USER}
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    secrets:
+      - postgres_password
+    volumes:
+      - atmos_pgdata:/var/lib/postgresql/data
+      - ../schema/pilot-postgres.sql:/docker-entrypoint-initdb.d/001-pilot.sql:ro
+      - ../schema/normalized-pilot.sql:/docker-entrypoint-initdb.d/002-normalized-pilot.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    networks: [pilot_private]
+    expose: ["5432"]
+    # Do not publish 5432 in production. Use a private network or managed PG endpoint.
+
+  pilot-api:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.pilot
+      args:
+        INSTALL_PG: "1"
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PERSISTENCE: postgres
+      NORMALIZED_REPOSITORY: ${NORMALIZED_REPOSITORY:-0}
+      PILOT_HOST: 0.0.0.0
+      PILOT_PORT: 4180
+      ATMOS_PILOT_STATE: /var/lib/atmos-pilot/state.json
+      DATABASE_URL: ${DATABASE_URL:?set DATABASE_URL}
+      PILOT_BOOTSTRAP_TOKEN: ${PILOT_BOOTSTRAP_TOKEN:?set a 32+ character secret}
+    volumes:
+      - atmos_pilot_state:/var/lib/atmos-pilot
+    networks: [pilot_private, edge]
+    expose: ["4180"]
+    # NORMALIZED_REPOSITORY=1 enables dual-write to the normalized projection.
+    # The snapshot remains during the migration window; cutover requires parity evidence.
+
+  k6:
+    image: grafana/k6:0.51.0
+    profiles: ["loadtest"]
+    environment:
+      BASE_URL: ${BASE_URL:-http://pilot-api:4180}
+      PILOT_TOKEN: ${PILOT_TOKEN:?set a short-lived load-test token}
+      RECALL_BATCHES: ${RECALL_BATCHES:?comma-separated pre-seeded batches}
+    volumes:
+      - ../loadtests:/scripts:ro
+    networks: [edge]
+    entrypoint: ["k6"]
+    command: ["run", "/scripts/recall-disposition.js"]
+
+secrets:
+  postgres_password:
+    file: ./secrets/postgres_password.txt
+
+volumes:
+  atmos_pgdata:
+  atmos_pilot_state:
+
+networks:
+  pilot_private:
+    internal: true
+  edge:

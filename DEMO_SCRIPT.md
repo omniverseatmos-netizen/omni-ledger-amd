@@ -1,48 +1,33 @@
-# Judge demo script (target: 110–125 seconds)
+# Judge demo script — 110–125 seconds (v3.5.5 + Levenshtein walkthrough)
 
-Use real execution for every claim. If a live model response is not available, state that clearly; never present an offline fixture as an AMD inference call.
+Every displayed record is fictional. The browser workspace runs the deterministic demo locally and does not call AMD. The live AMD/Gemma CLI is a separate optional path; show it only if a genuine, authorized run succeeds, with secrets kept off-screen.
 
-## 0–8 s — Open with the control boundary
+## 0–8 s — State the boundary
+**On screen:** AtMoS overview.
+**Say:** “AtMoS lets AI help read operational documents, but model output never gets authority to change inventory. Deterministic rules decide.”
 
-**On screen:** English Judge Edition overview.
+## 8–28 s — Make the algorithm visible
+**On screen:** Open **Levenshtein match lab**. Type `Amoxcillin 500mg`; point to the top suggestion `Amoxicillin 500mg`, distance 1, and the highlighted bottom-right cell in the matrix.
+**Say:** “The pitch names Levenshtein; here you can inspect the actual edit-distance calculation. It proposes a candidate only. Similarity is not identity: no automatic drug selection, and no stock write. A person verifies strength, form, batch and expiry before the control gate.”
 
-**Voice-over:** “OmNi-Ledger separates AI-assisted invoice understanding from the authority to change stock. The model may propose; deterministic rules decide.”
+## 28–48 s — Show an irreversible-risk boundary
+**On screen:** Invoice intake → expired fixture → Run deterministic gate.
+**Say:** “Even if a name looks close, the deterministic gate checks the operational facts. This expired batch is blocked with `EXPIRED_GOODS`; it cannot become available stock.”
 
-## 8–25 s — Prove AMD/Gemma inference
+## 48–80 s — Recall and containment
+**On screen:** Recall Control → Execute recall walkthrough → show quarantine and blocked pick.
+**Say:** “The scenario records 30 previously dispatched boxes, quarantines 70 remaining boxes in the selected warehouse, and blocks the next pick with `RECALLED_BATCH`. These quantities are fictional demo records.”
 
-**On screen:** a private terminal with the real `npm run amd:live` execution. Keep API keys, shell history containing secrets, account IDs, and private values off-screen. Show the endpoint host, returned model/request ID if available, extraction fields, and the deterministic decision.
+## 80–100 s — Evidence
+**On screen:** Batch Trace → Audit Evidence.
+**Say:** “The event chain and state seal are inspectable. Hashes provide tamper-evident checks; they are not encryption or a legal signature. Traceability ends at recorded warehouse dispatch—not at an individual patient.”
 
-**Voice-over:** “Gemma extracts structured supplier-invoice fields through an AMD-hosted endpoint. The key stays in the local process; the result is untrusted input until validation passes.”
+## 100–120 s — Honest close and ask
+**On screen:** final pitch slide.
+**Say:** “This is a tested technical-evaluation prototype, not production-certified software. Our next step is one approved, measured pilot with a design partner: baseline first, shadow mode, then a decision based on evidence. What is the smallest workflow you would validate first?”
 
-## 25–42 s — Expired-batch hard block
-
-**On screen:** run `npm run amd:expired` or the website's clearly labelled local negative-control fixture. Prefer the live CLI run when demonstrating the extraction step; the website fixture can then show the same core behavior independently.
-
-**Voice-over:** “An expired batch is rejected by the domain control. It cannot become available stock simply because the extraction succeeded.”
-
-## 42–78 s — Batch recall walkthrough
-
-**On screen:** Recall Control. Show the recall reference and reason; run the scenario; point to the 70-box quarantine result, the previously recorded 30-box customer dispatch, and the `RECALLED_BATCH` hard block on a pre-allocated pick.
-
-**Voice-over:** “When a recall is issued, remaining available stock in the selected warehouse is quarantined. The trace links the recorded supplier receipt, current warehouse status, and prior customer dispatch, while the next pick is blocked.”
-
-## 78–100 s — Audit evidence
-
-**On screen:** Batch Trace and Audit Evidence. Show the real trace, event hashes, and passing local chain/seal checks; export JSON/CSV if time permits.
-
-**Voice-over:** “The decision leaves reviewable evidence. The hashes are tamper-evident integrity checks—not encryption or a legal signature.”
-
-## 100–118 s — Founder and mission
-
-**On screen:** pitch deck title/final slide.
-
-**Voice-over:** “Built by a solo founder in Egypt through a phone-first, resource-constrained workflow, OmNi-Ledger focuses on transparent, accountable operations. The goal is to make AI-assisted supply-chain work safer to inspect—not to give a model unchecked authority.”
-
-## Recording checklist
-
-- Use fictional demonstration records only.
-- Turn off shell history indicators and do not expose any secret, session cookie, or personal email.
-- Verify the exact model name in the account's AMD catalog before recording.
-- Show live endpoint details only if the request genuinely succeeded.
-- When using a browser fixture, leave its `DEMO / NOT LIVE MODEL` label visible.
-- Do not claim patient-level traceability, multi-warehouse full quarantine, regulatory approval, or production readiness.
+## Guardrails
+- Levenshtein suggestions use fictional labels; no clinical or product identity decision is made.
+- Do not claim production readiness, regulatory approval, patient-level or GS1 serial tracking, live AMD inference during the local demo, or production capacity.
+- If showing synthetic workload figures, state they are deterministic synthetic fixture results, not production measurements, customer data, or SLOs.
+- Never expose API keys, cookies, private emails, or shell history.

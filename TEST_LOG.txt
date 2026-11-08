@@ -1,6 +1,6 @@
 
-> omni-ledger-judge-edition@3.0.10 test
-> node tests.mjs && node qc-station-tests.mjs && node institutional-tests.mjs && node institutional-assurance-tests.mjs && node institutional-ui-tests.mjs && node closure-tests.mjs && node bundle-tests.mjs && node shadow-report-tests.mjs && node --test tests/*.test.mjs
+> atmos-control-judge-edition@3.5.6 test
+> node tests.mjs && node review-queue-tests.mjs && node qc-station-tests.mjs && node institutional-tests.mjs && node institutional-assurance-tests.mjs && node institutional-ui-tests.mjs && node closure-tests.mjs && node bundle-tests.mjs && node shadow-report-tests.mjs && node --test tests/*.test.mjs
 
 ✓ SHA-256 يطابق نواة Node (متجهات + عربي + حدود الـpadding)
 ✓ canonical يرفض الكسور
@@ -31,6 +31,7 @@
 ✓ ملف v:10 القديم مرفوض
 ✓ تحويل داخلي لا يغيّر الإجمالي
 ✓ Recall عالمي على مستوى التشغيلة يمنع تحويل الرصيد المتبقي في مخزن آخر
+✓ سجلات Recall القديمة بلا warehouseCode لكل حركة تظل قابلة للرفع
    (ledger=306 blocked=26)
 ✓ خصائص: 300 عملية عشوائية → الدفتر = مجموع الحركات، لا سالب، السلسلة سليمة، الاستيراد يعيد نفس البصمة
 ✓ v1.2 مسار: ترتيب تصاعدي بـpickSeq بغض النظر عن ترتيب الأوردر + لا رجوع للخلف
@@ -88,7 +89,8 @@
 ✓ v1.6 حالة التشغيل تكشف TOTE_REQUIRED قبل السحب ولا تغيّر الدفتر
 ✓ v1.6 بعد ربط الصندوق تختفي TOTE_REQUIRED ويظهر أول توقف
 
-83 نجح / 0 فشل
+84 نجح / 0 فشل
+✓ ReviewQueue contract: open → claim → resolve, SLA escalation, RBAC, and persistence
 ✓ البوابة مقفولة افتراضيًا: التغليف القديم شغّال زي ما هو
 ✓ الفحص قبل اكتمال السحب → PICK_INCOMPLETE
 ✓ اللي سحب مينفعش يفحص (فصل الصلاحيات)
@@ -192,87 +194,339 @@ TAP version 13
 # Subtest: valid receiving scenario posts stock through the deterministic core
 ok 1 - valid receiving scenario posts stock through the deterministic core
   ---
-  duration_ms: 57.776658
+  duration_ms: 34.282703
   type: 'test'
   ...
 # Subtest: expired batch is hard-blocked without creating available stock
 ok 2 - expired batch is hard-blocked without creating available stock
   ---
-  duration_ms: 35.508187
+  duration_ms: 26.122721
   type: 'test'
   ...
 # Subtest: recall quarantines the remaining batch, traces prior dispatch, and blocks an open order pick
 ok 3 - recall quarantines the remaining batch, traces prior dispatch, and blocks an open order pick
   ---
-  duration_ms: 13.468319
+  duration_ms: 22.861427
   type: 'test'
   ...
 # Subtest: model JSON parser accepts a fenced object and rejects malformed output
 ok 4 - model JSON parser accepts a fenced object and rejects malformed output
   ---
-  duration_ms: 5.243486
+  duration_ms: 2.91934
   type: 'test'
   ...
 # Subtest: extraction schema accepts supported invoice fields but rejects fuzzy or unknown SKUs
 ok 5 - extraction schema accepts supported invoice fields but rejects fuzzy or unknown SKUs
   ---
-  duration_ms: 0.784509
+  duration_ms: 1.254852
   type: 'test'
   ...
 # Subtest: downstream deterministic gate blocks expiry even after valid-shaped extraction
 ok 6 - downstream deterministic gate blocks expiry even after valid-shaped extraction
   ---
-  duration_ms: 3.925704
+  duration_ms: 6.148996
   type: 'test'
   ...
 # Subtest: offline pipeline labels fixture mode clearly and does not claim a live request
 ok 7 - offline pipeline labels fixture mode clearly and does not claim a live request
   ---
-  duration_ms: 25.070646
+  duration_ms: 21.367868
   type: 'test'
   ...
 # Subtest: offline expired pipeline is a successful negative control case
 ok 8 - offline expired pipeline is a successful negative control case
   ---
-  duration_ms: 14.089258
+  duration_ms: 11.138141
   type: 'test'
   ...
 # Subtest: live pipeline fails closed without credentials before making a network request
 ok 9 - live pipeline fails closed without credentials before making a network request
   ---
-  duration_ms: 9.240568
+  duration_ms: 3.1962
   type: 'test'
   ...
-# Subtest: all six judge views render meaningful, English, core-derived content
-ok 10 - all six judge views render meaningful, English, core-derived content
+# Subtest: empty and identical strings
+ok 10 - empty and identical strings
   ---
-  duration_ms: 7.684168
+  duration_ms: 1.720368
+  type: 'test'
+  ...
+# Subtest: one edit for substitution, insertion, and deletion
+ok 11 - one edit for substitution, insertion, and deletion
+  ---
+  duration_ms: 0.29741
+  type: 'test'
+  ...
+# Subtest: case, whitespace and canonical Unicode normalization
+ok 12 - case, whitespace and canonical Unicode normalization
+  ---
+  duration_ms: 0.371594
+  type: 'test'
+  ...
+# Subtest: Unicode code points, including Arabic and emoji
+ok 13 - Unicode code points, including Arabic and emoji
+  ---
+  duration_ms: 1.693337
+  type: 'test'
+  ...
+# Subtest: matrix dimensions and terminal cell match computed distance
+ok 14 - matrix dimensions and terminal cell match computed distance
+  ---
+  duration_ms: 0.306814
+  type: 'test'
+  ...
+# Subtest: candidate ranking is stable on ties and never auto-selects
+ok 15 - candidate ranking is stable on ties and never auto-selects
+  ---
+  duration_ms: 1.65748
+  type: 'test'
+  ...
+# Subtest: pitch demonstration example gives one edit
+ok 16 - pitch demonstration example gives one edit
+  ---
+  duration_ms: 0.297454
+  type: 'test'
+  ...
+# Subtest: normalized projection writes users, recalls, dispositions, approvals, ledger, audit and idempotency atomically
+ok 17 - normalized projection writes users, recalls, dispositions, approvals, ledger, audit and idempotency atomically # SKIP Set ATMOS_POSTGRES_INTEGRATION=1 and DATABASE_URL to run normalized PostgreSQL tests.
+  ---
+  duration_ms: 1.144183
+  type: 'test'
+  ...
+# Subtest: normalized store persists a real multi-event core and round-trips with valid hash chains
+ok 18 - normalized store persists a real multi-event core and round-trips with valid hash chains # SKIP Set ATMOS_POSTGRES_INTEGRATION=1 and DATABASE_URL to run.
+  ---
+  duration_ms: 1.135147
+  type: 'test'
+  ...
+# Subtest: OIDC exchange validates discovery, RSA JWKS signature, nonce, tenant and roles
+ok 19 - OIDC exchange validates discovery, RSA JWKS signature, nonce, tenant and roles
+  ---
+  duration_ms: 152.431237
+  type: 'test'
+  ...
+# Subtest: OIDC state is signed, expires, and rejects tampering
+ok 20 - OIDC state is signed, expires, and rejects tampering
+  ---
+  duration_ms: 5.194427
+  type: 'test'
+  ...
+# Subtest: OIDC requires complete production configuration
+ok 21 - OIDC requires complete production configuration
+  ---
+  duration_ms: 0.606456
+  type: 'test'
+  ...
+# Subtest: OIDC role and tenant claims are parsed without trusting unsupported roles
+ok 22 - OIDC role and tenant claims are parsed without trusting unsupported roles
+  ---
+  duration_ms: 1.087494
+  type: 'test'
+  ...
+# Subtest: normalized store bootstraps and logs in under the default tenant T1
+ok 23 - normalized store bootstraps and logs in under the default tenant T1 # SKIP Set ATMOS_POSTGRES_INTEGRATION=1 and DATABASE_URL to run.
+  ---
+  duration_ms: 0.815188
+  type: 'test'
+  ...
+# Subtest: Pilot RBAC enforces roles, tenant/session boundaries, and password verification
+ok 24 - Pilot RBAC enforces roles, tenant/session boundaries, and password verification
+  ---
+  duration_ms: 520.477803
+  type: 'test'
+  ...
+# Subtest: Pilot disposition flow requires idempotency and two distinct approval roles
+ok 25 - Pilot disposition flow requires idempotency and two distinct approval roles
+  ---
+  duration_ms: 546.859161
+  type: 'test'
+  ...
+# Subtest: Pilot store serializes concurrent transactions and preserves monotonic versions
+ok 26 - Pilot store serializes concurrent transactions and preserves monotonic versions
+  ---
+  duration_ms: 86.350482
+  type: 'test'
+  ...
+# Subtest: expired FEFO batch is blocked without invoking unrelated experts
+ok 27 - expired FEFO batch is blocked without invoking unrelated experts
+  ---
+  duration_ms: 2.97469
+  type: 'test'
+  ...
+# Subtest: cold-chain expert allows an in-range measurement and blocks a breach
+ok 28 - cold-chain expert allows an in-range measurement and blocks a breach
+  ---
+  duration_ms: 0.522117
+  type: 'test'
+  ...
+# Subtest: controlled-substance expert requires two distinct approvers
+ok 29 - controlled-substance expert requires two distinct approvers
+  ---
+  duration_ms: 0.350745
+  type: 'test'
+  ...
+# Subtest: lazy expert loader is not called unless its predicate matches
+ok 30 - lazy expert loader is not called unless its predicate matches
+  ---
+  duration_ms: 0.445944
+  type: 'test'
+  ...
+# Subtest: prefetch plan is stable, deduplicated and explicitly keyed
+ok 31 - prefetch plan is stable, deduplicated and explicitly keyed
+  ---
+  duration_ms: 12.056879
+  type: 'test'
+  ...
+# Subtest: expert selection order is deterministic by priority then id
+ok 32 - expert selection order is deterministic by priority then id
+  ---
+  duration_ms: 0.49113
+  type: 'test'
+  ...
+# Subtest: prefetch loads sorted unique keys into warm tier
+ok 33 - prefetch loads sorted unique keys into warm tier
+  ---
+  duration_ms: 2.769051
+  type: 'test'
+  ...
+# Subtest: warm hit promotes to hot and bounded hot tier evicts the oldest entry
+ok 34 - warm hit promotes to hot and bounded hot tier evicts the oldest entry
+  ---
+  duration_ms: 0.264251
+  type: 'test'
+  ...
+# Subtest: prefetch never overwrites an existing value from the loader
+ok 35 - prefetch never overwrites an existing value from the loader
+  ---
+  duration_ms: 0.256563
+  type: 'test'
+  ...
+# Subtest: cache statistics are deterministic and cache is not a source of truth
+ok 36 - cache statistics are deterministic and cache is not a source of truth
+  ---
+  duration_ms: 0.32367
+  type: 'test'
+  ...
+# Subtest: off mode performs no expert evaluation
+ok 37 - off mode performs no expert evaluation
+  ---
+  duration_ms: 1.179924
+  type: 'test'
+  ...
+# Subtest: shadow mode records a mismatch but preserves legacy allow behavior
+ok 38 - shadow mode records a mismatch but preserves legacy allow behavior
+  ---
+  duration_ms: 28.196656
+  type: 'test'
+  ...
+# Subtest: enforce mode blocks a new expert violation before persistence
+ok 39 - enforce mode blocks a new expert violation before persistence
+  ---
+  duration_ms: 51.247787
+  type: 'test'
+  ...
+# Subtest: shadow metadata is not serialized into the ledger state
+ok 40 - shadow metadata is not serialized into the ledger state
+  ---
+  duration_ms: 30.75608
+  type: 'test'
+  ...
+# Subtest: shadow evaluates allocation and pick without changing their legacy result
+ok 41 - shadow evaluates allocation and pick without changing their legacy result
+  ---
+  duration_ms: 6.888101
+  type: 'test'
+  ...
+# Subtest: enforce mode blocks an allocation that became expired before picking
+ok 42 - enforce mode blocks an allocation that became expired before picking
+  ---
+  duration_ms: 3.515367
+  type: 'test'
+  ...
+# Subtest: PostgreSQL store: 30 concurrent transactions lose no update (FOR UPDATE)
+ok 43 - PostgreSQL store: 30 concurrent transactions lose no update (FOR UPDATE) # SKIP Set ATMOS_POSTGRES_INTEGRATION=1 and DATABASE_URL to run against real PostgreSQL.
+  ---
+  duration_ms: 1.311075
+  type: 'test'
+  ...
+# Subtest: PostgreSQL store: a throwing transaction rolls back completely
+ok 44 - PostgreSQL store: a throwing transaction rolls back completely # SKIP Set ATMOS_POSTGRES_INTEGRATION=1 and DATABASE_URL to run against real PostgreSQL.
+  ---
+  duration_ms: 0.187226
+  type: 'test'
+  ...
+# Subtest: adapter issues BEGIN, local timeouts, FOR UPDATE, UPDATE, COMMIT in order
+ok 45 - adapter issues BEGIN, local timeouts, FOR UPDATE, UPDATE, COMMIT in order
+  ---
+  duration_ms: 5.252552
+  type: 'test'
+  ...
+# Subtest: adapter retries once on deadlock (40P01) and then commits
+ok 46 - adapter retries once on deadlock (40P01) and then commits
+  ---
+  duration_ms: 41.497253
+  type: 'test'
+  ...
+# Subtest: adapter requires a connection string or pool
+ok 47 - adapter requires a connection string or pool
+  ---
+  duration_ms: 0.772521
+  type: 'test'
+  ...
+# Subtest: normalized primary keys and foreign keys isolate identical IDs across tenants
+ok 48 - normalized primary keys and foreign keys isolate identical IDs across tenants # SKIP Set ATMOS_POSTGRES_INTEGRATION=1 and DATABASE_URL to run tenant isolation tests.
+  ---
+  duration_ms: 0.810716
+  type: 'test'
+  ...
+# Subtest: synthetic workload is reproducible and explicitly non-production
+ok 49 - synthetic workload is reproducible and explicitly non-production
+  ---
+  duration_ms: 159.773394
+  type: 'test'
+  ...
+# Subtest: synthetic chaos scenarios fail closed without claiming production SLOs
+ok 50 - synthetic chaos scenarios fail closed without claiming production SLOs
+  ---
+  duration_ms: 69.14861
+  type: 'test'
+  ...
+# Subtest: checked-in workshop fixture cannot be mistaken for calibrated production data
+ok 51 - checked-in workshop fixture cannot be mistaken for calibrated production data
+  ---
+  duration_ms: 0.524897
+  type: 'test'
+  ...
+# Subtest: all seven judge views render meaningful, English, core-derived content
+ok 52 - all seven judge views render meaningful, English, core-derived content
+  ---
+  duration_ms: 11.58476
   type: 'test'
   ...
 # Subtest: audit evidence exposes all promised report export formats
-ok 11 - audit evidence exposes all promised report export formats
+ok 53 - audit evidence exposes all promised report export formats
   ---
-  duration_ms: 3.027722
+  duration_ms: 2.539464
   type: 'test'
   ...
 # Subtest: audit evidence export actions trigger valid JSON, CSV, and HTML downloads
-ok 12 - audit evidence export actions trigger valid JSON, CSV, and HTML downloads
+ok 54 - audit evidence export actions trigger valid JSON, CSV, and HTML downloads
   ---
-  duration_ms: 7.949544
+  duration_ms: 8.507231
   type: 'test'
   ...
 # Subtest: judge evidence pack export bundles provenance, invoice controls, recall evidence, and integrity checks
-ok 13 - judge evidence pack export bundles provenance, invoice controls, recall evidence, and integrity checks
+ok 55 - judge evidence pack export bundles provenance, invoice controls, recall evidence, and integrity checks
   ---
-  duration_ms: 59.345271
+  duration_ms: 33.784492
   type: 'test'
   ...
-1..13
-# tests 13
+1..55
+# tests 55
 # suites 0
-# pass 13
+# pass 49
 # fail 0
 # cancelled 0
-# skipped 0
+# skipped 6
 # todo 0
-# duration_ms 4212.78757
+# duration_ms 4431.339902

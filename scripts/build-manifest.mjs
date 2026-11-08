@@ -50,14 +50,15 @@ for (const item of all) {
 }
 const inventory = ['path\ttype\tsize_bytes\tsha256\trole', ...inventoryRecords.map(r => [r.path,r.type,r.size_bytes,r.sha256,r.role].join('\t'))].join('\n') + '\n';
 await fs.writeFile(path.join(ROOT,'INVENTORY.tsv'), inventory);
+const packageInfo = JSON.parse(await fs.readFile(path.join(ROOT,'package.json'),'utf8'));
 const manifest = {
-  name: 'OmNi-Ledger Judge Edition',
-  version: '3.0.10',
+  name: 'AtMoS / OmNi-Ledger Core',
+  version: packageInfo.version,
   created_at: new Date().toISOString(),
   manifest_policy: 'SHA-256 for all project files except RELEASE_MANIFEST.json, INVENTORY.tsv, TEST_LOG.txt, and VERIFY_LOG.txt (the last two are generated verification transcripts).',
   source_of_truth: 'The root source files; public/ is the generated static deployment copy and is included for byte-level review.',
   file_count: records.length,
-  automated_check_summary: { source_suites: 8, source_test_count: 168, judge_acceptance_tests: 13, total_test_count: 181, result: 'See TEST_LOG.txt and VERIFY_LOG.txt; live AMD inference is not included in offline checks.' },
+  automated_check_summary: { result: 'See TEST_LOG.txt and VERIFY_LOG.txt for final local checks; live AMD inference is not included in offline checks.' },
   files: records,
 };
 await fs.writeFile(path.join(ROOT,'RELEASE_MANIFEST.json'), JSON.stringify(manifest,null,2)+'\n');
