@@ -1,7 +1,7 @@
 {
   "name": "AtMoS / OmNi-Ledger Core",
   "version": "3.5.6",
-  "created_at": "2026-11-08T03:02:24.740Z",
+  "created_at": "2026-11-08T03:05:56.098Z",
   "manifest_policy": "SHA-256 for all project files except RELEASE_MANIFEST.json, INVENTORY.tsv, TEST_LOG.txt, and VERIFY_LOG.txt (the last two are generated verification transcripts).",
   "source_of_truth": "The root source files; public/ is the generated static deployment copy and is included for byte-level review.",
   "file_count": 217,
@@ -26,8 +26,8 @@
     {
       "path": ".github/workflows/pages.yml",
       "type": "CI workflow",
-      "size_bytes": 953,
-      "sha256": "e2b9e17d14118f4564ca5018cf429fed0cd065fa3654feddf906913c5eda958c",
+      "size_bytes": 1008,
+      "sha256": "d2f63c0bd03a58193fdf1c54db993c164dd4a996b6a1fb093b30be78fa242d19",
       "role": "CI and Pages automation"
     },
     {

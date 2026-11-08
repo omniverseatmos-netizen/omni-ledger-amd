@@ -1,7 +1,7 @@
 path	type	size_bytes	sha256	role
 .env.example	Project file	247	8ba8941beb567079d3aed275c6878af8a4394d024a9e2df7fb4367ab876588f9	Supporting project file
 .github/workflows/ci.yml	CI workflow	2407	726c15fb3b9b8b415b0eebe7180678aab4fa5f7948810660cdb868b65cb89989	CI and Pages automation
-.github/workflows/pages.yml	CI workflow	953	e2b9e17d14118f4564ca5018cf429fed0cd065fa3654feddf906913c5eda958c	CI and Pages automation
+.github/workflows/pages.yml	CI workflow	1008	d2f63c0bd03a58193fdf1c54db993c164dd4a996b6a1fb093b30be78fa242d19	CI and Pages automation
 .github/workflows/staging-loadtest.yml	CI workflow	3465	d13bb1d927799d2018b964f48d884abff51b8f7050d0dc845f08b4f3ecc8bc75	CI and Pages automation
 .gitignore	Project file	84	e6285d93bf6a7e8efa739ca9128bac91e00a359657421bdcb7c74e76d039b33f	Supporting project file
 00_START_HERE_FINAL_REVIEW_AND_READINESS.md	Documentation	7711	55f64cba8c03039559322f422269a99928f3d9be28950989a5d3e5adb8418e72	Supporting project file
