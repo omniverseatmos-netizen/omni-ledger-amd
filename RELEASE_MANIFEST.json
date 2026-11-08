@@ -1,7 +1,7 @@
 {
   "name": "AtMoS / OmNi-Ledger Core",
   "version": "3.5.6",
-  "created_at": "2026-11-08T02:59:32.566Z",
+  "created_at": "2026-11-08T03:02:24.740Z",
   "manifest_policy": "SHA-256 for all project files except RELEASE_MANIFEST.json, INVENTORY.tsv, TEST_LOG.txt, and VERIFY_LOG.txt (the last two are generated verification transcripts).",
   "source_of_truth": "The root source files; public/ is the generated static deployment copy and is included for byte-level review.",
   "file_count": 217,
@@ -432,8 +432,8 @@
     {
       "path": "docs/eip-v3.5.4/workshop_pack/EIP_ORIENTION_SESSION__1_.md",
       "type": "Documentation",
-      "size_bytes": 22951,
-      "sha256": "597b8646e335258261ff7192aba40146d7520ed32bafd5ffcf90e8d7702c00fe",
+      "size_bytes": 22923,
+      "sha256": "4c1b5c5c7e5a82e2bcbdcaa295d49b686cc57c89ec8b60d7e20e31c29d81dc1e",
       "role": "Supporting technical documentation"
     },
     {
@@ -579,8 +579,8 @@
     {
       "path": "handoff/ATMOS_COMPREHENSIVE_AUDIT_AR.md",
       "type": "Documentation",
-      "size_bytes": 13046,
-      "sha256": "6f12c63bdd46d8b73ea1a31866aa9193b3989eb3ea03742fa5baa52583b855ec",
+      "size_bytes": 13044,
+      "sha256": "ee9b77c2b1fcc2a906523348890c41d23a6565cef28b5403eb32ad5b0f1d04a1",
       "role": "Supporting project file"
     },
     {
@@ -768,8 +768,8 @@
     {
       "path": "loadtests/recall-disposition.js",
       "type": "Project file",
-      "size_bytes": 3304,
-      "sha256": "fd4f681dd279936a57d90305964a9098eba42b8d06cb1020202caa9fb961b53b",
+      "size_bytes": 3303,
+      "sha256": "7e88cf8ef6f51bdafa8458d70fdf4526e44f5ea711b297d52bcac16ecf540a99",
       "role": "Supporting project file"
     },
     {
@@ -1167,8 +1167,8 @@
     {
       "path": "RELEASE_REPORT_v3.5.6_AR.md",
       "type": "Documentation",
-      "size_bytes": 3128,
-      "sha256": "ce6999cf5359f770a02d33b7196e201e762aac0386916ee54e5cf74c29b8fc36",
+      "size_bytes": 3126,
+      "sha256": "d8a1c89510c65b85094929f45982d238f119c89fa70e63c9e045c4814bdd2805",
       "role": "Supporting project file"
     },
     {
