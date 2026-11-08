@@ -9,6 +9,9 @@
 // القاعدة الأم: الرصيد مش حقل يتعدّل — الـLedger هو مصدر الحقيقة.
 // ═══════════════════════════════════════════════════════════════════════
 
+import { ReviewQueue, buildReviewCase } from './review-queue.mjs';
+import { createPolicyShadow } from './policy-shadow.mjs';
+
 export class DomainError extends Error {
   constructor(code, message) { super(message); this.name = 'DomainError'; this.code = code; }
 }
@@ -83,7 +86,7 @@ export function normText(s) {
     .replace(/([0-9])([a-z\u0621-\u064A])/g, '$1 $2').replace(/([a-z\u0621-\u064A])([0-9])/g, '$1 $2')
     .replace(/\s+/g, ' ').trim();
 }
-// تخطيط ابن سينا الفعلي (كما وصفه أحمد): المستوى 1 = أعلى رف، 2–5 = منطقة الصدر/اليد، 6–7 = الركبة، 8 = ملامس للأرض
+// تخطيط رفوف نموذجي (افتراضي للعرض، غير مرتبط بموقع حقيقي): المستوى 1 = أعلى رف، 2–5 = منطقة الصدر/اليد، 6–7 = الركبة، 8 = ملامس للأرض
 const LEVEL_AR = { 1: 'الرف الأعلى، مد إيدك لفوق', 2: 'مستوى الصدر', 3: 'مستوى الصدر', 4: 'مستوى الصدر', 5: 'مستوى الصدر', 6: 'مستوى الركبة', 7: 'مستوى الركبة', 8: 'الرف الأرضي' };
 const levelSay = (lv, withNo) => { const w = LEVEL_AR[lv] || `المستوى ${lv}`; return withNo && lv >= 2 && lv <= 7 ? `${w}، الخانة ${lv}` : w; };
 
@@ -113,8 +116,8 @@ export class OmNiCore {
     this.warehouses = new Map(); this.locations = new Map();
     this.uoms = new Map(); this.uomConversions = [];
     this.pos = new Map(); this.receipts = new Map(); this.sos = new Map();
-    this.exceptions = []; this.ledger = []; this.audit = [];
-    this.counters = { PO: 0, GR: 0, SO: 0, SLE: 0, EVT: 0, EXC: 0, TRF: 0, ADJ: 0, RCL: 0 };
+    this.exceptions = []; this.reviewCases = []; this.dispositionRequests = []; this.ledger = []; this.audit = [];
+    this.counters = { PO: 0, GR: 0, SO: 0, SLE: 0, EVT: 0, EXC: 0, REV: 0, DSP: 0, TRF: 0, ADJ: 0, RCL: 0 };
     this.recalls = new Map();             // item|batch → سجل سحب التشغيلة
     this.packGate = null;                 // v2.1: خطّاف قبل التغليف (بيتركّب من محطة الجودة)
     this.requireTote = !!opts.requireTote;
@@ -123,10 +126,13 @@ export class OmNiCore {
     this._todayOverride = null;           // للاختبارات فقط — مش بيتصدّر ولا بيتستورد
     this._bal = new Map();                // فهرس الأرصدة (مشتق من الـLedger)
     this._batchExp = new Map();           // item|batch → expiry (مشتق من الـLedger)
+    Object.defineProperty(this, '_policyShadow', { value: createPolicyShadow(opts.policyExpertsMode || 'off'), writable: true, configurable: true });
   }
   // تاريخ اليوم بتوقيت القاهرة (مش UTC، ومش من الملف المستورد)
   get today() { return this._todayOverride ?? cairoDate(this._now()); }
   set today(v) { this._todayOverride = v; }
+
+  policyShadowReport() { return this._policyShadow.report(); }
 
   _id(p) { return `${p}-${String(++this.counters[p]).padStart(6, '0')}`; }
   _iso() { return this._now().toISOString(); }
@@ -139,6 +145,24 @@ export class OmNiCore {
     const hash = sha256(this._auditHash + canonical(body));
     this.audit.push(Object.freeze({ ...body, prevHash: this._auditHash, hash })); this._auditHash = hash;
   }
+  _recordException({ type, severity = 'HIGH', evidence = 'Not provided', actor = 'system', sourceType = 'Exception', sourceId = null, receiptId = null, lineId = null, soId = null, itemCode = null, batch = null, warehouseCode = null, refNo = null, review = true }) {
+    const exc = { id: this._id('EXC'), type, severity, receiptId, lineId, soId, itemCode, batch, warehouseCode, refNo, sourceType, sourceId: sourceId || receiptId || soId || null, evidence, detectedBy: actor, detectedAt: this._iso(), resolution: null, resolutionNote: null, resolvedBy: null, resolvedAt: null };
+    this.exceptions.push(exc);
+    this._audit('EXCEPTION_OPENED', actor, sourceType, exc.sourceId || exc.id, null, exc, exc.sourceId || exc.id);
+    if (review) {
+      const row = buildReviewCase({ id: this._id('REV'), exception: exc, now: exc.detectedAt });
+      this.reviewCases.push(row);
+      this._audit('REVIEW_OPENED', actor, 'ReviewCase', row.id, null, row, exc.id);
+    }
+    return exc;
+  }
+  reviewQueue() { return new ReviewQueue(this); }
+  listReviewCases(options = {}) { return this.reviewQueue().list(options); }
+  claimReview(id, options = {}) { return this.reviewQueue().claim(id, options); }
+  releaseReview(id, options = {}) { return this.reviewQueue().release(id, options); }
+  escalateOverdueReviews(options = {}) { return this.reviewQueue().escalateOverdue(options); }
+  resolveReview(id, options = {}) { return this.reviewQueue().resolve(id, options); }
+  resolveReviewWithAction(id, options = {}) { return this.reviewQueue().resolveWithAction(id, options); }
   // القيد الواحد: مجمّد + SHA-256(prev + canonical) + حارس رصيد سالب مركزي
   _post(type, payload) {
     const k = this._bkey(payload.itemCode, payload.warehouseCode, payload.locationKey, payload.batch, payload.stockStatus);
@@ -266,9 +290,21 @@ export class OmNiCore {
       assertQty(l.receivedQty, 'الكمية المستلمة'); assertQty(l.rejectedQty ?? 0, 'الكمية المرفوضة');
       const rejectedQty = l.rejectedQty ?? 0;
       if (rejectedQty > l.receivedQty) throw new DomainError('REJECT_GT_RECEIVED', `المرفوض (${rejectedQty}) أكبر من المستلم (${l.receivedQty})`);
+      try {
+        this._policyShadow.evaluate({ ...l, itemCode: poLine.itemCode, today: this.today }, {
+          status: this._isPharma(poLine.itemCode) && l.expiryDate && l.expiryDate < this.today ? 'BLOCK' : 'ALLOW',
+          code: 'LEGACY_RECEIPT_GUARD',
+        });
+      } catch (error) {
+        if (error.code === 'POLICY_EXPERT_BLOCK') throw new DomainError(error.code, error.message);
+        throw error;
+      }
       if (this._isPharma(poLine.itemCode)) {
         if (!l.batch || !l.expiryDate) throw new DomainError('PHARMA_BATCH_REQUIRED', `الصنف ${poLine.itemCode} دواء — التشغيلة وتاريخ الصلاحية إجباريين (اشتراط هيئة الدواء)`);
-        if (l.expiryDate < this.today) throw new DomainError('EXPIRED_GOODS', `استلام بضاعة منتهية الصلاحية ممنوع — تشغيلة ${l.batch} صلاحيتها ${l.expiryDate} (النهارده ${this.today})`);
+        if (l.expiryDate < this.today) {
+          this._recordException({ type: 'EXPIRED_GOODS', severity: 'CRITICAL', evidence: `Batch ${l.batch} expired on ${l.expiryDate}; today is ${this.today}.`, actor, sourceType: 'PurchaseOrder', sourceId: po.id, itemCode: poLine.itemCode });
+          throw new DomainError('EXPIRED_GOODS', `استلام بضاعة منتهية الصلاحية ممنوع — تشغيلة ${l.batch} صلاحيتها ${l.expiryDate} (النهارده ${this.today})`);
+        }
       }
       if (l.batch && this._isRecalled(poLine.itemCode, l.batch)) throw new DomainError('RECALLED_BATCH', `التشغيلة ${l.batch} للصنف ${poLine.itemCode} عليها سحب (Recall) — الاستلام ممنوع`);
       if (l.batch && l.expiryDate) {
@@ -309,8 +345,7 @@ export class OmNiCore {
       const line = gr.lines.find(x => x.id === d.lineId);
       line.qcStatus = d.qcPass ? 'PASS' : 'FAIL';
       if (!d.qcPass) {
-        const exc = { id: this._id('EXC'), type: 'QC_FAIL', severity: 'HIGH', receiptId: gr.id, lineId: line.id, itemCode: line.itemCode, evidence: d.reason || 'غير محدد', detectedBy: actor || 'qc', detectedAt: this._iso(), resolution: null, resolvedBy: null, resolvedAt: null };
-        this.exceptions.push(exc); this._audit('QC_EXCEPTION', actor, 'ReceivingException', exc.id, null, exc, gr.id);
+        this._recordException({ type: 'QC_FAIL', severity: 'HIGH', receiptId: gr.id, lineId: line.id, itemCode: line.itemCode, evidence: d.reason || 'غير محدد', actor: actor || 'qc', sourceType: 'GoodsReceipt', sourceId: gr.id });
       }
     }
     const pass = gr.lines.filter(l => l.qcStatus === 'PASS').length;
@@ -445,6 +480,14 @@ export class OmNiCore {
       }
       line.allocatedQty = line.orderedQty - need; line.shortage = Math.max(0, need);
     }
+    for (const allocation of newAllocs) {
+      try {
+        this._policyShadow.evaluate({ ...allocation, today: this.today }, { status: 'ALLOW', code: 'LEGACY_FEFO_SELECTION' });
+      } catch (error) {
+        if (error.code === 'POLICY_EXPERT_BLOCK') throw new DomainError(error.code, error.message);
+        throw error;
+      }
+    }
     if (totalAllocated <= 0) throw new DomainError('NO_STOCK', 'مفيش رصيد متاح (غير منتهي وغير محجوز) لأي بند في الأوردر');
     so.allocations = newAllocs;
     const before = so.status; so.status = 'ALLOCATED';
@@ -464,13 +507,19 @@ export class OmNiCore {
       if (a.picked || inBatch.has(a.id)) throw new DomainError('ALREADY_PICKED', `التخصيص ${a.id} اتسحب قبل كده — منع صرف مزدوج`);
       if (!s.scannedItemCode) throw new DomainError('SCAN_ITEM_REQUIRED', 'لازم مسح الصنف (GTIN) مع التشغيلة — مسح التشغيلة لوحده مش كفاية');
       const block = (type, evidence, msg) => {
-        const exc = { id: this._id('EXC'), type, severity: 'CRITICAL', receiptId: null, lineId: a.lineId, itemCode: a.itemCode, evidence, detectedBy: actor || 'picker', detectedAt: this._iso(), resolution: null, resolvedBy: null, resolvedAt: null };
-        this.exceptions.push(exc); this._audit('PICK_BLOCKED', actor, 'SalesOrder', so.id, null, exc, so.id);
+        this._recordException({ type, severity: 'CRITICAL', soId: so.id, lineId: a.lineId, itemCode: a.itemCode, evidence, actor: actor || 'picker', sourceType: 'SalesOrder', sourceId: so.id });
+        this._audit('PICK_BLOCKED', actor, 'SalesOrder', so.id, null, { type, evidence }, so.id);
         throw new DomainError(type, msg);
       };
       if (this._isRecalled(a.itemCode, a.batch)) block('RECALLED_BATCH', `محاولة سحب تشغيلة ${a.batch} عليها Recall (${this.recalls.get(a.itemCode + '|' + a.batch).refNo})`, `ممنوع الصرف: التشغيلة ${a.batch} للصنف ${a.itemCode} عليها سحب (Recall) رقم ${this.recalls.get(a.itemCode + '|' + a.batch).refNo} — حوّل الأوردر لإعادة التخصيص`);
       if (s.scannedItemCode !== a.itemCode) block('ITEM_MISMATCH', `اتمسح صنف ${s.scannedItemCode} والمطلوب ${a.itemCode} (LASA)`, `ممنوع الصرف: اتمسح صنف ${s.scannedItemCode} والسيستم مخصّص ${a.itemCode} — خطر تشابه أدوية (LASA)`);
       if ((s.scannedBatch || null) !== (a.batch || null)) block('BATCH_MISMATCH', `اتمسح ${s.scannedBatch || 'فاضي'} والمطلوب ${a.batch} (FEFO)`, `ممنوع الصرف: اتمسحت تشغيلة ${s.scannedBatch || 'فاضية'} والسيستم مخصّص ${a.batch} صلاحية ${a.expiryDate} — قاعدة FEFO بتمنع الخطأ ده`);
+      try {
+        this._policyShadow.evaluate({ ...a, today: this.today }, { status: 'ALLOW', code: 'LEGACY_SCAN_GUARDS' });
+      } catch (error) {
+        if (error.code === 'POLICY_EXPERT_BLOCK') block('POLICY_EXPERT_BLOCK', error.message, error.message);
+        throw error;
+      }
       inBatch.add(a.id); ok.push(a);
     }
     for (const a of ok) {
@@ -677,8 +726,8 @@ export class OmNiCore {
   // ═══ v1.2 — سحب التشغيلة (Recall) — بفصل صلاحيات ورقم إشعار الهيئة ═════
   _isRecalled(itemCode, batch) { const r = batch ? this.recalls.get(`${itemCode}|${batch}`) : null; return !!r && (r.status === 'ACTIVE' || r.status === 'DISPOSED'); }
   _recallAudit(type, actor, r) { this._audit(type, actor, 'Recall', r.id, null, JSON.parse(JSON.stringify(r)), r.id); }
-  _recallEntry(r, type, locationKey, qty, status) {
-    return this._post(type, { itemCode: r.itemCode, warehouseCode: r.warehouseCode, locationKey, batch: r.batch, expiryDate: this._batchExp.get(`${r.itemCode}|${r.batch}`) ?? null, qty, uom: this.items.get(r.itemCode).baseUOM, uomFactorSnapshot: 1, unitCostQirsh: null, valueQirsh: null, stockStatus: status, sourceType: 'Recall', sourceId: r.id, correlationId: r.id, refNo: r.refNo });
+  _recallEntry(r, type, warehouseCode, locationKey, qty, status) {
+    return this._post(type, { itemCode: r.itemCode, warehouseCode, locationKey, batch: r.batch, expiryDate: this._batchExp.get(`${r.itemCode}|${r.batch}`) ?? null, qty, uom: this.items.get(r.itemCode).baseUOM, uomFactorSnapshot: 1, unitCostQirsh: null, valueQirsh: null, stockStatus: status, sourceType: 'Recall', sourceId: r.id, correlationId: r.id, refNo: r.refNo });
   }
   _recallGuard({ refNo, reason, actor, approver }) {
     if (!refNo || !String(refNo).trim()) throw new DomainError('REF_REQUIRED', 'رقم إشعار هيئة الدواء/الشركة إلزامي لأي إجراء Recall');
@@ -694,15 +743,18 @@ export class OmNiCore {
     if (this.recalls.has(key) && this.recalls.get(key).status !== 'RELEASED') throw new DomainError('ALREADY_RECALLED', `التشغيلة ${batch} عليها Recall بالفعل`);
     if (!this._batchExp.has(key)) throw new DomainError('UNKNOWN_BATCH', `التشغيلة ${batch} للصنف ${itemCode} مش موجودة في الدفتر`);
     const moves = [];
-    for (const [k, q] of this._bal) { const [it, wh, loc, b, st] = k.split('|'); if (it === itemCode && wh === warehouseCode && b === batch && st === 'AVAILABLE' && q > 0) moves.push({ fromLoc: loc || null, qty: q }); }
-    const r = { id: this._id('RCL'), itemCode, batch, warehouseCode, refNo, reason, status: 'ACTIVE', createdBy: actor, approvedBy: approver, createdAt: this._iso(), heldQty: 0, moved: [] };
+    for (const [k, q] of this._bal) { const [it, wh, loc, b, st] = k.split('|'); if (it === itemCode && b === batch && st === 'AVAILABLE' && q > 0) moves.push({ warehouseCode: wh, fromLoc: loc || null, qty: q }); }
+    const r = { id: this._id('RCL'), itemCode, batch, warehouseCode, refNo, reason, status: 'ACTIVE', scope: 'ALL_WAREHOUSES', createdBy: actor, approvedBy: approver, createdAt: this._iso(), heldQty: 0, heldByWarehouse: {}, moved: [] };
     for (const m of moves) {
-      const quarLoc = this._quarantineLoc(warehouseCode) || m.fromLoc;
-      this._recallEntry(r, 'RECALL_HOLD', m.fromLoc, -m.qty, 'AVAILABLE'); this._recallEntry(r, 'RECALL_HOLD', quarLoc, m.qty, 'QUARANTINE');
-      r.moved.push({ fromLoc: m.fromLoc, quarLoc, qty: m.qty, remaining: m.qty }); r.heldQty += m.qty;
+      const quarLoc = this._quarantineLoc(m.warehouseCode) || m.fromLoc;
+      this._recallEntry(r, 'RECALL_HOLD', m.warehouseCode, m.fromLoc, -m.qty, 'AVAILABLE'); this._recallEntry(r, 'RECALL_HOLD', m.warehouseCode, quarLoc, m.qty, 'QUARANTINE');
+      r.moved.push({ warehouseCode: m.warehouseCode, fromLoc: m.fromLoc, quarLoc, qty: m.qty, remaining: m.qty });
+      r.heldQty += m.qty; r.heldByWarehouse[m.warehouseCode] = (r.heldByWarehouse[m.warehouseCode] || 0) + m.qty;
     }
     this.recalls.set(key, r); this._recallAudit('RECALL_HELD', actor, r);
-    return { recall: JSON.parse(JSON.stringify(r)), impact: this.recallImpact(itemCode, batch) };
+    const impact = this.recallImpact(itemCode, batch);
+    if (impact.openOrders.length) this._recordException({ type: 'RECALL_IMPACT', severity: 'CRITICAL', itemCode, batch, warehouseCode, refNo, actor, sourceType: 'Recall', sourceId: r.id, evidence: `${impact.openOrders.length} open order(s) are linked to recalled batch ${batch}.` });
+    return { recall: JSON.parse(JSON.stringify(r)), impact };
   }
   // الأوردرات اللي لسه ماخرجتش وفيها التشغيلة دي — لازم إجراء بشري (إعادة تخصيص / رجوع الصندوق للحجر)
   recallImpact(itemCode, batch) {
@@ -715,13 +767,86 @@ export class OmNiCore {
     }
     return { itemCode, batch, openOrders: open };
   }
+  createDispositionRequest({ itemCode, batch, warehouseCode, disposition, refNo, reason, actor }) {
+    if (!['HOLD', 'REALLOCATE', 'RETURN_TO_VENDOR', 'DESTROY'].includes(disposition)) throw new DomainError('BAD_DISPOSITION', 'التصرف لازم HOLD أو REALLOCATE أو RETURN_TO_VENDOR أو DESTROY');
+    this._recallGuard({ refNo, reason, actor, approver: `${actor}:request` });
+    const recall = this._recallOf(itemCode, batch);
+    if (recall.status !== 'ACTIVE') throw new DomainError('INVALID_TRANSITION', `طلب التصرف يتطلب Recall نشطاً (الحالة: ${recall.status})`);
+    if (this.dispositionRequests.some(x => x.itemCode === itemCode && x.batch === batch && ['PENDING_APPROVAL', 'APPROVED', 'EXECUTING'].includes(x.status))) throw new DomainError('DISPOSITION_ALREADY_PENDING', 'يوجد طلب تصرف مفتوح لهذه التشغيلة');
+    const request = { id: this._id('DSP'), itemCode, batch, warehouseCode, recallId: recall.id, disposition, refNo, reason: String(reason).trim(), status: 'PENDING_APPROVAL', requestedBy: actor, requestedAt: this._iso(), approvals: [], executedBy: null, executedAt: null, result: null };
+    this.dispositionRequests.push(request);
+    this._audit('DISPOSITION_REQUESTED', actor, 'DispositionRequest', request.id, null, request, recall.id);
+    return request;
+  }
+  approveDisposition(id, { actor, role, decision = 'APPROVE', note = '', now = this._iso() } = {}) {
+    const request = this.dispositionRequests.find(x => x.id === id);
+    if (!request) throw new DomainError('DISPOSITION_NOT_FOUND', `طلب التصرف غير موجود: ${id}`);
+    if (request.status !== 'PENDING_APPROVAL') throw new DomainError('DISPOSITION_NOT_PENDING', `طلب التصرف في حالة ${request.status}`);
+    if (!actor || !role) throw new DomainError('ACTOR_ROLE_REQUIRED', 'الموافقة تحتاج اسم ودور');
+    if (actor === request.requestedBy) throw new DomainError('SEGREGATION_OF_DUTIES', 'منشئ طلب التصرف لا يستطيع اعتماده');
+    if (!['quality_officer', 'qa_manager'].includes(role)) throw new DomainError('ROLE_NOT_ALLOWED', 'الموافقة المزدوجة تتطلب quality_officer وqa_manager');
+    if (request.approvals.some(x => x.role === role)) throw new DomainError('APPROVAL_ROLE_ALREADY_USED', 'كل دور اعتماد يمكن استخدامه مرة واحدة فقط');
+    if (request.approvals.some(x => x.actor === actor)) throw new DomainError('DUPLICATE_APPROVAL', 'نفس الشخص لا يستطيع تقديم موافقتين');
+    if (decision === 'REJECT') { request.status = 'REJECTED'; request.rejection = { actor, role, note: String(note || 'Rejected').trim(), at: now }; this._audit('DISPOSITION_REJECTED', actor, 'DispositionRequest', id, null, request, request.recallId); return request; }
+    if (decision !== 'APPROVE') throw new DomainError('BAD_DECISION', 'القرار لازم APPROVE أو REJECT');
+    request.approvals.push({ actor, role, note: String(note || 'Approved').trim(), at: now });
+    if (request.approvals.length >= 2) request.status = 'APPROVED';
+    this._audit('DISPOSITION_APPROVED', actor, 'DispositionRequest', id, null, { approval: request.approvals.at(-1), status: request.status }, request.recallId);
+    return request;
+  }
+  executeDisposition(id, { actor, role, now = this._iso() } = {}) {
+    const request = this.dispositionRequests.find(x => x.id === id);
+    if (!request) throw new DomainError('DISPOSITION_NOT_FOUND', `طلب التصرف غير موجود: ${id}`);
+    if (request.status !== 'APPROVED') throw new DomainError('DISPOSITION_NOT_APPROVED', 'لا يمكن التنفيذ قبل موافقتين مستقلتين');
+    if (!actor || role !== 'operations_manager') throw new DomainError('ROLE_NOT_ALLOWED', 'التنفيذ يتطلب operations_manager');
+    if (request.approvals.some(x => x.actor === actor)) throw new DomainError('SEGREGATION_OF_DUTIES', 'المنفذ يجب أن يكون مختلفاً عن المعتمدين');
+    let result;
+    if (request.disposition === 'HOLD') {
+      const recall = this._recallOf(request.itemCode, request.batch);
+      const heldByWarehouse = {};
+      for (const m of recall.moved) { const wh = m.warehouseCode || recall.warehouseCode; heldByWarehouse[wh] = (heldByWarehouse[wh] || 0) + m.remaining; }
+      result = { held: Object.values(heldByWarehouse).reduce((sum, qty) => sum + qty, 0), heldByWarehouse, status: 'ACTIVE' };
+    }
+    else if (request.disposition === 'REALLOCATE') result = this.reallocateRecallOrders({ itemCode: request.itemCode, batch: request.batch, warehouseCode: request.warehouseCode, actor });
+    else result = this.disposeRecalled({ itemCode: request.itemCode, batch: request.batch, disposition: request.disposition === 'RETURN_TO_VENDOR' ? 'RTV' : 'DESTROY', refNo: request.refNo, reason: request.reason, actor, approver: request.approvals[0].actor });
+    request.status = 'EXECUTED'; request.executedBy = actor; request.executedAt = now; request.result = clone(result);
+    this._audit('DISPOSITION_EXECUTED', actor, 'DispositionRequest', id, { status: 'APPROVED' }, request, request.recallId);
+    return request;
+  }
+  reallocateRecallOrders({ itemCode, batch, warehouseCode, actor }) {
+    const impact = this.recallImpact(itemCode, batch);
+    if (!impact.openOrders.length) throw new DomainError('NO_REALLOCATION_TARGET', 'لا توجد أوردرات مفتوحة لإعادة التخصيص');
+    const plans = [];
+    for (const hit of impact.openOrders) {
+      const so = this.sos.get(hit.soId);
+      if (!so || so.status !== 'ALLOCATED' || hit.pickedQty > 0) throw new DomainError('REALLOCATION_REQUIRES_UNPICKED', 'إعادة التخصيص الآلية تتطلب أوردرات ALLOCATED لم يبدأ سحبها');
+      const affected = so.allocations.filter(a => a.itemCode === itemCode && a.batch === batch && !a.picked);
+      const next = so.allocations.filter(a => !(a.itemCode === itemCode && a.batch === batch && !a.picked));
+      const replacements = [];
+      for (const line of so.lines.filter(l => l.itemCode === itemCode && affected.some(a => a.lineId === l.id))) {
+        const need = affected.filter(a => a.lineId === line.id).reduce((s, a) => s + a.qty, 0);
+        let left = need;
+        for (const candidate of this.getAvailableBatches(itemCode, warehouseCode, so.id)) {
+          const own = next.filter(a => a.itemCode === itemCode && a.batch === candidate.batch && a.locationKey === candidate.locationKey).reduce((s, a) => s + a.qty, 0);
+          const reserved = replacements.filter(a => a.itemCode === itemCode && a.batch === candidate.batch && a.locationKey === candidate.locationKey).reduce((s, a) => s + a.qty, 0);
+          const take = Math.min(left, Math.max(0, candidate.qty - own - reserved));
+          if (take > 0) { replacements.push({ id: `${so.id}-A${so.allocations.length + replacements.length + 1}`, lineId: line.id, itemCode, batch: candidate.batch, expiryDate: candidate.expiryDate, locationKey: candidate.locationKey, qty: take, picked: false }); left -= take; }
+          if (!left) break;
+        }
+        if (left) throw new DomainError('REALLOCATION_STOCK_SHORTAGE', `אין رصيد سليم كافٍ لإعادة تخصيص ${left} من ${itemCode}`);
+      }
+      plans.push({ so, next: [...next, ...replacements] });
+    }
+    for (const { so, next } of plans) { so.allocations = next; for (const line of so.lines) { line.allocatedQty = next.filter(a => a.lineId === line.id).reduce((s, a) => s + a.qty, 0); line.shortage = Math.max(0, line.orderedQty - line.allocatedQty); } this._audit('SO_REALLOCATED', actor, 'SalesOrder', so.id, null, { recalledBatch: batch, allocations: next }, so.id); }
+    return { reallocatedOrders: plans.map(x => x.so.id), replacementBatches: [...new Set(plans.flatMap(x => x.next.filter(a => a.batch !== batch).map(a => a.batch)))] };
+  }
   _recallOf(itemCode, batch) { const r = this.recalls.get(`${itemCode}|${batch}`); if (!r) throw new DomainError('NO_RECALL', `مفيش Recall على التشغيلة ${batch}`); return r; }
   disposeRecalled({ itemCode, batch, disposition, refNo, reason, actor, approver }) {
     this._recallGuard({ refNo, reason, actor, approver });
     if (!['RTV', 'DESTROY'].includes(disposition)) throw new DomainError('BAD_DISPOSITION', 'التصرف لازم RTV أو DESTROY');
     const r = this._recallOf(itemCode, batch); if (r.status !== 'ACTIVE') throw new DomainError('INVALID_TRANSITION', `التصرف في الـRecall ممكن وهو ACTIVE بس (الحالة: ${r.status})`);
     let disposed = 0;
-    for (const m of r.moved) { const take = Math.min(m.remaining, this._bucket(itemCode, r.warehouseCode, m.quarLoc, batch, 'QUARANTINE')); if (take <= 0) continue; this._recallEntry(r, 'RECALL_DISPOSAL', m.quarLoc, -take, 'QUARANTINE'); m.remaining -= take; disposed += take; }
+    for (const m of r.moved) { const wh = m.warehouseCode || r.warehouseCode; const take = Math.min(m.remaining, this._bucket(itemCode, wh, m.quarLoc, batch, 'QUARANTINE')); if (take <= 0) continue; this._recallEntry(r, 'RECALL_DISPOSAL', wh, m.quarLoc, -take, 'QUARANTINE'); m.remaining -= take; disposed += take; }
     if (disposed === 0) throw new DomainError('NO_QUARANTINE', 'مفيش رصيد حجر صحي مرتبط بالـRecall ده');
     r.status = 'DISPOSED'; r.disposition = disposition; r.disposedQty = disposed; r.disposeRef = refNo;
     this._recallAudit('RECALL_DISPOSED', actor, r); return { disposed, disposition };
@@ -730,7 +855,7 @@ export class OmNiCore {
     this._recallGuard({ refNo, reason, actor, approver });
     const r = this._recallOf(itemCode, batch); if (r.status !== 'ACTIVE') throw new DomainError('INVALID_TRANSITION', `رفع الـRecall ممكن وهو ACTIVE بس (الحالة: ${r.status})`);
     let back = 0;
-    for (const m of r.moved) { const take = Math.min(m.remaining, this._bucket(itemCode, r.warehouseCode, m.quarLoc, batch, 'QUARANTINE')); if (take <= 0) continue; this._recallEntry(r, 'RECALL_RELEASE', m.quarLoc, -take, 'QUARANTINE'); this._recallEntry(r, 'RECALL_RELEASE', m.fromLoc, take, 'AVAILABLE'); m.remaining -= take; back += take; }
+    for (const m of r.moved) { const wh = m.warehouseCode || r.warehouseCode; const take = Math.min(m.remaining, this._bucket(itemCode, wh, m.quarLoc, batch, 'QUARANTINE')); if (take <= 0) continue; this._recallEntry(r, 'RECALL_RELEASE', wh, m.quarLoc, -take, 'QUARANTINE'); this._recallEntry(r, 'RECALL_RELEASE', wh, m.fromLoc, take, 'AVAILABLE'); m.remaining -= take; back += take; }
     r.status = 'RELEASED'; r.releasedQty = back; r.releaseRef = refNo; r.releaseReason = reason;
     this._recallAudit('RECALL_RELEASED', actor, r); return { released: back };
   }
@@ -814,10 +939,10 @@ export class OmNiCore {
 
   // ── Persistence (الساعة مش بتتصدّر، والاستيراد بيرفض الدفتر المكسور) ──
   toJSON() {
-    return { v: 12, items: [...this.items.values()], suppliers: [...this.suppliers.values()], customers: [...this.customers.values()], warehouses: [...this.warehouses.values()], locations: [...this.locations.values()], uoms: [...this.uoms.values()], uomConversions: this.uomConversions, pos: [...this.pos.values()], receipts: [...this.receipts.values()], sos: [...this.sos.values()], exceptions: this.exceptions, ledger: this.ledger, audit: this.audit, counters: this.counters, lastHash: this._lastHash, auditHash: this._auditHash };
+    return { v: 14, items: [...this.items.values()], suppliers: [...this.suppliers.values()], customers: [...this.customers.values()], warehouses: [...this.warehouses.values()], locations: [...this.locations.values()], uoms: [...this.uoms.values()], uomConversions: this.uomConversions, pos: [...this.pos.values()], receipts: [...this.receipts.values()], sos: [...this.sos.values()], exceptions: this.exceptions, reviewCases: this.reviewCases, dispositionRequests: this.dispositionRequests, ledger: this.ledger, audit: this.audit, counters: this.counters, lastHash: this._lastHash, auditHash: this._auditHash };
   }
   static fromJSON(d, opts = {}) {
-    if (d.v !== 11 && d.v !== 12) throw new DomainError('BAD_VERSION', `نسخة ملف غير مدعومة (${d.v}) — v1.2 بتقرا v:11 و v:12 بس (الدفاتر القديمة FNV مش بتتحوّل)`);
+    if (d.v !== 11 && d.v !== 12 && d.v !== 13 && d.v !== 14) throw new DomainError('BAD_VERSION', `نسخة ملف غير مدعومة (${d.v})`);
     const c = new OmNiCore(opts);
     for (const x of d.items) c.items.set(x.code, x); for (const x of d.suppliers) c.suppliers.set(x.code, x);
     for (const x of (d.customers || [])) c.customers.set(x.code, x);
@@ -825,8 +950,8 @@ export class OmNiCore {
     for (const x of d.uoms) c.uoms.set(x.code, x); c.uomConversions = d.uomConversions || [];
     for (const x of d.pos) c.pos.set(x.id, x); for (const x of d.receipts) c.receipts.set(x.id, x);
     for (const x of (d.sos || [])) c.sos.set(x.id, x);
-    c.exceptions = d.exceptions || []; c.ledger = (d.ledger || []).map(e => Object.freeze({ ...e })); c.audit = (d.audit || []).map(e => Object.freeze({ ...e }));
-    c.counters = { PO: 0, GR: 0, SO: 0, SLE: 0, EVT: 0, EXC: 0, TRF: 0, ADJ: 0, RCL: 0, ...d.counters };
+    c.exceptions = d.exceptions || []; c.reviewCases = d.reviewCases || []; c.dispositionRequests = d.dispositionRequests || []; c.ledger = (d.ledger || []).map(e => Object.freeze({ ...e })); c.audit = (d.audit || []).map(e => Object.freeze({ ...e }));
+    c.counters = { PO: 0, GR: 0, SO: 0, SLE: 0, EVT: 0, EXC: 0, REV: 0, DSP: 0, TRF: 0, ADJ: 0, RCL: 0, ...d.counters };
     c._lastHash = d.lastHash || 'GENESIS'; c._auditHash = d.auditHash || 'GENESIS';
     if (opts.verify !== false) {
       const l = c.verifyLedgerIntegrity(); if (!l.ok) throw new DomainError('LEDGER_TAMPERED', `الدفتر المستورد مكسور عند ${l.at} (${l.reason})`);

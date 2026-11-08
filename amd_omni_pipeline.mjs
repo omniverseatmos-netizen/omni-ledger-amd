@@ -132,7 +132,7 @@ export async function executePipeline({ live = false, fixture = null, scenario =
   const decision = runInvoiceFromExtraction(extraction);
   const expected = scenario === 'expired' ? 'BLOCKED' : 'ACCEPTED';
   const output = {
-    product: 'OmNi-Ledger Judge Edition',
+    product: 'AtMoS / OmNi-Ledger Core',
     inference,
     expectedScenario: scenario,
     extraction,

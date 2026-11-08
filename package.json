@@ -1,17 +1,21 @@
 {
-  "name": "omni-ledger-judge-edition",
-  "version": "3.0.10",
-  "private": false,
-  "description": "English judge edition for AI-assisted pharmaceutical supply-chain intake, deterministic warehouse controls, batch recall, traceability, and verifiable audit evidence.",
-  "license": "MIT OR Apache-2.0",
+  "name": "atmos-control-judge-edition",
+  "version": "3.5.6",
+  "private": true,
+  "description": "Private AtMoS Pilot for AI-assisted pharmaceutical supply-chain intake, deterministic warehouse controls, batch recall, traceability, and verifiable audit evidence.",
+  "license": "Apache-2.0",
   "type": "module",
   "engines": {
     "node": ">=20"
   },
   "scripts": {
-    "test": "node tests.mjs && node qc-station-tests.mjs && node institutional-tests.mjs && node institutional-assurance-tests.mjs && node institutional-ui-tests.mjs && node closure-tests.mjs && node bundle-tests.mjs && node shadow-report-tests.mjs && node --test tests/*.test.mjs",
+    "test": "node tests.mjs && node review-queue-tests.mjs && node qc-station-tests.mjs && node institutional-tests.mjs && node institutional-assurance-tests.mjs && node institutional-ui-tests.mjs && node closure-tests.mjs && node bundle-tests.mjs && node shadow-report-tests.mjs && node --test tests/*.test.mjs",
     "test:judge": "node --test tests/*.test.mjs",
     "serve": "node server.mjs",
+    "pilot:serve": "node pilot-server.mjs",
+    "test:pilot": "node --test tests/pilot-rbac-persistence.test.mjs",
+    "test:postgres": "ATMOS_POSTGRES_INTEGRATION=1 node --test tests/postgres-adapter.integration.test.mjs tests/normalized-postgres.integration.test.mjs tests/postgres-tenant-isolation.integration.test.mjs tests/pilot-default-tenant.integration.test.mjs tests/normalized-real-core.integration.test.mjs",
+    "db:migrate": "node scripts/migrate-postgres.mjs",
     "verify:release": "node scripts/verify-release.mjs",
     "amd:fixture": "node amd_omni_pipeline.mjs --scenario valid",
     "amd:expired-fixture": "node amd_omni_pipeline.mjs --scenario expired",
@@ -19,6 +23,21 @@
     "amd:expired": "node amd_omni_pipeline.mjs --live --scenario expired",
     "build:site": "node scripts/build-site.mjs",
     "manifest:build": "node scripts/build-manifest.mjs",
-    "amd:benchmark": "node scripts/amd-benchmark.mjs"
+    "amd:benchmark": "node scripts/amd-benchmark.mjs",
+    "test:stress": "node tests/disposition-stress.mjs",
+    "db:parity": "node scripts/verify-normalized-parity.mjs",
+    "db:backup-drill": "node scripts/backup-restore-drill.mjs",
+    "test:policy": "node --test tests/policy-experts.test.mjs",
+    "test:prefetch": "node --test tests/policy-prefetch-cache.test.mjs",
+    "test:oidc": "node --test tests/oidc.test.mjs tests/oidc.integration.test.mjs",
+    "test:synthetic": "node --test tests/simulate-workload.test.mjs",
+    "simulate:workload": "node simulate-workload.mjs",
+    "verify:pitch": "node scripts/verify-pitch-evidence.mjs",
+    "test:e2e:http": "node scripts/e2e-http-postgres.mjs",
+    "seed:loadtest": "node scripts/seed-pilot-loadtest.mjs",
+    "verify:all": "npm test && npm run verify:pitch && npm run verify:release"
+  },
+  "dependencies": {
+    "pg": "8.16.3"
   }
 }

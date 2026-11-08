@@ -1,0 +1,7 @@
+Project: AtMoS Workshop Complete
+Package version: v3.2.0
+Source repository: https://github.com/omniverseatmos-netizen/omniverse-atmos
+Source commit: f0538b5db7e62e4274f131697208565d5d0d3158
+Created: 2026-10-20T06:39:26Z
+Local verification: npm test; npm run verify:release
+CI verification: AtMoS Pilot verification — PostgreSQL schema + normalized integration tests passed

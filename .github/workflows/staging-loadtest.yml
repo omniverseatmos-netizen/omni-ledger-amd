@@ -1,0 +1,89 @@
+name: AtMoS staging distributed load test
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_nonproduction:
+        description: 'Confirm the target is disposable staging, not production'
+        required: true
+        type: boolean
+        default: false
+      start_rate:
+        description: 'Initial writes per second'
+        required: false
+        default: '20'
+      hold_rate:
+        description: 'Peak writes per second during the hold stage'
+        required: false
+        default: '100'
+      read_rate:
+        description: 'Read probes per second'
+        required: false
+        default: '50'
+      duration:
+        description: 'Read probe duration, e.g. 2m'
+        required: false
+        default: '2m'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: atmos-staging-loadtest
+  cancel-in-progress: false
+
+jobs:
+  k6:
+    runs-on: ubuntu-latest
+    environment: staging
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup k6
+        uses: grafana/setup-k6-action@v1
+      - name: Validate staging secrets
+        env:
+          BASE_URL: ${{ secrets.ATMOS_STAGING_BASE_URL }}
+          PILOT_TOKEN: ${{ secrets.ATMOS_STAGING_PILOT_TOKEN }}
+          RECALL_BATCHES: ${{ secrets.ATMOS_STAGING_RECALL_BATCHES }}
+          CONFIRM_NONPRODUCTION: ${{ inputs.confirm_nonproduction }}
+        run: |
+          test "$CONFIRM_NONPRODUCTION" = 'true' || { echo 'Refusing to run: confirm_nonproduction must be true.'; exit 1; }
+          test -n "$BASE_URL" || { echo 'Missing ATMOS_STAGING_BASE_URL'; exit 1; }
+          test -n "$PILOT_TOKEN" || { echo 'Missing ATMOS_STAGING_PILOT_TOKEN'; exit 1; }
+          test -n "$RECALL_BATCHES" || { echo 'Missing ATMOS_STAGING_RECALL_BATCHES'; exit 1; }
+          case "$BASE_URL" in *localhost*|*127.0.0.1*|*production*|*prod.*) echo 'Refusing suspicious BASE_URL; use a disposable staging hostname.'; exit 1;; esac
+      - name: Readiness health check
+        env:
+          BASE_URL: ${{ secrets.ATMOS_STAGING_BASE_URL }}
+          PILOT_TOKEN: ${{ secrets.ATMOS_STAGING_PILOT_TOKEN }}
+        run: |
+          set -euo pipefail
+          curl --fail-with-body --silent --show-error --retry 3 --retry-delay 2 "$BASE_URL/healthz" | tee healthz.json
+          grep -q '"ok":true' healthz.json
+          curl --fail-with-body --silent --show-error --retry 2 -H "Authorization: Bearer $PILOT_TOKEN" "$BASE_URL/v1/dispositions/dashboard" > dashboard-smoke.json
+      - name: Run distributed k6 scenario
+        env:
+          BASE_URL: ${{ secrets.ATMOS_STAGING_BASE_URL }}
+          PILOT_TOKEN: ${{ secrets.ATMOS_STAGING_PILOT_TOKEN }}
+          RECALL_BATCHES: ${{ secrets.ATMOS_STAGING_RECALL_BATCHES }}
+          TENANT_ID: ${{ secrets.ATMOS_STAGING_TENANT_ID }}
+          START_RATE: ${{ inputs.start_rate }}
+          RAMP_RATE: ${{ inputs.hold_rate }}
+          HOLD_RATE: ${{ inputs.hold_rate }}
+          READ_RATE: ${{ inputs.read_rate }}
+          READ_DURATION: ${{ inputs.duration }}
+          PREALLOCATED_VUS: '50'
+          MAX_VUS: '500'
+        run: mkdir -p results && k6 run loadtests/distributed-recall.js
+      - name: Upload k6 result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: atmos-staging-k6-${{ github.run_id }}
+          path: |
+            results/k6-distributed-summary.json
+            healthz.json
+            dashboard-smoke.json
+          if-no-files-found: warn

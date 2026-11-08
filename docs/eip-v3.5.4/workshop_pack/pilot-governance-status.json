@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1.0.0",
+  "pilotStatus": "NOT_READY",
+  "operatingMode": "SYNTHETIC_OR_DESKTOP_DEMO_ONLY",
+  "partner": null,
+  "site": null,
+  "permitRef": null,
+  "dataClassification": "SYNTHETIC",
+  "externalWrites": false,
+  "patientData": false,
+  "approvals": {
+    "measurementPermission": "MISSING",
+    "privacyReview": "MISSING",
+    "ipReview": "MISSING",
+    "dataOwnerApproval": "MISSING",
+    "baselinePlan": "MISSING",
+    "stopPlan": "MISSING",
+    "incidentPlan": "MISSING",
+    "shadowApproval": "MISSING",
+    "enforceApproval": "NOT_ALLOWED"
+  },
+  "evidence": {
+    "pilotRunId": null,
+    "baselineRef": null,
+    "shadowReportRef": null,
+    "decisionLogRef": null
+  },
+  "lastReviewedAt": null,
+  "reviewer": null
+}

@@ -30,7 +30,7 @@ for (const file of modules) {
   else syntaxCount++;
 }
 
-for (const relative of ['index.html', 'index-en.html', 'app.mjs', 'styles.css', 'domain.mjs', 'demo-scenarios.mjs', 'amd_omni_pipeline.mjs', 'assets/omniledger-mark.svg', 'assets/omni-ledger-cover.png', 'assets/omni-ledger-cover-16x9.jpg', 'RELEASE_MANIFEST.json', 'INVENTORY.tsv', 'fixtures/invoice-valid.txt', 'fixtures/invoice-expired.txt']) {
+for (const relative of ['index.html', 'index-en.html', 'app.mjs', 'styles.css', 'domain.mjs', 'demo-scenarios.mjs', 'amd_omni_pipeline.mjs', 'assets/omniledger-mark.svg', 'assets/omni-ledger-cover.png', 'assets/omni-ledger-cover-16x9.jpg', 'RELEASE_MANIFEST.json', 'INVENTORY.tsv', 'fixtures/invoice-valid.txt', 'fixtures/invoice-expired.txt', 'fixtures/synthetic-workload-report.json', 'PITCH_EVIDENCE_PACK_AR.md']) {
   try { await fs.access(path.join(ROOT, relative)); }
   catch { failures.push(`Required asset missing: ${relative}`); }
 }
@@ -45,7 +45,7 @@ for (const [label, condition] of [
   ['External app module is wired', /src="\.\/app\.mjs"/.test(html)],
   ['Content Security Policy is present on source and built judge pages', [html, htmlEn, publicHtml].every(page => /<meta http-equiv="Content-Security-Policy"/i.test(page))],
   ['No inline API secret variable in HTML', !/AMD_TOKENFACTORY_API_KEY\s*=\s*["'][^"']{10,}["']/.test(html)],
-  ['All six judge views exist', ['overview','intake','recall','trace','evidence','architecture'].every(v => app.includes(`${v}:`) || app.includes(`'${v}'`))],
+  ['All six judge views exist', ['overview','intake','recall','trace','evidence','levenshtein','architecture'].every(v => app.includes(`${v}:`) || app.includes(`'${v}'`))],
   ['Reduced-motion styling exists', css.includes('prefers-reduced-motion')],
 ]) if (!condition) failures.push(`HTML/app guard failed: ${label}`);
 
@@ -66,6 +66,8 @@ const httpSmoke = run([path.join(ROOT, 'scripts/http-smoke.mjs')]);
 if (httpSmoke.status !== 0) failures.push(`HTTP server smoke test failed\n${httpSmoke.stderr || httpSmoke.stdout}`);
 const manifestCheck = run([path.join(ROOT, 'scripts/verify-manifest.mjs')]);
 if (manifestCheck.status !== 0) failures.push(`Release manifest verification failed\n${manifestCheck.stderr || manifestCheck.stdout}`);
+const pitchCheck = run([path.join(ROOT, 'scripts/verify-pitch-evidence.mjs')]);
+if (pitchCheck.status !== 0) failures.push(`Pitch evidence verification failed\n${pitchCheck.stderr || pitchCheck.stdout}`);
 
 if (failures.length) {
   console.error('RELEASE VERIFICATION FAILED');
@@ -81,5 +83,6 @@ if (failures.length) {
   console.log('Offline valid/expired pipeline fixtures: PASS (not live inference)');
   console.log(`HTTP safety smoke: ${httpSmoke.stdout.trim() || 'PASS'}`);
   console.log(`Release manifest: ${manifestCheck.stdout.trim() || 'PASS'}`);
+  console.log(`Pitch evidence: ${pitchCheck.stdout.trim() || 'PASS'}`);
   console.log('Live AMD inference: NOT RUN (requires a private API key and account model availability)');
 }

@@ -1,0 +1,45 @@
+{
+  "datasetProvenance": {
+    "mode": "SYNTHETIC_DETERMINISTIC",
+    "realDataUsed": false,
+    "externalCalls": 0,
+    "seed": 20261020,
+    "fixedSimulationTime": "2026-10-20T10:00:00.000Z",
+    "calibrationStatus": "NOT_CALIBRATED_TO_PRODUCTION",
+    "intendedUse": "Workshop/pitch rehearsal only"
+  },
+  "distributionNetwork": {
+    "hubCode": "WH-OCT6",
+    "downstreamPharmaciesCount": 50,
+    "zonesCovered": [
+      "Synthetic zone A",
+      "Synthetic zone B",
+      "Synthetic cold-chain zone"
+    ]
+  },
+  "workloadMetrics": {
+    "totalWorkloadTransactions": 2000,
+    "salesOrdersCreated": 1899,
+    "pharmacyOrdersFulfilled": 1899,
+    "recallsTriggered": 1
+  },
+  "resilienceAndSafety": {
+    "chaosScenariosInjected": 102,
+    "hardBlocksEnforced": 102,
+    "failClosedAccuracy": "100.00%",
+    "stateMutationOnFault": 0
+  },
+  "latencyDistributionMs": {
+    "p50": 0.43,
+    "p95": 0.52,
+    "p99": 0.6,
+    "unit": "logical-ms",
+    "model": "deterministic workload estimate; not wall-clock and not an SLO"
+  },
+  "cryptographicProof": {
+    "ledgerHashChainValid": true,
+    "ledgerEntriesAudited": 1906,
+    "auditHashChainValid": true,
+    "auditEventsAudited": 13989
+  }
+}

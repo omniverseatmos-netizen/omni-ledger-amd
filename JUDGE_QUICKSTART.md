@@ -1,38 +1,19 @@
-# Judge quickstart
+# Judge quickstart — AtMoS v3.5.5 + Levenshtein
 
-Use this path to verify the working product without relying on the presentation video.
+## Start the local judge workspace
+From the project root, run `npm ci` (Node.js 20+) then `npm run serve`, and open `http://127.0.0.1:4173`. The browser demo is deterministic, uses fictional records, and does not call AMD on page load.
 
-## 1. Open the live English judge workspace
+## Demo sequence
+1. **Levenshtein match lab:** enter `Amoxcillin 500mg`. Inspect the suggested `Amoxicillin 500mg` at distance 1 and the dynamic-programming matrix. It is a suggestion only; no stock or ledger write happens.
+2. **Invoice intake:** choose `Expired batch — should be blocked`, click **Run deterministic gate**, confirm `EXPIRED_GOODS`.
+3. **Recall control:** run **Execute recall walkthrough**, confirm the synthetic 70-box quarantine and the `RECALLED_BATCH` pick block.
+4. **Batch trace:** inspect supplier receipt and previously recorded dispatch. Scope ends at recorded warehouse dispatch.
+5. **Audit evidence:** confirm the three integrity checks and export the Judge Evidence Pack. Hashes are not encryption or a legal signature.
 
-[Open the English judge workspace](https://omniverseatmos-netizen.github.io/omni-ledger-amd/index-en.html).
+## Run the focused algorithm tests
+`node --test tests/levenshtein.test.mjs`
 
-The browser demo is intentionally local and deterministic. It uses fictional records and does not call AMD from browser JavaScript.
+## Boundaries
+All demo records are fictional. The matching screen uses a tiny synthetic candidate list and has no automatic accept threshold; similarity does not establish medication identity. This is a technical-evaluation prototype, not production-certified software. It does not provide patient-level/individual GS1 traceability. The browser demo is not a live AMD/Gemma call. Never put API keys into browser code.
 
-## 2. Verify the deterministic controls
-
-1. Open **Invoice intake**.
-2. Keep **Expired batch — should be blocked** selected.
-3. Click **Run deterministic gate** and verify `HARD BLOCK · EXPIRED_GOODS` and zero available stock.
-4. Open **Recall control** and click **Execute recall walkthrough**.
-5. Verify 70 boxes quarantined, 30 previously dispatched, and `HARD BLOCK CONFIRMED` with `RECALLED_BATCH`.
-6. Open **Batch trace** and inspect the recorded `Al-Shifa Pharmacy · 6th of October` dispatch.
-7. Open **Audit evidence** and verify the three `VALID` integrity checks, the Merkle root, and the downloadable Judge Evidence Pack.
-
-## 3. Verify the AMD/Gemma path separately
-
-The live model call is deliberately kept out of the browser. In a private terminal with an event-authorized AMD Token Factory key:
-
-```bash
-export AMD_TOKENFACTORY_API_KEY="YOUR_REAL_KEY_IN_THIS_TERMINAL"
-export AMD_BASE_URL="https://developer.amd.com.cn/radeon/api/v1"
-export AMD_MODEL="Gemma-4-31B-IT"
-npm ci
-npm run amd:live
-npm run amd:expired
-```
-
-The valid scenario should report `ACCEPTED`; the expired scenario should report `BLOCKED` with `EXPIRED_GOODS`. Never commit or record the key. Fixture commands are offline checks only and are not live AMD evidence.
-
-## What the demo does and does not claim
-
-Gemma extracts invoice fields. Strict validation and deterministic warehouse rules decide whether stock may be received, allocated, picked, packed, dispatched, or quarantined. The prototype uses fictional data and provides batch-level traceability through recorded warehouse dispatch. It does not claim patient-level or GS1 serial tracking, regulatory certification, encryption, legal signatures, or production readiness.
+The deployment bundle is produced from `public/` after `npm run build:site`; internal documents, fixtures, and keys are not part of that public site bundle.

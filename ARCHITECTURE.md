@@ -16,7 +16,7 @@ Probabilistic extraction and operational authority are separate. The model outpu
 
 - Receiving cannot post accepted inventory before the quality-control workflow completes.
 - Batch and item mismatches can be hard-blocked at pick time.
-- Active recalls are checked by allocation/picking/packing/dispatch logic and stock transfer. The selected-warehouse recall move creates quarantine movements in the ledger.
+- Active recalls are checked by allocation/picking/packing/dispatch logic and stock transfer. Available stock for the recalled item/batch is quarantined across configured warehouses, with each ledger movement attributed to its actual warehouse; allocated/picked units remain subject to the human recall-impact workflow.
 - Recall creation requires a reference, reason, and separate initiating/approving actors.
 - Inventory balances derive from ledger entries rather than a mutable balance field.
 
